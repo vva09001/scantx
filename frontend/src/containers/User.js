@@ -8,6 +8,7 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
+import '../styles/style.css';
 
 export default () => (
   <LayoutWrapper>
@@ -35,16 +36,16 @@ export default () => (
         <Grid
           container
           direction="row"
-          justify="space-between"
+          justify="center"
           alignItems="center"
         >
-          <Button variant="contained" color="primary">
+          <Button className='buttonStyles' variant="contained" color="primary">
             Add new user
           </Button>
-          <Button variant="contained" color="primary">
+          <Button className='buttonStyles' variant="contained" color="primary">
             Edit selected
           </Button>
-          <Button variant="contained" color="primary">
+          <Button className='buttonStyles' variant="contained" color="primary">
             Delete selected
           </Button>
         </Grid>

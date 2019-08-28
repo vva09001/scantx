@@ -5,14 +5,6 @@ import Route from '../../components/utility/customRoute';
 const routes = [
   {
     path: '',
-    component: asyncComponent(() => import('../Dashboard.js')),
-  },
-  {
-    path: 'blank-page',
-    component: asyncComponent(() => import('../BlankPage.js')),
-  },
-  {
-    path: 'start',
     component: asyncComponent(() => import('../Start.js')),
   },
   {
