@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Spec_Project.Services;
 
 namespace Spec_Project
 {
@@ -26,6 +27,8 @@ namespace Spec_Project
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            // configure DI for application services
+            services.AddScoped<IStartService, StartService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

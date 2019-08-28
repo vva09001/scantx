@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Spec_Project.Models
 {
-    public class ScanInputModel
+    public class SetupModel
     {
-
-        public DateTime timeScan { get; set; }
-        public string code { get; set; }
+        bool receiveScanData { get; set; }
+        bool receiveFile { get; set; }
+        bool gateways { get; set; }
     }
 }
