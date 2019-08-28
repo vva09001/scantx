@@ -23,16 +23,24 @@ namespace Spec_Project.Services
                 mail = "gathmann@csdg.de",
                 company = "CSBG",
                 authorization = "admin/input/reader"
+                ,position = "admin"
             }) ;
            
             return user;
         }
         public ScanInputModel getDataScanInput(string userID)
         {
+            List<ScanModel> sc = new List<ScanModel>();
+            sc.Add(new ScanModel {
+                TimeScan = new DateTime(2019,05,24,14,55,03),
+                Code = "471135899"
+            });
             ScanInputModel data = (new ScanInputModel
             {
-                timeScan = new DateTime(2019, 5, 24, 14, 35, 03),
-                code = "471135899"
+                NumberScan = 194,
+                
+               Detail = sc
+
 
             }) ;
 

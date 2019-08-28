@@ -11,5 +11,6 @@ namespace Spec_Project.Models
         public string mail { get; set; }
         public string company { get; set; }
         public string authorization { get; set; }
+        public string position { get; set; }
     }
 }

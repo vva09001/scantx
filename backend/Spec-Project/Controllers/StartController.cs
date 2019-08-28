@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Spec_Project.Controllers
 {
 
-    [Route("api/[controller]")]
+    [Route("api/Start")]
     [ApiController]
     public class StartController : ControllerBase
     {
@@ -34,7 +34,7 @@ namespace Spec_Project.Controllers
             return Ok(_IStartService.getUser(userID));
         }
         
-        [HttpGet("get-data-scan-by-userid/{userID}")]
+        [HttpGet("get-data-scan-by-userid")]
         public IActionResult getDataScanInput(string userID)
         {
             return Ok(_IStartService.getDataScanInput(userID));
