@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\TheAnh\\Desktop\\Task\\Spec-Project\\Spec-Project\\Spec-Project.csproj": {}
+    "E:\\Miracles\\spec-project\\scantx\\spec-project\\Spec-Project\\Spec-Project.csproj": {}
   },
   "projects": {
-    "C:\\Users\\TheAnh\\Desktop\\Task\\Spec-Project\\Spec-Project\\Spec-Project.csproj": {
+    "E:\\Miracles\\spec-project\\scantx\\spec-project\\Spec-Project\\Spec-Project.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\TheAnh\\Desktop\\Task\\Spec-Project\\Spec-Project\\Spec-Project.csproj",
+        "projectUniqueName": "E:\\Miracles\\spec-project\\scantx\\spec-project\\Spec-Project\\Spec-Project.csproj",
         "projectName": "Spec-Project",
-        "projectPath": "C:\\Users\\TheAnh\\Desktop\\Task\\Spec-Project\\Spec-Project\\Spec-Project.csproj",
+        "projectPath": "E:\\Miracles\\spec-project\\scantx\\spec-project\\Spec-Project\\Spec-Project.csproj",
         "packagesPath": "C:\\Users\\TheAnh\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\TheAnh\\Desktop\\Task\\Spec-Project\\Spec-Project\\obj\\",
+        "outputPath": "E:\\Miracles\\spec-project\\scantx\\spec-project\\Spec-Project\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
