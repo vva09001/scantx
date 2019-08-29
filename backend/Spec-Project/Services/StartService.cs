@@ -43,8 +43,7 @@ namespace Spec_Project.Services
             {
                 NumberScan = 194,
                 Detail = sc
-            }) ;
-
+            });
             return data;
         }
 
