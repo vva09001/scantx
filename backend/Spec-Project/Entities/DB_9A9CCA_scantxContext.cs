@@ -15,6 +15,7 @@ namespace Spec_Project.Entities
         {
         }
 
+        public virtual DbSet<TblCustomer> TblCustomer { get; set; }
         public virtual DbSet<TblUsers> TblUsers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -30,6 +31,24 @@ namespace Spec_Project.Entities
         {
             modelBuilder.HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
+            modelBuilder.Entity<TblCustomer>(entity =>
+            {
+                entity.HasKey(e => e.Cid);
+
+                entity.ToTable("tblCustomer");
+
+                entity.Property(e => e.Cid)
+                    .HasColumnName("cid")
+                    .HasMaxLength(150)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Address).HasMaxLength(200);
+
+                entity.Property(e => e.Name).HasMaxLength(100);
+
+                entity.Property(e => e.Status).HasMaxLength(20);
+            });
+
             modelBuilder.Entity<TblUsers>(entity =>
             {
                 entity.ToTable("tblUsers");
@@ -40,7 +59,9 @@ namespace Spec_Project.Entities
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Company).HasMaxLength(150);
+                entity.Property(e => e.Company)
+                    .IsRequired()
+                    .HasMaxLength(150);
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -64,6 +85,12 @@ namespace Spec_Project.Entities
                 entity.Property(e => e.UserName)
                     .IsRequired()
                     .HasMaxLength(150);
+
+                entity.HasOne(d => d.CompanyNavigation)
+                    .WithMany(p => p.TblUsers)
+                    .HasForeignKey(d => d.Company)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_tblUsers_tblCustomer");
             });
         }
     }

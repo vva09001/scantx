@@ -16,5 +16,7 @@ namespace Spec_Project.Entities
         public bool? ContactByEmail { get; set; }
         public bool? EncryptionActive { get; set; }
         public string Company { get; set; }
+
+        public virtual TblCustomer CompanyNavigation { get; set; }
     }
 }

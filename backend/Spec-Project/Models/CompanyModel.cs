@@ -10,8 +10,7 @@ namespace Spec_Project.Models
         public string CID { get; set; }
         public string Name { get; set; }
         public string Adress { get; set; }
-        public string Country { get; set; }
-        public string Remarks { get; set; }
+        public string Status { get; set; }
         
 
     }

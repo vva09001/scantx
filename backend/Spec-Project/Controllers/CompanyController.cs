@@ -32,5 +32,15 @@ namespace Spec_Project.Controllers
         {
             return Ok(_ICompanyService.getCompany());
         }
+        [HttpGet("add-company")]
+        public IActionResult addCompany()
+        {
+            return Ok(_ICompanyService.addCompany());
+        }
+        [HttpGet("edit-company")]
+        public IActionResult editCompany()
+        {
+            return Ok(_ICompanyService.editCompany());
+        }
     }
 }
