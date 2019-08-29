@@ -7,7 +7,12 @@ namespace Spec_Project.Models
 {
     public class CompanyModel
     {
-        public string Company { get; set; }
+        public string CID { get; set; }
+        public string Name { get; set; }
+        public string Adress { get; set; }
+        public string Country { get; set; }
+        public string Remarks { get; set; }
+        
 
     }
 

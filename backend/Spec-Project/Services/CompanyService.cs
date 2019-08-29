@@ -23,8 +23,12 @@ namespace Spec_Project.Services
         {
             CompanyModel company = (new CompanyModel
             {
-                Company = "CSBGADSSD",
-            });
+                CID = "HFIE_FNE",
+                Name = "CSBGADSSD",
+                Adress = "109 Hang Bai",
+                Country = "UK",
+                Remarks = "true"
+            }); ;
 
             return company;
         }
