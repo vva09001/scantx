@@ -11,6 +11,10 @@ const routes = [
     path: 'user',
     component: asyncComponent(() => import('../User.js')),
   },
+  {
+    path: 'add-user',
+    component: asyncComponent(() => import('../AddUser.js')),
+  },
 ];
 
 class AppRouter extends Component {

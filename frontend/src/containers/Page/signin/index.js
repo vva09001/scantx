@@ -1,19 +1,12 @@
 import React, { Component } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import signinImg from "../../../images/signup.svg";
-import fbBtnSvg from "../../../images/facebook-app-symbol.svg";
-import gpBtnSvg from "../../../images/google-plus.svg";
-import authBtnSvg from "../../../images/auth0.svg";
 import Button from "../../../components/uielements/button";
 import authAction from "../../../redux/auth/actions";
 import TextField from "../../../components/uielements/textfield";
-import IntlMessages from "../../../components/utility/intlMessages";
 import Scrollbars from "../../../components/utility/customScrollBar";
 import SignInStyleWrapper from "./signin.style";
-import Auth0 from "../../../helpers/auth0";
-import Firebase from "../../../helpers/firebase";
-import FirebaseLogin from "../../../components/firebase";
 
 const { login } = authAction;
 class SignIn extends Component {
@@ -52,29 +45,15 @@ class SignIn extends Component {
             <img src={signinImg} alt="Kiwi standing on oval" />
           </div>
         </div>
-
         <div className="mateSignInPageContent">
-          <div className="mateSignInPageLink">
-            <Link to="#">
-              <button className="mateSignInPageLinkBtn active" type="button">
-                Login
-              </button>
-            </Link>
-          </div>
           <Scrollbars style={{ height: "100%" }}>
-            <div className="mateSignInPageGreet">
-              <h1>Hello User,</h1>
-              <p>
-                Welcome to ScanTX, Please Login with your account
-                information.
-              </p>
-            </div>
-            <div className="mateSignInPageForm">
-              <div className="mateInputWrapper">
+            <div>
+              <div>
                 <TextField
                   label="Username"
                   placeholder="Username"
                   margin="normal"
+                  fullWidth
                   value={username}
                   onChange={this.onChangeUsername}
                 />
@@ -84,13 +63,21 @@ class SignIn extends Component {
                   label="Password"
                   placeholder="Password"
                   margin="normal"
+                  fullWidth
                   type="Password"
                   value={password}
                   onChange={this.onChangePassword}
                 />
               </div>
               <div className="mateLoginSubmit">
-                <Button type="primary" onClick={this.handleLogin}>
+                <Button
+                  type="primary"
+                  variant="contained"
+                  color="primary"
+                  margin="normal"
+                  fullWidth
+                  onClick={this.handleLogin}
+                >
                   Login
                 </Button>
               </div>
@@ -100,62 +87,6 @@ class SignIn extends Component {
                 * Username: demo@gmail.com , Password: demodemo or click on any
                 button.
               </span>
-            </div>
-            <div className="mateLoginOtherBtn">
-              <div className="mateLoginOtherBtnWrap">
-                <Button
-                  onClick={this.handleLogin}
-                  type="primary btnFacebook"
-                  className="btnFacebook"
-                >
-                  <div className="mateLoginOtherIcon">
-                    <img src={fbBtnSvg} alt="facebook Btn" />
-                  </div>
-                  <IntlMessages id="page.signInFacebook" />
-                </Button>
-              </div>
-              <div className="mateLoginOtherBtnWrap">
-                <Button
-                  onClick={this.handleLogin}
-                  type="primary btnGooglePlus"
-                  className="btnGooglePlus"
-                >
-                  <div className="mateLoginOtherIcon">
-                    <img src={gpBtnSvg} alt="Google Plus Btn" />
-                  </div>
-                  <IntlMessages id="page.signInGooglePlus" />
-                </Button>
-              </div>
-              <div className="mateLoginOtherBtnWrap">
-                {Auth0.isValid ? (
-                  <Button
-                    type="primary btnAuthZero"
-                    className="btnAuthZero"
-                    onClick={() => {
-                      Auth0.login(this.handleLogin);
-                    }}
-                  >
-                    <div className="mateLoginOtherIcon">
-                      <img src={authBtnSvg} alt="Authentication Btn" />
-                    </div>
-                    <IntlMessages id="page.signInAuth0" />
-                  </Button>
-                ) : (
-                  <Button
-                    type="primary btnAuthZero"
-                    className="btnAuthZero"
-                    onClick={this.handleLogin}
-                  >
-                    <div className="mateLoginOtherIcon">
-                      <img src={authBtnSvg} alt="Authentication Btn" />
-                    </div>
-                    <IntlMessages id="page.signInAuth0" />
-                  </Button>
-                )}
-              </div>
-              <div className="mateLoginOtherBtnWrap">
-                {Firebase.isValid && <FirebaseLogin login={this.handleLogin} />}
-              </div>
             </div>
           </Scrollbars>
         </div>
