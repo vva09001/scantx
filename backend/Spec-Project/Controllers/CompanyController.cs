@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Spec_Project.Entities;
 using Spec_Project.Services;
 
 namespace Spec_Project.Controllers
@@ -37,10 +38,15 @@ namespace Spec_Project.Controllers
         {
             return Ok(_ICompanyService.addCompany());
         }
-        [HttpGet("edit-company")]
-        public IActionResult editCompany()
+        [HttpPost("delete-company")]
+        public IActionResult DeleteCompany(string cid)
         {
-            return Ok(_ICompanyService.editCompany());
+            return Ok(_ICompanyService.DeleteCompany(cid));
+        }
+        [HttpPut("edit-company")]
+        public IActionResult EditCompany(TblCustomer customer)
+        {
+            return Ok(_ICompanyService.EditCompany(customer));
         }
     }
 }

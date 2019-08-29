@@ -16,5 +16,10 @@ namespace Spec_Project.Entities
         public string Status { get; set; }
 
         public virtual ICollection<TblUsers> TblUsers { get; set; }
+
+        public static implicit operator string(TblCustomer v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

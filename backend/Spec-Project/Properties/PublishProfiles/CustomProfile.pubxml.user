@@ -11,10 +11,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   </PropertyGroup>
   <ItemGroup>
     <File Include="appsettings.Development.json">
-      <publishTime>08/28/2019 16:41:01</publishTime>
+      <publishTime>08/29/2019 09:15:30</publishTime>
     </File>
     <File Include="appsettings.json">
-      <publishTime>08/28/2019 17:43:55</publishTime>
+      <publishTime>08/29/2019 09:15:30</publishTime>
     </File>
     <File Include="AutoMapper.dll">
       <publishTime>08/12/2019 12:42:04</publishTime>
@@ -29,7 +29,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/26/2012 00:52:54</publishTime>
     </File>
     <File Include="Microsoft.CodeAnalysis.CSharp.Workspaces.dll">
-      <publishTime>08/21/2019 23:53:50</publishTime>
+      <publishTime>08/28/2019 23:37:50</publishTime>
     </File>
     <File Include="Microsoft.CodeAnalysis.Workspaces.dll">
       <publishTime>08/21/2019 23:53:44</publishTime>

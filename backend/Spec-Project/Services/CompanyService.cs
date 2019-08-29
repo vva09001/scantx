@@ -1,6 +1,7 @@
 ﻿using Spec_Project.Models;
 using System;
 using Spec_Project.Entities;
+using System.Linq;
 
 namespace Spec_Project.Services
 {
@@ -8,10 +9,13 @@ namespace Spec_Project.Services
     {
         CompanyModel getCompany();
         string addCompany();
-        string editCompany();
+        ResponseModel EditCompany(TblCustomer customer);
+        ResponseModel DeleteCompany(string cid);
     }
     public class CompanyService : ICompanyService
     {
+        DB_9A9CCA_scantxContext db = new DB_9A9CCA_scantxContext();
+        public DB_9A9CCA_scantxContext _content;
         public CompanyModel getCompany()
         {
             CompanyModel company = (new CompanyModel
@@ -29,7 +33,7 @@ namespace Spec_Project.Services
         {
             try
             {
-                DB_9A9CCA_scantxContext db = new DB_9A9CCA_scantxContext();
+                
                 string cid = "JSDHOAOCK";
                 string name = "CSBGADSSD";
                 string adress = "109 Hang Bai";
@@ -41,7 +45,7 @@ namespace Spec_Project.Services
                     Address = adress,
                     Status = status,
                 });
-                db.SaveChanges();
+                _content.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -50,29 +54,51 @@ namespace Spec_Project.Services
 
             return "done";
         }
-        public string editCompany()
+        public ResponseModel DeleteCompany(string cid)
         {
+            var res = new ResponseModel()
+            {
+                Status = "200",
+                Message = "",
+            };
             try
             {
-                DB_9A9CCA_scantxContext db = new DB_9A9CCA_scantxContext();
-                string cid = "JSDHOAOCK";
-                string name = "CSBGADSSD";
-                string adress = "109 Hang Bai";
-                string status = "active";
-                db.TblCustomer.Update(new TblCustomer
-                {
-                    Cid = cid,
-                    Name = name,
-                    Address = adress,
-                    Status = status,
-                });
-                db.SaveChanges();
+                var rs = _content.TblCustomer.Where(o => o.Cid == cid).FirstOrDefault();
+                _content.TblCustomer.Remove(rs);
+                _content.SaveChanges();
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                res.Status = "500";
+                res.Message = ex.Message;
             }
-            return "done";
+            return res;
+        }
+        public ResponseModel EditCompany(TblCustomer customer)
+        {
+            var res = new ResponseModel()
+            {
+                Status = "200",
+                Message = "",
+            };
+            try
+            {
+                var oldCusomer = (from u in db.TblCustomer where u.Cid == customer.Cid select u).FirstOrDefault();
+                if (oldCusomer != null)
+                {
+                    oldCusomer.Address = customer.Address;
+                    oldCusomer.Name = customer.Name;
+                    oldCusomer.Status = customer.Status;
+                    db.SaveChanges();
+                    res.Data = oldCusomer;
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Status = "500";
+                res.Message = ex.Message;
+            }
+            return res;
         }
     }
 }
