@@ -10,6 +10,7 @@ namespace Spec_Project.Services
     {
         UsersModel getUser(string userID);
         ScanInputModel getDataScanInput(string userID);
+        string AddUser();
     }
     public class StartService : IStartService
     {
@@ -19,15 +20,18 @@ namespace Spec_Project.Services
         {
             UsersModel user = (new UsersModel
             {
-                fullname = "Christian Gathmann",
-                mail = "gathmann@csdg.de",
-                company = "CSBG",
-                authorization = "admin/input/reader"
-                ,position = "admin"
+                Fullname = "Christian Gathmann",
+                Mail = "gathmann@csdg.de",
+                Company = "CSBG",
+                Authorization = "admin",
+                
             }) ;
            
             return user;
         }
+
+
+
         public ScanInputModel getDataScanInput(string userID)
         {
             List<ScanModel> sc = new List<ScanModel>();
@@ -38,13 +42,16 @@ namespace Spec_Project.Services
             ScanInputModel data = (new ScanInputModel
             {
                 NumberScan = 194,
-                
-               Detail = sc
-
-
+                Detail = sc
             }) ;
 
             return data;
+        }
+
+        public string AddUser()
+        {
+            string rs;
+            return rs = "Success";
         }
     }
 }

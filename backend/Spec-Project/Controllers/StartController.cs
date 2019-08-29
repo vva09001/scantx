@@ -39,5 +39,10 @@ namespace Spec_Project.Controllers
         {
             return Ok(_IStartService.getDataScanInput(userID));
         }
+        [HttpGet("add-user")]
+        public IActionResult AddUser ()
+        {
+            return Ok(_IStartService.AddUser());
+        }
     }
 }
