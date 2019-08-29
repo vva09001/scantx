@@ -82,12 +82,6 @@ class SignIn extends Component {
                 </Button>
               </div>
             </div>
-            <div className="mateLoginSubmitText">
-              <span>
-                * Username: demo@gmail.com , Password: demodemo or click on any
-                button.
-              </span>
-            </div>
           </Scrollbars>
         </div>
       </SignInStyleWrapper>
