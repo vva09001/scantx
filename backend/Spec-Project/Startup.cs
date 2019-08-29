@@ -38,6 +38,7 @@ namespace Spec_Project
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             // configure DI for application services
             services.AddScoped<IStartService, StartService>();
+            services.AddScoped<ICompanyService, CompanyService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
