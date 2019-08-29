@@ -11,3 +11,4 @@ E:\Miracles\spec-project\scantx\backend\Spec-Project\obj\Debug\netcoreapp2.2\Spe
 E:\Miracles\spec-project\scantx\backend\Spec-Project\bin\Debug\netcoreapp2.2\Spec-Project.pdb
 E:\Miracles\spec-project\scantx\backend\Spec-Project\obj\Debug\netcoreapp2.2\Spec-Project.dll
 E:\Miracles\spec-project\scantx\backend\Spec-Project\obj\Debug\netcoreapp2.2\Spec-Project.pdb
+E:\Miracles\spec-project\scantx\backend\Spec-Project\obj\Debug\netcoreapp2.2\Spec-Project.csprojAssemblyReference.cache
