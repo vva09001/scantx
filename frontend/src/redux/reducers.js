@@ -4,7 +4,9 @@ import ThemeSwitcher from './themeSwitcher/reducer';
 import LanguageSwitcher from './languageSwitcher/reducer';
 
 import User from './user/reducer';
+import Data from './data/reducer';
 import Company from './company/reducer';
+import ScanData from './scandata/reducer';
 
 export default {
 	Auth,
@@ -12,5 +14,7 @@ export default {
 	ThemeSwitcher,
 	LanguageSwitcher,
 	User,
-	Company
+	Data,
+	Company,
+	ScanData
 };

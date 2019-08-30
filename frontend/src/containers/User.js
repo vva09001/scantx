@@ -1,44 +1,58 @@
 import React, { Component } from "react";
+import { connect } from 'react-redux';
+import { CircularProgress } from 'components/uielements/progress';
 import LayoutWrapper from "../components/utility/layoutWrapper";
 import Papersheet from "../components/utility/papersheet";
 import { FullColumn } from "../components/utility/rowColumn";
-import Button from "../components/uielements/button/index.js";
-import Grid from "@material-ui/core/Grid";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import Button from "components/uielements/button/index.js";
+import Grid from "components/uielements/grid";
+import Table from "components/uielements/table";
+import Checkbox from 'components/uielements/checkbox';
+import {
+  TableBody,
+  TableCell,
+  TableRow,
+} from 'components/uielements/table';
+import { userActions } from 'redux/actions';
+import _ from 'lodash';
 import "../styles/style.css";
 
-export default class User extends Component {
+class User extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      loading: true
+    }
   }
-  handleAddUser = () => {
-    this.props.history.push('/dashboard/add-user');
+  componentDidMount() {
+    this.props.getUser({ userID: 1 }, this.onSuccess, this.onSuccess)
+  }
+  onSuccess = () => {
+    this.setState({
+      loading: false
+    })
+  }
+  renderData = () => {
+    return _.map(this.props.users, item => (
+      <TableRow>
+        <TableCell padding="checkbox"><Checkbox /></TableCell>
+        <TableCell>{item.familyName} {item.givenName}</TableCell>
+        <TableCell>{item.email}</TableCell>
+        <TableCell>{item.userName}</TableCell>
+      </TableRow>
+    ))
   }
   render() {
+    if (this.state.loading) {
+      return <CircularProgress />;
+    }
     return (
       <LayoutWrapper>
         <FullColumn>
           <Papersheet title="Users of company CSBG">
             <Table>
               <TableBody>
-                <TableRow>
-                  <TableCell>Christian Gatmann</TableCell>
-                  <TableCell>gatmann@csbg.de</TableCell>
-                  <TableCell>admin</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Mark Mustermann</TableCell>
-                  <TableCell>mustermann@csbg.de</TableCell>
-                  <TableCell>input</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Maria Musterfrau</TableCell>
-                  <TableCell>musterfrau@csbg.de</TableCell>
-                  <TableCell>reader</TableCell>
-                </TableRow>
+                {this.renderData()}
               </TableBody>
             </Table>
             <Grid
@@ -76,3 +90,16 @@ export default class User extends Component {
     );
   }
 }
+const mapSateToProps = state => {
+  return {
+    users: state.User.list
+  };
+};
+
+const mapDispatchToProps = {
+  getUser: userActions.getUser
+};
+export default connect(
+  mapSateToProps,
+  mapDispatchToProps
+)(User);

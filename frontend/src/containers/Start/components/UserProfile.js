@@ -18,12 +18,12 @@ class UserProfile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: true
+            loading: false
         }
     }
 
     componentDidMount() {
-        this.props.getUser({ userID: 1 }, this.onSuccess, this.onSuccess)
+        // this.props.getUser({ userID: 1 }, this.onSuccess, this.onSuccess)
     }
 
     onSuccess = () => {
@@ -31,17 +31,21 @@ class UserProfile extends React.Component {
     }
 
     render() {
-        if (this.state.loading) {
-            return <CircularProgress />;
-        }
         return (
             <Grid item xs={6} style={style.gridItem}>
-                <Papersheet title="User" style={style.papersheet}>
-                    <p>Christian Gathmann</p>
-                    <p>Mail: gathmann@csbg.de</p>
-                    <p>Company: CSBG</p>
-                    <p>Authorization: admin/input/reader</p>
-                </Papersheet>
+                {
+                    this.state.loading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Papersheet title="User" style={style.papersheet}>
+                            <p>Christian Gathmann</p>
+                            <p>Mail: gathmann@csbg.de</p>
+                            <p>Company: CSBG</p>
+                            <p>Authorization: admin/input/reader</p>
+                        </Papersheet>
+                    )
+                }
+                
             </Grid>
         )
     }

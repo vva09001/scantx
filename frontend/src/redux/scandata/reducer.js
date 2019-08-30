@@ -4,11 +4,11 @@ const initState = {
   list: []
 };
 
-export default function dataReducer(state = initState, action) {
+export default function scanDataReducer(state = initState, action) {
   switch (action.type) {
-    case actions.GET_DATA_SUCCESS:
+    case actions.GET_SCAN_DATA_SUCCESS:
       return {
-        datas: action.response
+        list: action.response
       };
     default:
       return state;

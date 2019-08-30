@@ -9,11 +9,15 @@ const routes = [
   },
   {
     path: 'user',
-    component: asyncComponent(() => import('../User.js')),
+    component: asyncComponent(() => import('../User')),
   },
   {
-    path: 'add-user',
-    component: asyncComponent(() => import('../AddUser.js')),
+    path: 'scan-data',
+    component: asyncComponent(() => import('../ScanData')),
+  },
+  {
+    path: 'company',
+    component: asyncComponent(() => import('../Company')),
   },
 ];
 

@@ -3,6 +3,8 @@ import Grid from "@material-ui/core/Grid";
 import Papersheet from "components/utility/papersheet";
 import { CircularProgress } from 'components/uielements/progress';
 import { connect } from 'react-redux';
+import { dataActions } from 'redux/actions';
+import _ from 'lodash';
 
 const style = {
     gridItem: {
@@ -17,28 +19,35 @@ class ScanData extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: false
+            loading: true
         }
     }
 
     componentDidMount() {
+        this.props.getData({}, this.onSuccess, this.onSuccess)
     }
 
     onSuccess = () => {
         this.setState({ loading: false })
     }
+    renderData = () => {
+        return _.map(this.props.datas, item => {
+            return <p>{item.timeScan} {item.code}</p>
+        })
+    }
     render() {
-        if (this.state.loading) {
-            return <CircularProgress />;
-        }
         return (
             <Grid item xs={6} style={style.gridItem}>
-                <Papersheet title="Scan Input: 123" style={style.papersheet}>
-                <p>Lorem Ipsum...</p>
-                <p>Lorem Ipsum...</p>
-                <p>Lorem Ipsum...</p>
-                <p>...</p>
-                </Papersheet>
+                {
+                    this.state.loading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Papersheet title="Scan Input: 123" style={style.papersheet}>
+                            {this.renderData()}
+                        </Papersheet>
+                    )
+                }
+                
             </Grid>
         )
     }
@@ -46,10 +55,12 @@ class ScanData extends React.Component {
 
 const mapSateToProps = state => {
     return {
+        datas: state.Data.datas
     };
 };
 
 const mapDispatchToProps = {
+    getData : dataActions.getData
 };
 export default connect(
     mapSateToProps,

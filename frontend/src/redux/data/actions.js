@@ -1,8 +1,9 @@
 const actions = {
   GET_DATA_REQUEST: 'GET_DATA_REQUEST',
   GET_DATA_SUCCESS: 'GET_DATA_SUCCESS',
-  getData: (success, fail) => ({
+  getData: (params, success, fail) => ({
     type: actions.GET_DATA_REQUEST,
+    params,
     success,
     fail
   }),
