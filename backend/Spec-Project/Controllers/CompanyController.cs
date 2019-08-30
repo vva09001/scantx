@@ -28,21 +28,29 @@ namespace Spec_Project.Controllers
             //_mapper = mapper;
             //_appSettings = appSettings.Value;
         }
+
+        [DisableCors]
         [HttpGet("get-company")]
         public IActionResult getCompany()
         {
             return Ok(_ICompanyService.getCompany());
         }
-        [HttpGet("add-company")]
-        public IActionResult addCompany()
+
+        [DisableCors]
+        [HttpPost("add-company")]
+        public IActionResult addCompany(TblCustomer tblcustomer)
         {
-            return Ok(_ICompanyService.addCompany());
+            return Ok(_ICompanyService.addCompany(tblcustomer));
         }
+
+        [DisableCors]
         [HttpPost("delete-company")]
         public IActionResult DeleteCompany(string cid)
         {
             return Ok(_ICompanyService.DeleteCompany(cid));
         }
+
+        [DisableCors]
         [HttpPut("edit-company")]
         public IActionResult EditCompany(TblCustomer customer)
         {

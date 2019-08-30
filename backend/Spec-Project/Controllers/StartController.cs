@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Spec_Project.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 
 namespace Spec_Project.Controllers
 {
@@ -28,26 +29,33 @@ namespace Spec_Project.Controllers
             //_mapper = mapper;
             //_appSettings = appSettings.Value;
         }
-        [HttpGet("get-user-by-id")]
-        public IActionResult getUser(string userID)
-        {
-            return Ok(_IStartService.Login(userID));
-        }
 
+        //[DisableCors]
+        ////[HttpGet("get-user-by-id")]
+        ////public IActionResult getUser(string userID)
+        ////{
+        ////    return Ok(_IStartService.Login(userID));
+        //}
+
+        [DisableCors]
         [HttpGet("get-data-scan-by-userid")]
         public IActionResult getDataScanInput(string userID)
         {
             return Ok(_IStartService.getDataScanInput(userID));
         }
+
+        [DisableCors]
         [HttpPost("add-user")]
         public IActionResult AddUser()
         {
             return Ok(_IStartService.AddUser());
         }
-        [HttpPost("edit-user")]
-        public IActionResult EditUser()
-        {
-            return Ok(_IStartService.);
-        }
+
+        //[DisableCors]
+        //[HttpPost("edit-user")]
+        //public IActionResult EditUser()
+        //{
+        //    return Ok(_IStartService.);
+        //}
     }
 }

@@ -2,57 +2,55 @@
 using System;
 using Spec_Project.Entities;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Spec_Project.Services
 {
     public interface ICompanyService
     {
-        CompanyModel getCompany();
-        string addCompany();
+        List<TblCustomer> getCompany();
+        ResponseModel addCompany(TblCustomer tblcustomer);
         ResponseModel EditCompany(TblCustomer customer);
         ResponseModel DeleteCompany(string cid);
     }
     public class CompanyService : ICompanyService
     {
         DB_9A9CCA_scantxContext db = new DB_9A9CCA_scantxContext();
-        public DB_9A9CCA_scantxContext _content;
-        public CompanyModel getCompany()
+        public List<TblCustomer> getCompany()
         {
-            CompanyModel company = (new CompanyModel
-            {
-                CID = "HFIE_FNE",
-                Name = "CSBGADSSD",
-                Adress = "109 Hang Bai",
-                Status = "active",
-            }); ;
-
+            var company = db.TblCustomer.Where(p => p.DeletedOn == null).ToList();
             return company;
         }
 
-        public string addCompany()
+        public ResponseModel addCompany(TblCustomer tblcustomer)
         {
+            var res = new ResponseModel()
+            {
+                Status = "200",
+                Message = "",
+            };
             try
             {
-                
-                string cid = "JSDHOAOCK";
-                string name = "CSBGADSSD";
-                string adress = "109 Hang Bai";
-                string status = "active";
-                db.TblCustomer.Add(new TblCustomer
+                var listcustomer = db.TblCustomer.FirstOrDefault(p => p.Cid != tblcustomer.Cid);
+                if (listcustomer != null)
                 {
-                    Cid = cid,
-                    Name = name,
-                    Address = adress,
-                    Status = status,
-                });
-                _content.SaveChanges();
+                    db.TblCustomer.Add(new TblCustomer
+                    {
+                        Cid = tblcustomer.Cid,
+                        Name = tblcustomer.Name,
+                        Address = tblcustomer.Address,
+                        Status = tblcustomer.Status
+                    });
+                    db.SaveChanges();
+                }
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                res.Status = "500";
+                res.Message = ex.Message;
             }
 
-            return "done";
+            return res;
         }
         public ResponseModel DeleteCompany(string cid)
         {
@@ -63,12 +61,13 @@ namespace Spec_Project.Services
             };
             try
             {
-                var rs = db.TblCustomer.Where(o => o.Cid == cid).FirstOrDefault();
-                if (rs!=null)
-                {
-                    rs.DeletedOn = DateTime.UtcNow.AddHours(7);
-                    db.SaveChanges();
-                    db.TblCustomer.Remove(rs);
+                using (DB_9A9CCA_scantxContext context = new DB_9A9CCA_scantxContext()) {
+                    var rs = context.TblCustomer.Where(o => o.Cid == cid).FirstOrDefault();
+                    if (rs != null)
+                    {
+                        rs.DeletedOn = DateTime.UtcNow.AddHours(7);
+                        context.SaveChanges();
+                    }
                 }
             }
             catch (Exception ex)
