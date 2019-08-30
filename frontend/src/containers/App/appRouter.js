@@ -5,7 +5,7 @@ import Route from '../../components/utility/customRoute';
 const routes = [
   {
     path: '',
-    component: asyncComponent(() => import('../Start.js')),
+    component: asyncComponent(() => import('../Start')),
   },
   {
     path: 'user',
