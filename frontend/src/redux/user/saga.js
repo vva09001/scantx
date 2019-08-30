@@ -1,6 +1,6 @@
 import { all, takeLatest, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
-import { getUserIdByID, addUser } from 'services/data';
+import { getUserIdByID, addUser } from 'services/user';
 import actions from './actions';
 
 export function* getUserSagas(data) {

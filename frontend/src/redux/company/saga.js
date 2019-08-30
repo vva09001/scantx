@@ -1,5 +1,5 @@
 import { all, takeLatest, put } from 'redux-saga/effects';
-import { getCompany, editCompany, deleteCompany } from 'services/data';
+import { getCompany, editCompany, deleteCompany } from 'services/company';
 import actions from './actions';
 
 export function* getCompnaySagas(data) {
@@ -49,7 +49,7 @@ export function* deleteCompnaySagas(data) {
 
 export default function* rootSaga() {
   yield all([
-    yield takeLatest(actions.GET_DATA_REQUEST, getDataSagas),
+    yield takeLatest(actions.GET_COMPANY_REQUEST, getCompnaySagas),
     yield takeLatest(actions.EDIT_COMPANY_REQUEST, editCompnaySagas),
     yield takeLatest(actions.DELETE_COMPANY_REQUEST, deleteCompnaySagas)
   ]);
