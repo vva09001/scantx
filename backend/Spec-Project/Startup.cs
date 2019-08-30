@@ -39,6 +39,7 @@ namespace Spec_Project
             // configure DI for application services
             services.AddScoped<IStartService, StartService>();
             services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<IScanDataService, ScanDataService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

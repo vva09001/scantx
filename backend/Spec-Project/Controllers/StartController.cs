@@ -31,10 +31,10 @@ namespace Spec_Project.Controllers
         }
 
         //[DisableCors]
-        ////[HttpGet("get-user-by-id")]
-        ////public IActionResult getUser(string userID)
-        ////{
-        ////    return Ok(_IStartService.Login(userID));
+        //[HttpGet("get-user-by-id")]
+        //public IActionResult getUser()
+        //{
+        //    return Ok(_IStartService.getUser());
         //}
 
         [DisableCors]
@@ -44,12 +44,12 @@ namespace Spec_Project.Controllers
             return Ok(_IStartService.getDataScanInput(userID));
         }
 
-        [DisableCors]
-        [HttpPost("add-user")]
-        public IActionResult AddUser()
-        {
-            return Ok(_IStartService.AddUser());
-        }
+        //[DisableCors]
+        //[HttpPost("add-user")]
+        //public IActionResult AddUser()
+        //{
+        //    return Ok(_IStartService.AddUser());
+        //}
 
         //[DisableCors]
         //[HttpPost("edit-user")]

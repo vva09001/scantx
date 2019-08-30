@@ -16,6 +16,7 @@ namespace Spec_Project.Entities
         }
 
         public virtual DbSet<TblCustomer> TblCustomer { get; set; }
+        public virtual DbSet<TblScanData> TblScanData { get; set; }
         public virtual DbSet<TblUsers> TblUsers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -39,14 +40,42 @@ namespace Spec_Project.Entities
 
                 entity.Property(e => e.Cid)
                     .HasColumnName("cid")
-                    .HasMaxLength(150)
+                    .HasMaxLength(50)
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.Address).HasMaxLength(200);
 
+                entity.Property(e => e.DeletedOn).HasColumnType("date");
+
                 entity.Property(e => e.Name).HasMaxLength(100);
 
                 entity.Property(e => e.Status).HasMaxLength(20);
+            });
+
+            modelBuilder.Entity<TblScanData>(entity =>
+            {
+                entity.HasKey(e => e.ScanId);
+
+                entity.ToTable("tblScanData");
+
+                entity.Property(e => e.ScanId)
+                    .HasColumnName("ScanID")
+                    .HasMaxLength(50)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.DataType).HasColumnType("text");
+
+                entity.Property(e => e.DeletedOn).HasColumnType("date");
+
+                entity.Property(e => e.FileName).HasMaxLength(50);
+
+                entity.Property(e => e.Payload).HasColumnType("text");
+
+                entity.Property(e => e.Uid)
+                    .HasColumnName("UID")
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<TblUsers>(entity =>
@@ -59,9 +88,10 @@ namespace Spec_Project.Entities
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Company)
+                entity.Property(e => e.Cid)
                     .IsRequired()
-                    .HasMaxLength(150);
+                    .HasColumnName("cid")
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -72,10 +102,11 @@ namespace Spec_Project.Entities
 
                 entity.Property(e => e.GivenName).HasMaxLength(150);
 
-                entity.Property(e => e.Password)
+                entity.Property(e => e.PasswordHash)
                     .IsRequired()
-                    .HasMaxLength(150)
-                    .IsUnicode(false);
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.PasswordSalt).HasMaxLength(500);
 
                 entity.Property(e => e.TypeOfAccount)
                     .IsRequired()
@@ -86,9 +117,9 @@ namespace Spec_Project.Entities
                     .IsRequired()
                     .HasMaxLength(150);
 
-                entity.HasOne(d => d.CompanyNavigation)
+                entity.HasOne(d => d.C)
                     .WithMany(p => p.TblUsers)
-                    .HasForeignKey(d => d.Company)
+                    .HasForeignKey(d => d.Cid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_tblUsers_tblCustomer");
             });

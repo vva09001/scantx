@@ -7,7 +7,11 @@ namespace Spec_Project.Entities
     {
         public string ScanId { get; set; }
         public string Uid { get; set; }
+        public DateTime? CreatedOn { get; set; }
         public string Payload { get; set; }
-        public string StatusData { get; set; }
+        public string DataType { get; set; }
+        public string FileName { get; set; }
+        public int? Status { get; set; }
+        public DateTime? DeletedOn { get; set; }
     }
 }
