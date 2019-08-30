@@ -31,18 +31,23 @@ namespace Spec_Project.Controllers
         [HttpGet("get-user-by-id")]
         public IActionResult getUser(string userID)
         {
-            return Ok(_IStartService.getUser(userID));
+            return Ok(_IStartService.Login(userID));
         }
-        
+
         [HttpGet("get-data-scan-by-userid")]
         public IActionResult getDataScanInput(string userID)
         {
             return Ok(_IStartService.getDataScanInput(userID));
         }
-        [HttpGet("add-user")]
-        public IActionResult AddUser ()
+        [HttpPost("add-user")]
+        public IActionResult AddUser()
         {
             return Ok(_IStartService.AddUser());
+        }
+        [HttpPost("edit-user")]
+        public IActionResult EditUser()
+        {
+            return Ok(_IStartService.);
         }
     }
 }

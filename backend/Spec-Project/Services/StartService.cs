@@ -1,4 +1,5 @@
-﻿using Spec_Project.Models;
+﻿using Spec_Project.Entities;
+using Spec_Project.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,26 +9,40 @@ namespace Spec_Project.Services
 {
     public interface IStartService
     {
-        UsersModel getUser(string userID);
+        ResponseModel Login(string username, string password);
         ScanInputModel getDataScanInput(string userID);
-        string AddUser();
+        ResponseModel AddUser();
     }
     public class StartService : IStartService
     {
+        DB_9A9CCA_scantxContext db = new DB_9A9CCA_scantxContext();
 
-
-        public UsersModel getUser(string userID)
+        public ResponseModel Login(string username, string password)
         {
-            UsersModel user = (new UsersModel
+            
+
+            var res = (new ResponseModel {
+                Data = "",
+                Status = "200",
+                Message = ""
+
+            });
+            try
             {
-                Fullname = "Christian Gathmann",
-                Mail = "gathmann@csdg.de",
-                Company = "CSBG",
-                Authorization = "admin",
-                
-            }) ;
+                var rs = db.TblUsers.Where(o => o.UserName == username && o.Password == password).Select(o=>new TblUsers {
+                    
+                }).FirstOrDefault();
+                if (rs != null)
+                {
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
            
-            return user;
+            return res;
         }
 
 
@@ -43,14 +58,30 @@ namespace Spec_Project.Services
             {
                 NumberScan = 194,
                 Detail = sc
-            }) ;
-
+            });
             return data;
         }
 
-        public string AddUser()
+        public ResponseModel AddUser()
         {
-            string rs;
+            ResponseModel res = (new ResponseModel
+            {
+                Data = "",
+                Status = "200",
+                Message = ""
+            });
+            try {
+
+            }
+            catch (Exception ex)
+            {
+            }
+           
+            return res;
+        }
+        public string EditUser()
+        {
+            string rs = string.Empty;
             return rs = "Success";
         }
     }
