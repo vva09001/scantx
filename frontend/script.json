@@ -1,0 +1,9 @@
+{
+  "apps": [
+    {
+      "name": "scantx",
+      "script": "npm",
+      "args": "start"
+    }
+  ]
+}
