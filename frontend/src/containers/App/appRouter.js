@@ -5,11 +5,19 @@ import Route from '../../components/utility/customRoute';
 const routes = [
   {
     path: '',
-    component: asyncComponent(() => import('../Start.js')),
+    component: asyncComponent(() => import('../Start')),
   },
   {
     path: 'user',
-    component: asyncComponent(() => import('../User.js')),
+    component: asyncComponent(() => import('../User')),
+  },
+  {
+    path: 'scan-data',
+    component: asyncComponent(() => import('../ScanData')),
+  },
+  {
+    path: 'company',
+    component: asyncComponent(() => import('../Company')),
   },
 ];
 
