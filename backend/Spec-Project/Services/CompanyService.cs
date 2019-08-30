@@ -63,9 +63,13 @@ namespace Spec_Project.Services
             };
             try
             {
-                var rs = _content.TblCustomer.Where(o => o.Cid == cid).FirstOrDefault();
-                _content.TblCustomer.Remove(rs);
-                _content.SaveChanges();
+                var rs = db.TblCustomer.Where(o => o.Cid == cid).FirstOrDefault();
+                if (rs!=null)
+                {
+                    rs.DeletedOn = DateTime.UtcNow.AddHours(7);
+                    db.SaveChanges();
+                    db.TblCustomer.Remove(rs);
+                }
             }
             catch (Exception ex)
             {

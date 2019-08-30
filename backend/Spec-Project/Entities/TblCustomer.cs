@@ -14,12 +14,8 @@ namespace Spec_Project.Entities
         public string Name { get; set; }
         public string Address { get; set; }
         public string Status { get; set; }
+        public DateTime? DeletedOn { get; set; }
 
         public virtual ICollection<TblUsers> TblUsers { get; set; }
-
-        public static implicit operator string(TblCustomer v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
