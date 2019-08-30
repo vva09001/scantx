@@ -17,7 +17,7 @@ namespace Spec_Project.Services
     {
         public List<TblScanData> getScanData()
         {
-            using (DB_9A9CCA_scantxContext context = new DB_9A9CCA_scantxContext())
+            using (DataContext context = new DataContext())
             {
                 var rs = context.TblScanData.Where(p => p.DeletedOn == null).ToList();
                 return rs;
@@ -33,7 +33,7 @@ namespace Spec_Project.Services
             };
             try
             {
-                using (DB_9A9CCA_scantxContext context = new DB_9A9CCA_scantxContext())
+                using (DataContext context = new DataContext())
                 {
                     var rs = context.TblScanData.FirstOrDefault(p => p.ScanId != tblscandata.ScanId);
                     if (rs != null)
@@ -71,7 +71,7 @@ namespace Spec_Project.Services
             };
             try
             {
-                using (DB_9A9CCA_scantxContext context = new DB_9A9CCA_scantxContext())
+                using (DataContext context = new DataContext())
                 {
                     var rs = context.TblScanData.FirstOrDefault(o => o.ScanId == scanid);
                     if (rs != null)
@@ -97,7 +97,7 @@ namespace Spec_Project.Services
             };
             try
             {
-                using (DB_9A9CCA_scantxContext context = new DB_9A9CCA_scantxContext())
+                using (DataContext context = new DataContext())
                 {
                     var oldscandata = (from u in context.TblScanData where u.ScanId == tblscandata.ScanId select u).FirstOrDefault();
                     if (oldscandata != null)

@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Spec_Project.Entities
 {
-    public partial class DB_9A9CCA_scantxContext : DbContext
+    public partial class DataContext : DbContext
     {
-        public DB_9A9CCA_scantxContext()
+        public DataContext()
         {
         }
 
-        public DB_9A9CCA_scantxContext(DbContextOptions<DB_9A9CCA_scantxContext> options)
+        public DataContext(DbContextOptions<DataContext> options)
             : base(options)
         {
         }

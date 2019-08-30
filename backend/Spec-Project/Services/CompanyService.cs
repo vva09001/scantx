@@ -15,7 +15,7 @@ namespace Spec_Project.Services
     }
     public class CompanyService : ICompanyService
     {
-        DB_9A9CCA_scantxContext db = new DB_9A9CCA_scantxContext();
+        DataContext db = new DataContext();
         public List<TblCustomer> getCompany()
         {
             var company = db.TblCustomer.Where(p => p.DeletedOn == null).ToList();
@@ -61,7 +61,7 @@ namespace Spec_Project.Services
             };
             try
             {
-                using (DB_9A9CCA_scantxContext context = new DB_9A9CCA_scantxContext()) {
+                using (DataContext context = new DataContext()) {
                     var rs = context.TblCustomer.Where(o => o.Cid == cid).FirstOrDefault();
                     if (rs != null)
                     {

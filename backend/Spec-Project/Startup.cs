@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Spec_Project.Services;
-using Spec_Project.Helpers;
+using Spec_Project.Entities;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace Spec_Project
 {
@@ -36,10 +30,12 @@ namespace Spec_Project
             }));
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration["ConnectionString"]));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddAutoMapper();
             // configure DI for application services
             services.AddScoped<IStartService, StartService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IScanDataService, ScanDataService>();
+            services.AddScoped<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
