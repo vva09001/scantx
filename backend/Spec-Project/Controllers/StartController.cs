@@ -30,12 +30,12 @@ namespace Spec_Project.Controllers
             //_appSettings = appSettings.Value;
         }
 
-        //[DisableCors]
-        //[HttpGet("get-user-by-id")]
-        //public IActionResult getUser()
-        //{
-        //    return Ok(_IStartService.getUser());
-        //}
+        [DisableCors]
+        [HttpGet("get-user-by-id")]
+        public IActionResult getUser()
+        {
+            return Ok(_IStartService.getUser());
+        }
 
         [DisableCors]
         [HttpGet("get-data-scan-by-userid")]
