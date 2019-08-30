@@ -9,49 +9,56 @@ namespace Spec_Project.Services
 {
     public interface IStartService
     {
-        ResponseModel Login(string username, string password);
+        //ResponseModel Login(string username, string password);
         ScanInputModel getDataScanInput(string userID);
-        ResponseModel AddUser();
+        List<TblUsers> getUser();
     }
     public class StartService : IStartService
     {
         DB_9A9CCA_scantxContext db = new DB_9A9CCA_scantxContext();
 
-        public ResponseModel Login(string username, string password)
+        public List<TblUsers> getUser()
         {
-            
-
-            var res = (new ResponseModel {
-                Data = "",
-                Status = "200",
-                Message = ""
-
-            });
-            try
-            {
-                var rs = db.TblUsers.Where(o => o.UserName == username && o.Password == password).Select(o=>new TblUsers {
-                    
-                }).FirstOrDefault();
-                if (rs != null)
-                {
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
-           
-            return res;
+            var listuser = db.TblUsers.Where(p => p.Cid != null).ToList();
+            return listuser;
         }
+
+        //public ResponseModel Login(string username, string password)
+        //{
+
+
+        //    var res = (new ResponseModel {
+        //        Data = "",
+        //        Status = "200",
+        //        Message = ""
+
+        //    });
+        //    try
+        //    {
+        //        var rs = db.TblUsers.Where(o => o.UserName == username && o.Password == password).Select(o=>new TblUsers {
+
+        //        }).FirstOrDefault();
+        //        if (rs != null)
+        //        {
+
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+
+        //    return res;
+        //}
 
 
 
         public ScanInputModel getDataScanInput(string userID)
         {
             List<ScanModel> sc = new List<ScanModel>();
-            sc.Add(new ScanModel {
-                TimeScan = new DateTime(2019,05,24,14,55,03),
+            sc.Add(new ScanModel
+            {
+                TimeScan = new DateTime(2019, 05, 24, 14, 55, 03),
                 Code = "471135899"
             });
             ScanInputModel data = (new ScanInputModel
@@ -70,13 +77,14 @@ namespace Spec_Project.Services
                 Status = "200",
                 Message = ""
             });
-            try {
+            try
+            {
 
             }
             catch (Exception ex)
             {
             }
-           
+
             return res;
         }
         public string EditUser()
