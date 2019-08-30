@@ -4,11 +4,13 @@ import ThemeSwitcher from './themeSwitcher/reducer';
 import LanguageSwitcher from './languageSwitcher/reducer';
 
 import User from './user/reducer';
+import Company from './company/reducer';
 
 export default {
 	Auth,
 	App,
 	ThemeSwitcher,
 	LanguageSwitcher,
-	User
+	User,
+	Company
 };

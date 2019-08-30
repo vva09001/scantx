@@ -1,21 +1,44 @@
 import React, { Component } from "react";
-import LayoutWrapper from "../components/utility/layoutWrapper";
-import Button from "../components/uielements/button/index.js";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
+import { connect } from 'react-redux';
+import LayoutWrapper from "components/utility/layoutWrapper";
+import Button from "components/uielements/button/index.js";
+import { CircularProgress } from 'components/uielements/progress';
+import { userActions } from 'redux/actions';
 import "../styles/style.css";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from '@material-ui/core/FormLabel';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import Checkbox from '@material-ui/core/Checkbox';
-import "../styles/style.css";
+import {
+  FormControl, 
+  FormLabel, 
+  FormControlLabel, 
+  InputLabel, 
+  Select, 
+  Checkbox,
+  Grid,
+  TextField
+} from "@material-ui/core";
 
-export default class AddUser extends Component {
+class AddUser extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      parasm: {},
+      loading: false
+    }
   }
+
+  onClick = () => {
+    this.setState({
+      loading: true
+    }, () => {
+      this.props.addUser({}, this.onSuccess, this.onSuccess);
+    })
+  }
+
+  onSuccess = () => {
+    this.setState({
+      loading: false
+    })
+  }
+
   render() {
     return (
       <LayoutWrapper>
@@ -111,23 +134,30 @@ export default class AddUser extends Component {
               </div>
               <br />
               <p>* Mandatory fields</p>
-              <div>
-                <Button
-                  className="buttonStyles"
-                  variant="contained"
-                  color="primary"
-                  onClick={this.handleAddUser}
-                >
-                  Save
-                </Button>
-                <Button
-                  className="buttonStyles"
-                  variant="contained"
-                  color="default"
-                >
-                  Cancel
-                </Button>
-              </div>
+              {
+                this.state.loading ? (
+                  <CircularProgress />
+                ) : (
+                  <div>
+                    <Button
+                      className="buttonStyles"
+                      variant="contained"
+                      color="primary"
+                      onClick={this.handleAddUser}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      className="buttonStyles"
+                      variant="contained"
+                      color="default"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                )
+              }
+              
             </form>
           </Grid>
         </Grid>
@@ -135,3 +165,16 @@ export default class AddUser extends Component {
     );
   }
 }
+
+const mapSateToProps = state => {
+  return {
+  };
+};
+
+const mapDispatchToProps = {
+  addUser: userActions.addUser
+};
+export default connect(
+  mapSateToProps,
+  mapDispatchToProps
+)(AddUser);

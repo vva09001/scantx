@@ -8,10 +8,10 @@ const actions = {
     fail
   }),
 
-  GET_DATA_REQUEST: 'GET_DATA_REQUEST',
-  GET_DATA_SUCCESS: 'GET_DATA_SUCCESS',
-  getData: (params, success, fail) => ({
-    type: actions.GET_DATA_REQUEST,
+  ADD_USER_REQUEST: 'ADD_USER_REQUEST',
+  ADD_USER_SUCCESS: 'ADD_USER_SUCCESS',
+  addUser: (params, success, fail) => ({
+    type: actions.ADD_USER_REQUEST,
     params,
     success,
     fail
