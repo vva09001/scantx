@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
 import { CircularProgress } from 'components/uielements/progress';
+import Form from './Form';
+import DeleteAlert from './Alert';
 import LayoutWrapper from "components/utility/layoutWrapper";
 import Papersheet from "components/utility/papersheet";
 import { FullColumn } from "components/utility/rowColumn";
@@ -14,6 +16,9 @@ import {
     TableHead,
     TableRow,
 } from 'components/uielements/table';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
 import { scanDataActions } from 'redux/actions';
 import { Date, Time } from 'helpers/moment';
 import _ from 'lodash';
@@ -23,7 +28,10 @@ class ScanData extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: true
+            loading: true,
+            toggle: false,
+            delete: false,
+            params: {}
         }
     }
     componentDidMount() {
@@ -45,6 +53,20 @@ class ScanData extends Component {
             </TableRow>
         ))
     }
+
+    onToggleForm = (status, params = {}) => {
+        this.setState({
+            toggle: status,
+            params: params
+        })
+    }
+    
+    onToggleDelete = (status) => {
+        this.setState({
+            delete: status
+        })
+    }
+
     render() {
         if (this.state.loading) {
             return <CircularProgress />;
@@ -52,7 +74,17 @@ class ScanData extends Component {
         return (
             <LayoutWrapper>
                 <FullColumn>
-                    <Papersheet title="Users of company CSBG">
+                    <Papersheet title="Scan Data">
+                        <Grid container justify="flex-end">
+                            <Grid item xs={3}>
+                                <FormControl variant="outlined" margin="dense" fullWidth>
+                                    <Select native input={<OutlinedInput />}>
+                                        <option value="">None</option>
+                                        <option value="PC_M3">PC_M3</option>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
                         <Table>
                             <TableHead>
                                 <TableRow>
@@ -77,9 +109,16 @@ class ScanData extends Component {
                                 className="buttonStyles"
                                 variant="contained"
                                 color="primary"
-                                onClick={this.handleAddUser}
+                                onClick={() => this.onToggleForm(true)}
                             >
-                                Add new user
+                                Add new scan data
+                            </Button>
+                            <Button
+                                className="buttonStyles"
+                                variant="contained"
+                                color="primary"
+                            >
+                                Copy selected
                             </Button>
                             <Button
                                 className="buttonStyles"
@@ -92,11 +131,14 @@ class ScanData extends Component {
                                 className="buttonStyles"
                                 variant="contained"
                                 color="primary"
+                                onClick={() => this.onToggleDelete(true)}
                             >
                                 Delete selected
                             </Button>
                         </Grid>
                     </Papersheet>
+                    <Form onToggle={this.onToggleForm} status={this.state.toggle} params={this.state.params}/>
+                    <DeleteAlert status={this.state.delete} onSubmit={this.delete} onClose={this.onToggleDelete}/>
                 </FullColumn>
             </LayoutWrapper>
         );

@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
+import Form from './Form';
 import { CircularProgress } from 'components/uielements/progress';
+import DeleteAlert from './Alert';
 import LayoutWrapper from "components/utility/layoutWrapper";
 import Papersheet from "components/utility/papersheet";
 import { FullColumn } from "components/utility/rowColumn";
@@ -22,20 +24,26 @@ class Company extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: true
+            loading: true,
+            toggle: false,
+            delete: false,
+            params: {}
         }
     }
+    
     componentDidMount() {
-        this.props.getCompany(this.onSuccess, this.onSuccess)
+        this.props.get(this.onSuccess, this.onSuccess)
     }
+    
     onSuccess = () => {
         this.setState({
             loading: false
         })
     }
+    
     renderData = () => {
-        return _.map(this.props.companies, item => (
-            <TableRow>
+        return _.map(this.props.companies, (item, key) => (
+            <TableRow key={key}>
                 <TableCell padding="checkbox"><Checkbox /></TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.address}</TableCell>
@@ -43,6 +51,24 @@ class Company extends Component {
             </TableRow>
         ))
     }
+    
+    onToggleForm = (status, params = {}) => {
+        this.setState({
+            toggle: status,
+            params: params
+        })
+    }
+    
+    onToggleDelete = (status) => {
+        this.setState({
+            delete: status
+        })
+    }
+    
+    delete = () => {
+
+    }
+    
     render() {
         if (this.state.loading) {
             return <CircularProgress />;
@@ -50,7 +76,7 @@ class Company extends Component {
         return (
             <LayoutWrapper>
                 <FullColumn>
-                    <Papersheet title="Users of company CSBG">
+                    <Papersheet title="Companies">
                         <Table>
                             <TableHead>
                                 <TableRow>
@@ -74,9 +100,9 @@ class Company extends Component {
                                 className="buttonStyles"
                                 variant="contained"
                                 color="primary"
-                                onClick={this.handleAddUser}
+                                onClick={() => this.onToggleForm(true)}
                             >
-                                Add new user
+                                Add new company
                             </Button>
                             <Button
                                 className="buttonStyles"
@@ -89,11 +115,14 @@ class Company extends Component {
                                 className="buttonStyles"
                                 variant="contained"
                                 color="primary"
+                                onClick={() => this.onToggleDelete(true)}
                             >
                                 Delete selected
                             </Button>
                         </Grid>
                     </Papersheet>
+                    <Form onToggle={this.onToggleForm} status={this.state.toggle} params={this.state.params}/>
+                    <DeleteAlert status={this.state.delete} onSubmit={this.delete} onClose={this.onToggleDelete}/>
                 </FullColumn>
             </LayoutWrapper>
         );
@@ -106,7 +135,10 @@ const mapSateToProps = state => {
 };
 
 const mapDispatchToProps = {
-    getCompany: companyActions.getCompany
+    get: companyActions.get,
+    add: companyActions.add,
+    edit: companyActions.edit,
+    delete: companyActions.delete
 };
 export default connect(
     mapSateToProps,
