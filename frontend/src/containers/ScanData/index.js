@@ -67,6 +67,10 @@ class ScanData extends Component {
         })
     }
 
+    delete = () => {
+        
+    }
+
     render() {
         if (this.state.loading) {
             return <CircularProgress />;
