@@ -33,8 +33,8 @@ class User extends Component {
     })
   }
   renderData = () => {
-    return _.map(this.props.users, item => (
-      <TableRow>
+    return _.map(this.props.users, (item, key) => (
+      <TableRow key={key}>
         <TableCell padding="checkbox"><Checkbox /></TableCell>
         <TableCell>{item.familyName} {item.givenName}</TableCell>
         <TableCell>{item.email}</TableCell>
