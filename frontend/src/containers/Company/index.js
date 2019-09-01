@@ -76,7 +76,7 @@ class Company extends Component {
         return (
             <LayoutWrapper>
                 <FullColumn>
-                    <Papersheet title="Users of company CSBG">
+                    <Papersheet title="Companies">
                         <Table>
                             <TableHead>
                                 <TableRow>
