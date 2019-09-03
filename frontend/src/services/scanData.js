@@ -25,4 +25,12 @@ const deleteScanData = id => {
   })
 }
 
-export { getScanData, editScanData, deleteScanData };
+const deleteMultiScanData = params => {
+  return request({
+      url: '/scandata/delete-arr-scandata/',
+      method: 'post',
+      data: params
+  })
+}
+
+export { getScanData, editScanData, deleteScanData, deleteMultiScanData };

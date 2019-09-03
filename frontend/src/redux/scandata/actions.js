@@ -23,5 +23,14 @@ const actions = {
     success,
     fail
   }),
+
+  DELETE_MULTI_SCAN_DATA_REQUEST: 'DELETE_MULTI_SCAN_DATA_REQUEST',
+  DELETE_MULTI_SCAN_DATA_SUCCESS: 'DELETE_MULTI_SCAN_DATA_SUCCESS',
+  deleteMulti: (params, success, fail) => ({
+    type: actions.DELETE_MULTI_SCAN_DATA_REQUEST,
+    params,
+    success,
+    fail
+  }),
 };
 export default actions;
