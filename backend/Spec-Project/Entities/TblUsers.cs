@@ -17,7 +17,7 @@ namespace Spec_Project.Entities
         public bool? ContactByEmail { get; set; }
         public bool? EncryptionActive { get; set; }
         public string Cid { get; set; }
-
+        public DateTime? DeletedOn { get; set; }
         public virtual TblCustomer C { get; set; }
     }
 }
