@@ -3,6 +3,11 @@ using System;
 using Spec_Project.Entities;
 using System.Linq;
 using System.Collections.Generic;
+using QRCoder;
+using System.Drawing;
+using System.Drawing.Text;
+using System.IO;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Spec_Project.Services
 {
@@ -35,12 +40,14 @@ namespace Spec_Project.Services
             {
                 using (DataContext context = new DataContext())
                 {
+                    Guid g;
+                    g = Guid.NewGuid();
                     var rs = context.TblScanData.FirstOrDefault(p => p.ScanId != tblscandata.ScanId);
                     if (rs != null)
                     {
-                        context.TblScanData.Add(new TblScanData
+                        var x = new TblScanData
                         {
-                            ScanId = tblscandata.ScanId,
+                            ScanId = g.ToString(),
                             Uid = tblscandata.Uid,
                             CreatedOn = DateTime.UtcNow.AddHours(7),
                             Payload = tblscandata.Payload,
@@ -48,8 +55,9 @@ namespace Spec_Project.Services
                             FileName = tblscandata.FileName,
                             Status = tblscandata.Status,
                             DeletedOn = null,
-                        });
-
+                        };
+                        context.TblScanData.Add(x);
+                        res.Data = x;
                     }
                     context.SaveChanges();
                 }
@@ -121,5 +129,6 @@ namespace Spec_Project.Services
             }
             return res;
         }
+
     }
 }
