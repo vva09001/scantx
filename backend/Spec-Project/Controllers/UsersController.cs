@@ -104,19 +104,46 @@ namespace Spec_Project.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet("get-user-by-id")]
         public IActionResult GetById(int id)
         {
             var user = _userService.GetById(id);
-            var userDto = _mapper.Map<UserDto>(user);
+            var userDto = new UserDto {
+                Id = user.Id,
+                Cid = user.Cid,
+                ContactByEmail = user.ContactByEmail,
+                Email = user.Email,
+                EncryptionActive = user.EncryptionActive,
+                FamilyName = user.FamilyName,
+                GivenName = user.GivenName,
+                TypeOfAccount = user.TypeOfAccount,
+                UserName = user.UserName
+
+            };
             return Ok(userDto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("update")]
         public IActionResult Update(int id, [FromBody]UserDto userDto)
         {
             // map dto to entity and set id
-            var user = _mapper.Map<TblUsers>(userDto);
+            //var user = _mapper.Map<TblUsers>(userDto);
+            byte[] passwordHa, passwordSa;
+            UserService.CreatePasswordHash(userDto.Password, out passwordHa, out passwordSa);
+            var user = new TblUsers
+            {
+                Id = userDto.Id,
+                Cid = userDto.Cid,
+                ContactByEmail = userDto.ContactByEmail,
+                Email = userDto.Email,
+                EncryptionActive = userDto.EncryptionActive,
+                FamilyName = userDto.FamilyName,
+                GivenName = userDto.GivenName,
+                TypeOfAccount = userDto.TypeOfAccount,
+                UserName = userDto.UserName,
+                PasswordHash = passwordHa,
+                PasswordSalt = passwordSa
+            };
             user.Id = id;
 
             try
@@ -132,11 +159,12 @@ namespace Spec_Project.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete-user")]
         public IActionResult Delete(int id)
         {
-            _userService.Delete(id);
-            return Ok();
+            
+           var rs =  _userService.Delete(id);
+            return Ok(rs);
         }
     }
 }
