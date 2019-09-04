@@ -6,7 +6,7 @@ import actions from './actions';
 export function* getCompnaySagas(data) {
   const { success, fail } = data;
   try {
-    const token = select(getToken);
+    const token = yield select(getToken);
     const res = yield get(token);
     if (res.status === 200) {
       yield success();
@@ -22,7 +22,8 @@ export function* getCompnaySagas(data) {
 export function* addCompnaySagas(data) {
   const { params, success, fail } = data;
   try {
-    const res = yield add(params);
+    const token = yield select(getToken);
+    const res = yield add(params, token);
     if (res.status === 200) {
       yield success();
       yield put({type: actions.ADD_COMPANY_SUCCESS, response: res.data.data});
@@ -44,7 +45,8 @@ export function* editCompnaySagas(data) {
   }
 
   try {
-    const res = yield edit(body);
+    const token = yield select(getToken);
+    const res = yield edit(body, token);
     if (res.status === 200) {
       yield put({type: actions.EDIT_COMPANY_SUCCESS, response: res.data.data});
       yield success();
@@ -59,7 +61,8 @@ export function* editCompnaySagas(data) {
 export function* deleteCompnaySagas(data) {
   const { params, success, fail } = data;
   try {
-    const res = yield remove(params);
+    const token = yield select(getToken);
+    const res = yield remove(params, token);
     if (res.status === 200) {
       yield put({type: actions.DELETE_COMPANY_SUCCESS, response: params});
       yield success();

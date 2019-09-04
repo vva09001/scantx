@@ -1,33 +1,45 @@
 import request from 'helpers/request';
 
-const get = () => {
+const get = (token) => {
     return request({
         url: '/company/get-company',
-        method: 'get'
+        method: 'get',
+        headers: {
+            Authorization: `Bearer ${token}`
+        },      
     })
 }
 
-const add = params => {
+const add = (params, token) => {
     return request({
         url: '/company/add-company/',
         method: 'post',
-        data: params
+        data: params,
+        headers: {
+            Authorization: `Bearer ${token}`
+        }, 
     })
 }
 
-const edit = params => {
+const edit = (params, token) => {
     return request({
         url: '/company/edit-company/',
         method: 'put',
-        data: params
+        data: params,
+        headers: {
+            Authorization: `Bearer ${token}`
+        }, 
     })
 }
 
-const remove = data => {
+const remove = (data, token) => {
     return request({
         url: '/company/delete-arr-company/',
         method: 'post',
-        data: data
+        data: data,
+        headers: {
+            Authorization: `Bearer ${token}`
+        }, 
     })
 }
 
