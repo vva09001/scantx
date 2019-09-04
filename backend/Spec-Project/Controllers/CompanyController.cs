@@ -13,7 +13,7 @@ using Spec_Project.Services;
 
 namespace Spec_Project.Controllers
 {
-
+    [Authorize]
     [Route("api/Company")]
     [ApiController]
     public class CompanyController : ControllerBase
@@ -29,6 +29,7 @@ namespace Spec_Project.Controllers
             //_appSettings = appSettings.Value;
         }
 
+        [Authorize]
         [DisableCors]
         [HttpGet("get-company")]
         public IActionResult getCompany()
@@ -36,6 +37,7 @@ namespace Spec_Project.Controllers
             return Ok(_ICompanyService.getCompany());
         }
 
+        [Authorize]
         [DisableCors]
         [HttpPost("add-company")]
         public IActionResult addCompany(TblCustomer tblcustomer)
@@ -43,13 +45,15 @@ namespace Spec_Project.Controllers
             return Ok(_ICompanyService.addCompany(tblcustomer));
         }
 
+        [Authorize]
         [DisableCors]
         [HttpPost("delete-company")]
         public IActionResult DeleteCompany(string cid)
         {
             return Ok(_ICompanyService.DeleteCompany(cid));
         }
-      
+
+        [Authorize]
         [DisableCors]
         [HttpPost("delete-arr-company")]
         public IActionResult DeleteArrCompany(List<string> deleteIds)
@@ -57,6 +61,7 @@ namespace Spec_Project.Controllers
             return Ok(_ICompanyService.DeleteArrCompany(deleteIds));
         }
 
+        [Authorize]
         [DisableCors]
         [HttpPut("edit-company")]
         public IActionResult EditCompany(TblCustomer customer)
