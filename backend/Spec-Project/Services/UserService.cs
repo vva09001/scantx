@@ -16,6 +16,7 @@ namespace Spec_Project.Services
         ResponseModel Create(UserDto user, string password);
         ResponseModel Update(TblUsers user, string password = null);
         ResponseModel Delete(int id);
+       
     }
 
     public class UserService : IUserService
@@ -32,7 +33,7 @@ namespace Spec_Project.Services
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return null;
 
-            var user = _context.TblUsers.FirstOrDefault(x => x.UserName == username);
+            var user = _context.TblUsers.FirstOrDefault(o=>o.DeletedOn == null && o.UserName == username);
 
             // check if username exists
             if (user == null)
@@ -53,7 +54,7 @@ namespace Spec_Project.Services
 
         public TblUsers GetById(int id)
         {
-            return _context.TblUsers.Find(id);
+            return _context.TblUsers.Where(o => o.DeletedOn == null && o.Id == id).FirstOrDefault();
         }
 
         public ResponseModel Create(UserDto user, string password)
@@ -67,8 +68,9 @@ namespace Spec_Project.Services
                 TypeOfAccount = user.TypeOfAccount,
                 Email = user.Email,
                 ContactByEmail = user.ContactByEmail,
-                EncryptionActive = user.EncryptionActive
-
+                EncryptionActive = user.EncryptionActive,
+                DeletedOn = null
+                ,Cid = user.Cid
             };
             ResponseModel res = (new ResponseModel {
                 Data = "",
@@ -87,7 +89,7 @@ namespace Spec_Project.Services
                     return res;
                 }
 
-                if (_context.TblUsers.Any(x => x.UserName == user.UserName))
+                if (_context.TblUsers.Any(x => x.UserName == user.UserName && x.DeletedOn == null))
                 {
                     res.Data = "";
                     res.Status = "500";
@@ -118,7 +120,8 @@ namespace Spec_Project.Services
 
         public ResponseModel Update(TblUsers userParam, string password = null)
         {
-            var user = _context.TblUsers.Find(userParam.Id);
+           
+            var user = _context.TblUsers.Where(o => o.Id == userParam.Id && o.DeletedOn == null).FirstOrDefault();
 
             ResponseModel res = (new ResponseModel {
                 Data = "",
@@ -182,9 +185,15 @@ namespace Spec_Project.Services
             return res;
         }
 
+        internal static void CreatePasswordHash(string password, out object passwordH, out object passwordS)
+        {
+            throw new NotImplementedException();
+        }
+
         public ResponseModel Delete(int id)
         {
-            var user = _context.TblUsers.Find(id);
+
+            var user = _context.TblUsers.Where(o => o.DeletedOn == null).FirstOrDefault(o => o.Id == id);
             ResponseModel res = (new ResponseModel
             {
                 Data = "",
@@ -195,7 +204,8 @@ namespace Spec_Project.Services
            
             if (user != null)
             {
-                _context.TblUsers.Remove(user);
+                user.DeletedOn = DateTime.UtcNow;
+                //_context.TblUsers.Remove(user);
                 _context.SaveChanges();
                 res.Status = "200";
                 res.Message = "";
@@ -206,7 +216,7 @@ namespace Spec_Project.Services
 
         // private helper methods
 
-        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             if (password == null) throw new ArgumentNullException("password");
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");

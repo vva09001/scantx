@@ -49,6 +49,13 @@ namespace Spec_Project.Controllers
         {
             return Ok(_ICompanyService.DeleteCompany(cid));
         }
+      
+        [DisableCors]
+        [HttpPost("delete-arr-company")]
+        public IActionResult DeleteArrCompany(List<string> deleteIds)
+        {
+            return Ok(_ICompanyService.DeleteArrCompany(deleteIds));
+        }
 
         [DisableCors]
         [HttpPut("edit-company")]

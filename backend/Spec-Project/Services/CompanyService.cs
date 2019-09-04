@@ -11,6 +11,7 @@ namespace Spec_Project.Services
         List<TblCustomer> getCompany();
         ResponseModel addCompany(TblCustomer tblcustomer);
         ResponseModel EditCompany(TblCustomer customer);
+        ResponseModel DeleteArrCompany(List<string> deleteIds);
         ResponseModel DeleteCompany(string cid);
     }
     public class CompanyService : ICompanyService
@@ -24,6 +25,7 @@ namespace Spec_Project.Services
 
         public ResponseModel addCompany(TblCustomer tblcustomer)
         {
+            Guid g;
             var res = new ResponseModel()
             {
                 Status = "200",
@@ -34,9 +36,10 @@ namespace Spec_Project.Services
                 var listcustomer = db.TblCustomer.FirstOrDefault(p => p.Cid != tblcustomer.Cid);
                 if (listcustomer != null)
                 {
+                    g = Guid.NewGuid();
                     db.TblCustomer.Add(new TblCustomer
                     {
-                        Cid = tblcustomer.Cid,
+                        Cid = g.ToString(),
                         Name = tblcustomer.Name,
                         Address = tblcustomer.Address,
                         Status = tblcustomer.Status
@@ -61,13 +64,44 @@ namespace Spec_Project.Services
             };
             try
             {
-                using (DataContext context = new DataContext()) {
+                using (DataContext context = new DataContext())
+                {
                     var rs = context.TblCustomer.Where(o => o.Cid == cid).FirstOrDefault();
                     if (rs != null)
                     {
                         rs.DeletedOn = DateTime.UtcNow.AddHours(7);
                         context.SaveChanges();
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Status = "500";
+                res.Message = ex.Message;
+            }
+            return res;
+        }
+
+        public ResponseModel DeleteArrCompany(List<string> deleteIds)
+        {
+            var res = new ResponseModel()
+            {
+                Status = "200",
+                Message = "",
+            };
+            try
+            {
+                using (DataContext context = new DataContext())
+                {
+                    foreach(var deleteId in deleteIds)
+                    {
+                        var customer = context.TblCustomer.FirstOrDefault(o => o.Cid == deleteId);
+                        if(customer != null)
+                        {
+                            customer.DeletedOn = DateTime.UtcNow.AddHours(7);
+                        }
+                    }
+                    context.SaveChanges();
                 }
             }
             catch (Exception ex)

@@ -17,5 +17,6 @@ namespace Spec_Project.Models
         public bool? ContactByEmail { get; set; }
         public bool? EncryptionActive { get; set; }
         public string Cid { get; set; }
+        
     }
 }
