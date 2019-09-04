@@ -23,7 +23,7 @@ export function* addCompnaySagas(data) {
     const res = yield add(params);
     if (res.status === 200) {
       yield success();
-      yield put({type: actions.ADD_COMPANY_SUCCESS, response: res.data});
+      yield put({type: actions.ADD_COMPANY_SUCCESS, response: res.data.data});
     } else {
       yield fail(res.data.message);
     }
@@ -34,11 +34,18 @@ export function* addCompnaySagas(data) {
 
 export function* editCompnaySagas(data) {
   const { params, success, fail } = data;
+  const body = {
+    address: params.address,
+    cid: params.cid,
+    name: params.name,
+    status: params.status
+  }
+
   try {
-    const res = yield edit(params);
+    const res = yield edit(body);
     if (res.status === 200) {
+      yield put({type: actions.EDIT_COMPANY_SUCCESS, response: res.data.data});
       yield success();
-      yield put({type: actions.EDIT_COMPANY_SUCCESS, response: res.data});
     } else {
       yield fail(res.data.message);
     }
@@ -49,18 +56,17 @@ export function* editCompnaySagas(data) {
 
 export function* deleteCompnaySagas(data) {
   const { params, success, fail } = data;
-  console.log(params)
-  // try {
-  //   const res = yield remove(params);
-  //   if (res.status === 200) {
-  //     yield put({type: actions.DELETE_COMPANY_SUCCESS, response: params});
-  //     yield success();
-  //   } else {
-  //     yield fail(res.data.message);
-  //   }
-  // } catch (error) {
-  //   yield fail('Không thể kết nối đến Sever');
-  // }
+  try {
+    const res = yield remove(params);
+    if (res.status === 200) {
+      yield put({type: actions.DELETE_COMPANY_SUCCESS, response: params});
+      yield success();
+    } else {
+      yield fail(res.data.message);
+    }
+  } catch (error) {
+    yield fail('Không thể kết nối đến Sever');
+  }
 }
 
 export default function* rootSaga() {

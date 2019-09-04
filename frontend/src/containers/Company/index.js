@@ -37,27 +37,35 @@ class Company extends Component {
         this.props.get(this.onSuccess, this.onSuccess)
     }
     
+    onChange = (params) => {
+        this.setState({
+            params
+        })
+    }
+
     onSuccess = () => {
         this.setState({
             loading: false
         })
     }
     
-    onToggleForm = (status, params = {}) => {
+    onToggleForm = (status) => {
         this.setState({
             toggle: status,
-            params: params
+            editAble: false,
+            params: {}
         })
     }
 
     onToggleFormEdit = (status) => {
         if(this.state.selected.length > 0 && this.state.selected.length < 2) {
+            const selected = _.filter(this.props.companies, item => this.state.selected[0] === item.cid);
             this.setState({
                 toggle: status,
-                params: this.state.selected[0]
+                editAble: true,
+                params: selected[0]
             })
         }
-        
     }
     
     onToggleDelete = (status) => {
@@ -66,11 +74,11 @@ class Company extends Component {
         })
     }
 
-    onSubmit = (params) => {
+    onSubmit = (params, success, fail) => {
         if(this.state.editAble) {
-            this.props.edit(params);
+            this.props.edit(params, success, fail);
         } else {
-            this.props.add(params);
+            this.props.add(params, success, fail);
         }
     }
 
@@ -180,6 +188,7 @@ class Company extends Component {
                         onToggle={this.onToggleForm} 
                         status={this.state.toggle} 
                         params={this.state.params}
+                        onChange={this.onChange}
                         onSubmit={this.onSubmit}
                     />
                     <DeleteAlert 
