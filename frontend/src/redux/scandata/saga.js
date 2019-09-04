@@ -27,8 +27,13 @@ export function* editScanDataSagas(data) {
   try {
     const res = yield editScanData(params);
     if (res.status === 200) {
-      yield success();
-      yield put({ type: actions.EDIT_SCAN_DATA_SUCCESS, response: res.data });
+      const res = yield getScanData();
+      if (res.status === 200) {
+        yield success();
+        yield put({ type: actions.GET_SCAN_DATA_SUCCESS, response: res.data });
+      } else {
+        yield fail(res.data.message);
+      }
     } else {
       yield fail(res.data.message);
     }

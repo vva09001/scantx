@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { CircularProgress } from "components/uielements/progress";
 import Form from "./Form";
+import EditForm from "./EditForm";
 import DeleteAlert from "./Alert";
 import LayoutWrapper from "components/utility/layoutWrapper";
 import Papersheet from "components/utility/papersheet";
@@ -31,10 +32,12 @@ class ScanData extends Component {
     this.state = {
       loading: true,
       toggle: false,
+      toggleEdit: false,
+      editAlert: false,
       delete: false,
       deleteMulti: false,
       deleteId: null,
-      deleteMultiId: [],
+      multiId: [],
       params: {}
     };
   }
@@ -62,7 +65,14 @@ class ScanData extends Component {
             variant="body2"
             onClick={() => this.onToggleDelete(true, item.scanId)}
           >
-            Delete
+            Delete|
+          </Link>
+          <Link
+            component="button"
+            variant="body2"
+            onClick={() => this.onToggleEditForm(true, item)}
+          >
+            Edit
           </Link>
         </TableCell>
       </TableRow>
@@ -74,6 +84,20 @@ class ScanData extends Component {
       toggle: status,
       params: params
     });
+  };
+
+  onToggleEditForm = (status, item) => {
+    if (status === true) {
+      this.setState({
+        toggleEdit: status,
+        params: item
+      });
+    }
+    else {
+      this.setState({
+        toggleEdit: status
+      });
+    }
   };
 
   onToggleDelete = (status, deleteId) => {
@@ -92,14 +116,21 @@ class ScanData extends Component {
   handleCheck = (event, id) => {
     if (event.target.checked) {
       this.setState({
-        deleteMultiId: [...this.state.deleteMultiId, id]
+        multiId: [...this.state.multiId, id]
       });
-    }
-    else {
+    } else {
       this.setState({
-        deleteMultiId: this.state.deleteMultiId.filter(item => item !== id)
+        multiId: this.state.multiId.filter(item => item !== id)
       });
     }
+  };
+
+  edit = (params, success, fail) => {
+    this.props.editScanData(params, success, fail);
+    this.setState({
+      toggleEdit: false,
+      params: {},
+    });
   };
 
   delete = () => {
@@ -115,15 +146,14 @@ class ScanData extends Component {
   };
 
   deleteMulti = () => {
-    console.log(this.state);
     this.props.deleteMultiScanData(
-      this.state.deleteMultiId,
+      this.state.multiId,
       this.onSuccess,
       this.onSuccess
     );
     this.setState({
       deleteMulti: false,
-      deleteMultiId: []
+      multiId: []
     });
   };
 
@@ -185,29 +215,32 @@ class ScanData extends Component {
                 className="buttonStyles"
                 variant="contained"
                 color="primary"
-              >
-                Edit selected
-              </Button>
-              <Button
-                className="buttonStyles"
-                variant="contained"
-                color="primary"
                 onClick={() => this.onToggleDeleteMulti(true)}
               >
                 Delete selected
               </Button>
             </Grid>
           </Papersheet>
+          {/* Add Form */}
           <Form
             onToggle={this.onToggleForm}
             status={this.state.toggle}
             params={this.state.params}
           />
+          {/* Edit Form */}
+          <EditForm
+            onToggle={this.onToggleEditForm}
+            onSubmit={this.edit}
+            status={this.state.toggleEdit}
+            params={this.state.params}
+          />
+          {/* Delete Alert */}
           <DeleteAlert
             status={this.state.delete}
             onSubmit={this.delete}
             onClose={this.onToggleDelete}
           />
+          {/* Delete Multi Alert */}
           <DeleteAlert
             status={this.state.deleteMulti}
             onSubmit={this.deleteMulti}
@@ -227,7 +260,8 @@ const mapSateToProps = state => {
 const mapDispatchToProps = {
   getScanData: scanDataActions.getScanData,
   deleteScanData: scanDataActions.delete,
-  deleteMultiScanData: scanDataActions.deleteMulti
+  deleteMultiScanData: scanDataActions.deleteMulti,
+  editScanData: scanDataActions.edit
 };
 export default connect(
   mapSateToProps,
