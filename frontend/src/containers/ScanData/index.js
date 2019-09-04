@@ -37,8 +37,6 @@ class ScanData extends Component {
       deleteMultiId: [],
       params: {}
     };
-    this.handleCheck = this.handleCheck.bind(this);
-    this.deleteMulti = this.deleteMulti.bind(this);
   }
   componentDidMount() {
     this.props.getScanData(this.onSuccess, this.onSuccess);
