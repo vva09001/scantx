@@ -133,6 +133,13 @@ class ScanData extends Component {
     });
   };
 
+  add = (params, success, fail) => {
+    this.props.addScanData(params, success, fail);
+    this.setState({
+      toggle: false
+    });
+  };
+
   delete = () => {
     this.props.deleteScanData(
       this.state.deleteId,
@@ -224,6 +231,7 @@ class ScanData extends Component {
           {/* Add Form */}
           <Form
             onToggle={this.onToggleForm}
+            onSubmit={this.add}
             status={this.state.toggle}
             params={this.state.params}
           />
@@ -261,7 +269,8 @@ const mapDispatchToProps = {
   getScanData: scanDataActions.getScanData,
   deleteScanData: scanDataActions.delete,
   deleteMultiScanData: scanDataActions.deleteMulti,
-  editScanData: scanDataActions.edit
+  editScanData: scanDataActions.edit,
+  addScanData: scanDataActions.add
 };
 export default connect(
   mapSateToProps,

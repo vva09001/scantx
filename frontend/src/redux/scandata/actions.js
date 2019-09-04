@@ -15,6 +15,15 @@ const actions = {
     fail
   }),
 
+  ADD_SCAN_DATA_REQUEST: 'ADD_SCAN_DATA_REQUEST',
+  ADD_SCAN_DATA_SUCCESS: 'ADD_SCAN_DATA_SUCCESS',
+  add: (params, success, fail) => ({
+    type: actions.ADD_SCAN_DATA_REQUEST,
+    params,
+    success,
+    fail
+  }),
+
   DELETE_SCAN_DATA_REQUEST: 'DELETE_SCAN_DATA_REQUEST',
   DELETE_SCAN_DATA_SUCCESS: 'DELETE_SCAN_DATA_SUCCESS',
   delete: (id, success, fail) => ({

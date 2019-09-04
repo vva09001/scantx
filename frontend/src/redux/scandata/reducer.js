@@ -20,6 +20,10 @@ export default function scanDataReducer(state = initState, action) {
           return item;
         })
       };
+    case actions.ADD_SCAN_DATA_SUCCESS:
+      return {
+        list: [action.response.data, ...state.list]
+      };
     case actions.DELETE_SCAN_DATA_SUCCESS:
       return {
         ...state, datas: action.response
