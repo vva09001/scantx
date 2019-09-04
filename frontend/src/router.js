@@ -24,25 +24,37 @@ const RestrictedRoute = ({ component: Component, isLoggedIn, ...rest }) => (
     }
   />
 );
+const NotLoggedRoute = ({ component: Component, isLoggedIn, ...rest }) => (
+  <Route
+    {...rest}
+    render={props =>
+      !isLoggedIn ? (
+        <Component {...props} />
+      ) : (
+        <Redirect
+          to={{
+            pathname: "/dashboard",
+            state: { from: props.location }
+          }}
+        />
+      )
+    }
+  />
+);
 const PublicRoutes = ({ history, isLoggedIn }) => (
   <BrowserRouter>
     <div>
       {/* <Transition> */}
-      <Route
+      <NotLoggedRoute
         exact
         path="/"
+        isLoggedIn={isLoggedIn}
         component={asyncComponent(() => import("./containers/Page/signin"))}
       />
-      <Route
+      <NotLoggedRoute
         exact
         path="/signin"
         component={asyncComponent(() => import("./containers/Page/signin"))}
-      />
-      <Route
-        path="/auth0loginCallback"
-        render={props => {
-          Auth0.handleAuthentication(props);
-        }}
       />
       <RestrictedRoute
         path="/dashboard"
@@ -59,21 +71,24 @@ const PublicRoutes = ({ history, isLoggedIn }) => (
         path="/505"
         component={asyncComponent(() => import("./containers/Page/505"))}
       />
-      <Route
+      <NotLoggedRoute
         exact
         path="/signup"
+        isLoggedIn={isLoggedIn}
         component={asyncComponent(() => import("./containers/Page/signup"))}
       />
-      <Route
+      <NotLoggedRoute
         exact
         path="/forgot-password"
+        isLoggedIn={isLoggedIn}
         component={asyncComponent(() =>
           import("./containers/Page/forgetpassword")
         )}
       />
-      <Route
+      <NotLoggedRoute
         exact
         path="/reset-password"
+        isLoggedIn={isLoggedIn}
         component={asyncComponent(() =>
           import("./containers/Page/resetpassword")
         )}
