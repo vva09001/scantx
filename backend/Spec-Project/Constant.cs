@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
 
-namespace MBI.Extension
+namespace Spec_Project
 {
     public static class ConstantScanData
     {

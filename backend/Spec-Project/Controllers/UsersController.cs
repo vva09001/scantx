@@ -15,6 +15,7 @@ using Spec_Project.Entities;
 using Spec_Project.Models;
 using Spec_Project.Services;
 using Spec_Project.Helpers;
+using Microsoft.AspNetCore.Cors;
 
 namespace Spec_Project.Controllers
 {
