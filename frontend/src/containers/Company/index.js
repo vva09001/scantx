@@ -28,7 +28,8 @@ class Company extends Component {
             toggle: false,
             delete: false,
             params: {},
-            editAble: false
+            editAble: false,
+            selected: []
         }
     }
     
@@ -42,18 +43,16 @@ class Company extends Component {
         })
     }
     
-    renderData = () => {
-        return _.map(this.props.companies, (item, key) => (
-            <TableRow key={key}>
-                <TableCell padding="checkbox"><Checkbox /></TableCell>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.address}</TableCell>
-                <TableCell>{item.remark}</TableCell>
-            </TableRow>
-        ))
-    }
+    
     
     onToggleForm = (status, params = {}) => {
+        this.setState({
+            toggle: status,
+            params: params
+        })
+    }
+
+    onToggleFormEdit = (status, params = {}) => {
         this.setState({
             toggle: status,
             params: params
@@ -77,6 +76,56 @@ class Company extends Component {
             this.props.add(params);
         }
     }
+
+    renderData = () => {
+        return _.map(this.props.companies, (item, key) => (
+            <TableRow key={key}>
+                <TableCell padding="checkbox">
+                    <Checkbox 
+                        onChange={() => this.onSelected(item.cid)} 
+                        checked={_.includes(this.state.selected, item.cid)} 
+                    />
+                </TableCell>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{item.address}</TableCell>
+                <TableCell>{item.remark}</TableCell>
+            </TableRow>
+        ))
+    }
+
+    onSelected = id => {
+        const { selected } = this.state;
+        
+        if ( _.includes(selected, id)) {
+            this.setState({
+                selected: _.filter(selected, item => {
+                    return item !== id
+                })
+            })
+        } else {
+            selected.push(id);
+            this.setState({
+                selected: selected
+            })
+        }
+    }
+
+    onSelectedAll = () => {
+        const { selected } = this.state;
+        const { companies } = this.props;
+        
+        if ( selected.length === companies.length ){
+            this.setState({
+                selected: []
+            })
+        } else {
+            this.setState({
+                selected: _.map(companies, item => {
+                    return item.cid
+                })
+            })
+        }
+    }
     
     render() {
         if (this.state.loading) {
@@ -89,7 +138,7 @@ class Company extends Component {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell padding="checkbox"><Checkbox /></TableCell>
+                                    <TableCell padding="checkbox"><Checkbox onChange={() => this.onSelectedAll()} /></TableCell>
                                     <TableCell>Name</TableCell>
                                     <TableCell>Address</TableCell>
                                     <TableCell>Remark</TableCell>
@@ -117,6 +166,7 @@ class Company extends Component {
                                 className="buttonStyles"
                                 variant="contained"
                                 color="primary"
+                                onClick={() => this.onToggleFormEdit(true)}
                             >
                                 Edit selected
                             </Button>
