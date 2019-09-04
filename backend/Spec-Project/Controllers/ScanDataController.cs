@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using QRCoder;
@@ -11,7 +12,7 @@ using Spec_Project.Services;
 
 namespace Spec_Project.Controllers
 {
-
+    [Authorize]
     [Route("api/ScanData")]
     [ApiController]
     public class ScanDataController : ControllerBase
@@ -27,6 +28,7 @@ namespace Spec_Project.Controllers
             //_appSettings = appSettings.Value;
         }
 
+        [Authorize]
         [DisableCors]
         [HttpGet("get-scandata")]
         public IActionResult getScanData()
@@ -34,6 +36,7 @@ namespace Spec_Project.Controllers
             return Ok(_IScanDataService.getScanData());
         }
 
+        [Authorize]
         [DisableCors]
         [HttpPost("add-scandata")]
         public IActionResult addScanData(TblScanData tblscandata)
@@ -41,6 +44,7 @@ namespace Spec_Project.Controllers
             return Ok(_IScanDataService.addScanData(tblscandata));
         }
 
+        [Authorize]
         [DisableCors]
         [HttpPost("delete-scandata")]
         public IActionResult DeleteScanData(string scanid)
@@ -55,6 +59,7 @@ namespace Spec_Project.Controllers
             return Ok(_IScanDataService.DeleteArrScanData(deleteIds));
         }
 
+        [Authorize]
         [DisableCors]
         [HttpPut("edit-scandata")]
         public IActionResult EditScandata(TblScanData tblscandata)
@@ -62,6 +67,7 @@ namespace Spec_Project.Controllers
             return Ok(_IScanDataService.EditScandata(tblscandata));
         }
 
+        [Authorize]
         [DisableCors]
         [HttpPost("getqr")]
         public ResponseModel CreateQR()

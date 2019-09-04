@@ -27,6 +27,7 @@ namespace Spec_Project
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
             services.AddCors(o => o.AddPolicy("AllowAnyOrigin", builder =>
             {
                 builder.AllowAnyOrigin()
@@ -44,7 +45,6 @@ namespace Spec_Project
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
-
 
             // configure jwt authentication
             var appSettings = appSettingsSection.Get<Helpers.AppSettings>();

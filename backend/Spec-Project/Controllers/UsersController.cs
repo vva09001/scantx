@@ -96,8 +96,8 @@ namespace Spec_Project.Controllers
             }
         }
 
+        [Authorize]
         [DisableCors]
-        [Authorize(Roles = RoleConstant.admin)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -131,6 +131,7 @@ namespace Spec_Project.Controllers
             return Ok(userDto);
         }
 
+        [Authorize]
         [DisableCors]
         [HttpPut("update")]
         public IActionResult Update(int id, [FromBody]UserDto userDto)
@@ -174,8 +175,8 @@ namespace Spec_Project.Controllers
             return Ok();
         }
 
+        [Authorize]
         [DisableCors]
-        [Authorize(Roles = RoleConstant.admin)]
         [HttpDelete("delete-user")]
         public IActionResult Delete(int id)
         {
