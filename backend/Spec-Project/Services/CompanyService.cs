@@ -37,7 +37,7 @@ namespace Spec_Project.Services
                 if (listcustomer != null)
                 {
                     g = Guid.NewGuid();
-                    db.TblCustomer.Add(new TblCustomer
+                    var add = db.TblCustomer.Add(new TblCustomer
                     {
                         Cid = g.ToString(),
                         Name = tblcustomer.Name,
@@ -45,7 +45,9 @@ namespace Spec_Project.Services
                         Status = tblcustomer.Status
                     });
                     db.SaveChanges();
+                    res.Data = add;
                 }
+
             }
             catch (Exception ex)
             {
@@ -72,6 +74,7 @@ namespace Spec_Project.Services
                         rs.DeletedOn = DateTime.UtcNow.AddHours(7);
                         context.SaveChanges();
                     }
+                    res.Data = rs;
                 }
             }
             catch (Exception ex)
@@ -93,14 +96,15 @@ namespace Spec_Project.Services
             {
                 using (DataContext context = new DataContext())
                 {
-                    foreach(var deleteId in deleteIds)
+                    foreach (var deleteId in deleteIds)
                     {
                         var customer = context.TblCustomer.FirstOrDefault(o => o.Cid == deleteId);
-                        if(customer != null)
+                        if (customer != null)
                         {
                             customer.DeletedOn = DateTime.UtcNow.AddHours(7);
                         }
                     }
+                    res.Data = deleteIds;
                     context.SaveChanges();
                 }
             }

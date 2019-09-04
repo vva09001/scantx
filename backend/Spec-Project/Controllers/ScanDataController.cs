@@ -56,6 +56,13 @@ namespace Spec_Project.Controllers
         }
 
         [DisableCors]
+        [HttpPost("delete-arr-scandata")]
+        public IActionResult DeleteArrScanData(List<string> deleteIds)
+        {
+            return Ok(_IScanDataService.DeleteArrScanData(deleteIds));
+        }
+
+        [DisableCors]
         [HttpPut("edit-scandata")]
         public IActionResult EditScandata(TblScanData tblscandata)
         {

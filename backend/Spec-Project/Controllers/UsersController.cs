@@ -95,6 +95,8 @@ namespace Spec_Project.Controllers
             }
         }
 
+        [DisableCors]
+        [Authorize(Roles = RoleConstant.admin)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -103,12 +105,17 @@ namespace Spec_Project.Controllers
             return Ok(userDtos);
         }
 
-
+        [DisableCors]
         [HttpGet("get-user-by-id")]
         public IActionResult GetById(int id)
         {
+            if (!User.IsInRole(RoleConstant.admin))
+            {
+                return Forbid();
+            }
             var user = _userService.GetById(id);
-            var userDto = new UserDto {
+            var userDto = new UserDto
+            {
                 Id = user.Id,
                 Cid = user.Cid,
                 ContactByEmail = user.ContactByEmail,
@@ -123,6 +130,7 @@ namespace Spec_Project.Controllers
             return Ok(userDto);
         }
 
+        [DisableCors]
         [HttpPut("update")]
         public IActionResult Update(int id, [FromBody]UserDto userDto)
         {
@@ -148,22 +156,30 @@ namespace Spec_Project.Controllers
 
             try
             {
-                // save 
-                _userService.Update(user, userDto.Password);
-                return Ok();
+                if (!User.IsInRole(RoleConstant.admin))
+                {
+                    return Forbid();
+                }
+                else
+                {
+                    _userService.Update(user, userDto.Password);
+                }
             }
             catch (Exception ex)
             {
                 // return error message if there was an exception
                 return BadRequest(new { message = ex.Message });
             }
+            return Ok();
         }
 
+        [DisableCors]
+        [Authorize(Roles = RoleConstant.admin)]
         [HttpDelete("delete-user")]
         public IActionResult Delete(int id)
         {
-            
-           var rs =  _userService.Delete(id);
+
+            var rs = _userService.Delete(id);
             return Ok(rs);
         }
     }

@@ -71,6 +71,7 @@ namespace Spec_Project.Services
                 EncryptionActive = user.EncryptionActive,
                 DeletedOn = null
                 ,Cid = user.Cid
+                RoleId = user.RoleID
             };
             ResponseModel res = (new ResponseModel {
                 Data = "",

@@ -16,6 +16,7 @@ namespace Spec_Project.Services
         List<TblScanData> getScanData();
         ResponseModel addScanData(TblScanData tblscandata);
         ResponseModel DeleteScanData(string scanid);
+        ResponseModel DeleteArrScanData(List<string> deleteIds);
         ResponseModel EditScandata(TblScanData tblscandata);
     }
     public class ScanDataService : IScanDataService
@@ -24,7 +25,7 @@ namespace Spec_Project.Services
         {
             using (DataContext context = new DataContext())
             {
-                var rs = context.TblScanData.Where(p => p.DeletedOn == null).ToList();
+                var rs = context.TblScanData.Where(p => p.DeletedOn == null).OrderByDescending(p=>p.CreatedOn).ToList();
                 return rs;
             }
         }
@@ -86,7 +87,40 @@ namespace Spec_Project.Services
                     {
                         rs.DeletedOn = DateTime.UtcNow.AddHours(7);
                         context.SaveChanges();
+                        res.Data = rs;
                     }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                res.Status = "500";
+                res.Message = ex.Message;
+            }
+            return res;
+        }
+
+        public ResponseModel DeleteArrScanData(List<string> deleteIds)
+        {
+            var res = new ResponseModel()
+            {
+                Status = "200",
+                Message = "",
+            };
+            try
+            {
+                using (DataContext context = new DataContext())
+                {
+                    foreach (var deleteId in deleteIds)
+                    {
+                        var scandata = context.TblScanData.FirstOrDefault(o => o.ScanId == deleteId);
+                        if (scandata != null)
+                        {
+                            scandata.DeletedOn = DateTime.UtcNow.AddHours(7);
+                        }res.Data = deleteIds;
+                    }
+                    
+                    context.SaveChanges();
                 }
             }
             catch (Exception ex)
