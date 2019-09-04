@@ -17,15 +17,17 @@ export default function companyReducer(state = initState, action) {
       };
     case actions.EDIT_COMPANY_SUCCESS:
       return {
-        datas: action.response
+        list: _.map(state.list, item => {
+          if(item.cid === action.response.cid) {
+            item = action.response;
+          }
+          return item;
+        })
       };
     case actions.DELETE_COMPANY_SUCCESS:
       return {
-        datas: _.filter(state.list, item => {
-          console.log(!_.includes(action.response, item.cid))
-          if(!_.includes(action.response, item.cid)) {
-            return item;
-          }
+        list: _.filter(state.list, item => {
+          return !_.includes(action.response, item.cid)
         })
       };
     default:
