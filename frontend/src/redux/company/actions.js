@@ -27,9 +27,9 @@ const actions = {
 
   DELETE_COMPANY_REQUEST: 'DELETE_COMPANY_REQUEST',
   DELETE_COMPANY_SUCCESS: 'DELETE_COMPANY_SUCCESS',
-  delete: (id, success, fail) => ({
+  delete: (params, success, fail) => ({
     type: actions.DELETE_COMPANY_REQUEST,
-    id,
+    params,
     success,
     fail
   }),

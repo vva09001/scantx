@@ -48,18 +48,19 @@ export function* editCompnaySagas(data) {
 }
 
 export function* deleteCompnaySagas(data) {
-  const { id, success, fail } = data;
-  try {
-    const res = yield remove(id);
-    if (res.status === 200) {
-      yield success();
-      yield put({type: actions.DELETE_COMPANY_SUCCESS, response: res.data});
-    } else {
-      yield fail(res.data.message);
-    }
-  } catch (error) {
-    yield fail('Không thể kết nối đến Sever');
-  }
+  const { params, success, fail } = data;
+  console.log(params)
+  // try {
+  //   const res = yield remove(params);
+  //   if (res.status === 200) {
+  //     yield put({type: actions.DELETE_COMPANY_SUCCESS, response: params});
+  //     yield success();
+  //   } else {
+  //     yield fail(res.data.message);
+  //   }
+  // } catch (error) {
+  //   yield fail('Không thể kết nối đến Sever');
+  // }
 }
 
 export default function* rootSaga() {

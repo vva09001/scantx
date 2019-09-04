@@ -20,7 +20,6 @@ class Form extends React.Component {
     }
   }
   componentDidMount() {
-    console.log(this.props.params)
   }
   onClose = () => {
     this.props.onToggle(false)

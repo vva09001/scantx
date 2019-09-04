@@ -23,13 +23,11 @@ const edit = params => {
     })
 }
 
-const remove = id => {
+const remove = data => {
     return request({
-        url: '/company/delete-company/',
+        url: '/company/delete-arr-company/',
         method: 'post',
-        params: {
-            Cid: id
-        }
+        data: data
     })
 }
 

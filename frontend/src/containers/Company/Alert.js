@@ -7,11 +7,42 @@ import Dialog, {
 } from 'components/uielements/dialogs';
 import Button from 'components/uielements/button';
 import { CircularProgress } from 'components/uielements/progress';
+import { companyActions } from 'redux/actions';
+import { connect } from 'react-redux';
 
 class Alert extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            loading: false
+        }
+    }
+
+    onDelete = () => {
+        this.setState({
+            loading: true
+        }, () => {
+            this.props.delete(this.props.selected, this.onSuccess, this.onFail);
+        })
+    }
+
+    onSuccess = () => {
+        this.setState({
+            loading: false
+        }, () => {
+            this.props.onClose(false)
+        })
+    }
+
+    onFail = () => {
+        this.setState({
+            loading: false
+        })
+    }
+
     render() {
-        const { status, loading, onSubmit, onClose } = this.props;
-        if (loading) {
+        const { status, onClose } = this.props;
+        if (this.state.loading) {
             return <CircularProgress />
         }
         return (
@@ -24,7 +55,7 @@ class Alert extends React.Component {
                     <Button onClick={() => onClose(false)} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={onSubmit} color="primary" autoFocus>
+                    <Button onClick={() => this.onDelete()} color="primary" autoFocus>
                         Submit
                     </Button>
                 </DialogActions>
@@ -32,5 +63,15 @@ class Alert extends React.Component {
         )
     }
 }
+const mapSateToProps = state => {
+    return {
+    };
+};
 
-export default Alert;
+const mapDispatchToProps = {
+    delete: companyActions.delete
+};
+export default connect(
+    mapSateToProps,
+    mapDispatchToProps
+)(Alert);

@@ -43,8 +43,6 @@ class Company extends Component {
         })
     }
     
-    
-    
     onToggleForm = (status, params = {}) => {
         this.setState({
             toggle: status,
@@ -52,21 +50,20 @@ class Company extends Component {
         })
     }
 
-    onToggleFormEdit = (status, params = {}) => {
-        this.setState({
-            toggle: status,
-            params: params
-        })
+    onToggleFormEdit = (status) => {
+        if(this.state.selected.length > 0 && this.state.selected.length < 2) {
+            this.setState({
+                toggle: status,
+                params: this.state.selected[0]
+            })
+        }
+        
     }
     
     onToggleDelete = (status) => {
         this.setState({
             delete: status
         })
-    }
-    
-    delete = () => {
-
     }
 
     onSubmit = (params) => {
@@ -103,9 +100,8 @@ class Company extends Component {
                 })
             })
         } else {
-            selected.push(id);
             this.setState({
-                selected: selected
+                selected: [...selected, id]
             })
         }
     }
@@ -186,7 +182,11 @@ class Company extends Component {
                         params={this.state.params}
                         onSubmit={this.onSubmit}
                     />
-                    <DeleteAlert status={this.state.delete} onSubmit={this.delete} onClose={this.onToggleDelete}/>
+                    <DeleteAlert 
+                        status={this.state.delete} 
+                        selected={this.state.selected}
+                        onClose={this.onToggleDelete}
+                    />
                 </FullColumn>
             </LayoutWrapper>
         );
@@ -201,8 +201,7 @@ const mapSateToProps = state => {
 const mapDispatchToProps = {
     get: companyActions.get,
     add: companyActions.add,
-    edit: companyActions.edit,
-    delete: companyActions.delete
+    edit: companyActions.edit
 };
 export default connect(
     mapSateToProps,

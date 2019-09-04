@@ -1,4 +1,5 @@
 import actions from "./actions";
+import _ from 'lodash';
 
 const initState = {
   list: []
@@ -11,9 +12,8 @@ export default function companyReducer(state = initState, action) {
         list: action.response
       };
     case actions.ADD_COMPANY_SUCCESS:
-      const newValue = state.unshift(action.response)
       return {
-        list: newValue
+        list: [action.response, ...state.list]
       };
     case actions.EDIT_COMPANY_SUCCESS:
       return {
@@ -21,7 +21,12 @@ export default function companyReducer(state = initState, action) {
       };
     case actions.DELETE_COMPANY_SUCCESS:
       return {
-        datas: action.response
+        datas: _.filter(state.list, item => {
+          console.log(!_.includes(action.response, item.cid))
+          if(!_.includes(action.response, item.cid)) {
+            return item;
+          }
+        })
       };
     default:
       return state;
