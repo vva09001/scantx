@@ -1,4 +1,5 @@
 import actions from "./actions";
+import _ from 'lodash';
 
 const initState = {
   list: []
@@ -12,7 +13,12 @@ export default function scanDataReducer(state = initState, action) {
       };
     case actions.EDIT_SCAN_DATA_SUCCESS:
       return {
-        ...state, datas: action.response
+        list: _.map(state.list, item => {
+          if(item.scanId === action.response.scanId) {
+            item = action.response;
+          }
+          return item;
+        })
       };
     case actions.DELETE_SCAN_DATA_SUCCESS:
       return {
