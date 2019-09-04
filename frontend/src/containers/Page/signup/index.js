@@ -2,25 +2,18 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import signinImg from "../../../images/signin.svg";
-import fbBtnSvg from "../../../images/facebook-app-symbol.svg";
-import gpBtnSvg from "../../../images/google-plus.svg";
-import authBtnSvg from "../../../images/auth0.svg";
 import TextField from "../../../components/uielements/textfield";
 import Scrollbars from "../../../components/utility/customScrollBar";
 import Button from "../../../components/uielements/button";
-import authAction from "../../../redux/auth/actions";
 import IntlMessages from "../../../components/utility/intlMessages";
 import SignUpStyleWrapper from "./signup.style";
-import Auth0 from "../../../helpers/auth0/index";
-import Firebase from "../../../helpers/firebase";
-import FirebaseLogin from "../../../components/firebase";
 import { Checkbox } from "./signup.style";
-
-const { login } = authAction;
+import { authActions } from 'redux/actions';
 
 class SignUp extends Component {
   state = {
-    redirectToReferrer: false
+    redirectToReferrer: false,
+    params: {}
   };
   componentWillReceiveProps(nextProps) {
     if (
@@ -89,87 +82,24 @@ class SignUp extends Component {
                   type="Password"
                 />
               </div>
-              <div className="mateInputWrapper">
-                <TextField
-                  label="Confirm Password"
-                  placeholder="Confirm Password"
-                  margin="normal"
-                  type="Password"
-                />
-              </div>
             </div>
             <div className="mateAgreement">
               <div className="mateLoginSubmitCheck">
                 <Checkbox color="primary" className="mateTermsCheck" />
                 <span className="mateTermsText">
-                  <IntlMessages id="page.signUpTermsConditions" />
+                  <IntlMessages id="page.signUpContactByEmail" />
+                </span>
+              </div>
+              <div className="mateLoginSubmitCheck">
+                <Checkbox color="primary" className="mateTermsCheck" />
+                <span className="mateTermsText">
+                  <IntlMessages id="page.signEncryptionAction" />
                 </span>
               </div>
               <div className="mateLoginSubmit">
-                <Button type="primary" onClick={this.handleLogin}>
+                <Button type="primary" onClick={() => this.onRegister()}>
                   Sign Up
                 </Button>
-              </div>
-            </div>
-            <div className="mateLoginSubmitText">
-              <span>or Sign Up with </span>
-            </div>
-            <div className="mateLoginOtherBtn">
-              <div className="mateLoginOtherBtnWrap">
-                <Button
-                  onClick={this.handleLogin}
-                  type="primary btnFacebook"
-                  className="btnFacebook"
-                >
-                  <div className="mateLoginOtherIcon">
-                    <img src={fbBtnSvg} alt="facebook Btn" />
-                  </div>
-                  <IntlMessages id="page.signUpFacebook" />
-                </Button>
-              </div>
-              <div className="mateLoginOtherBtnWrap">
-                <Button
-                  onClick={this.handleLogin}
-                  type="primary btnGooglePlus"
-                  className="btnGooglePlus"
-                >
-                  <div className="mateLoginOtherIcon">
-                    <img src={gpBtnSvg} alt="Google Plus Btn" />
-                  </div>
-                  <IntlMessages id="page.signUpGooglePlus" />
-                </Button>
-              </div>
-              <div className="mateLoginOtherBtnWrap">
-                {Auth0.isValid ? (
-                  <Button
-                    type="primary btnAuthZero"
-                    className="btnAuthZero"
-                    onClick={() => {
-                      Auth0.login(this.handleLogin);
-                    }}
-                  >
-                    <div className="mateLoginOtherIcon">
-                      <img src={authBtnSvg} alt="Authentication Btn" />
-                    </div>
-                    <IntlMessages id="page.signUpAuth0" />
-                  </Button>
-                ) : (
-                  <Button
-                    type="primary btnAuthZero"
-                    className="btnAuthZero"
-                    onClick={this.handleLogin}
-                  >
-                    <div className="mateLoginOtherIcon">
-                      <img src={authBtnSvg} alt="Authentication Btn" />
-                    </div>
-                    <IntlMessages id="page.signUpAuth0" />
-                  </Button>
-                )}
-              </div>
-              <div className="mateLoginOtherBtnWrap">
-                {Firebase.isValid && (
-                  <FirebaseLogin signup={true} login={this.handleLogin} />
-                )}
               </div>
             </div>
           </Scrollbars>
@@ -178,10 +108,17 @@ class SignUp extends Component {
     );
   }
 }
+const mapSateToProps = state => {
+  return {
+      companies: state.Company.list,
+      isLoggedIn: state.Auth.idToken !== null ? true : false
+  };
+};
 
+const mapDispatchToProps = {
+  register: authActions.register
+};
 export default connect(
-  state => ({
-    isLoggedIn: state.Auth.idToken !== null ? true : false
-  }),
-  { login }
+  mapSateToProps,
+  mapDispatchToProps
 )(SignUp);

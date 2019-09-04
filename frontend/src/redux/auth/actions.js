@@ -6,12 +6,22 @@ const actions = {
   LOGIN_PROFILE_SUCCESS: 'LOGIN_PROFILE_SUCCESS',
   LOGIN_ERROR: 'LOGIN_ERROR',
   checkAuthorization: () => ({ type: actions.CHECK_AUTHORIZATION }),
-  login: payload => ({
+  login: (params, success, fail) => ({
     type: actions.LOGIN_REQUEST,
-    payload
+    params,
+    success,
+    fail
   }),
   logout: () => ({
     type: actions.LOGOUT
+  }),
+
+  REGISTER_REQUEST: 'REGISTER_REQUEST',
+  register: (params, success, fail) => ({
+    type: actions.REGISTER_REQUEST,
+    params,
+    success,
+    fail
   })
 };
 export default actions;

@@ -47,12 +47,10 @@ class Start extends React.Component {
 
 const mapSateToProps = state => {
   return {
-    users: state.User.info
   };
 };
 
 const mapDispatchToProps = {
-  getUser: userActions.getUser
 };
 export default connect(
   mapSateToProps,

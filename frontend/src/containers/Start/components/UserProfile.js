@@ -31,6 +31,7 @@ class UserProfile extends React.Component {
     }
 
     render() {
+        const { profile } = this.props;
         return (
             <Grid item xs={6} style={style.gridItem}>
                 {
@@ -38,7 +39,7 @@ class UserProfile extends React.Component {
                         <CircularProgress />
                     ) : (
                         <Papersheet title="User" style={style.papersheet}>
-                            <p>Christian Gathmann</p>
+                            <p>{profile.username}</p>
                             <p>Mail: gathmann@csbg.de</p>
                             <p>Company: CSBG</p>
                             <p>Authorization: admin/input/reader</p>
@@ -52,8 +53,9 @@ class UserProfile extends React.Component {
 }
 
 const mapSateToProps = state => {
+    console.log(state.Auth.profile)
     return {
-        users: state.User.info
+        profile: state.Auth.profile
     };
 };
 

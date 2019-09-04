@@ -10,9 +10,10 @@ import rtl from 'jss-rtl';
 import themes from './settings/themes';
 import { themeConfig } from './settings';
 import AppLocale from './languageProvider';
-import { store, history } from './redux/store';
+import { store, persistor, history } from './redux/store';
 import Boot from './redux/boot';
 import Router from './router';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const currentAppLocale = AppLocale.en;
 
@@ -38,7 +39,9 @@ const MetaAdmin = () => {
       >
         <ThemeProvider theme={themes[themeConfig.theme]}>
           <Provider store={store}>
-            <Router history={history} />
+            <PersistGate loading={null} persistor={persistor}>
+              <Router history={history} />
+            </PersistGate>
           </Provider>
         </ThemeProvider>
       </IntlProvider>

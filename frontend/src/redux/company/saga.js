@@ -1,11 +1,13 @@
-import { all, takeLatest, put } from 'redux-saga/effects';
+import { all, takeLatest, put, select } from 'redux-saga/effects';
 import { get, add, edit, remove } from 'services/company';
+import { getToken } from 'redux/selectors';
 import actions from './actions';
 
 export function* getCompnaySagas(data) {
   const { success, fail } = data;
   try {
-    const res = yield get();
+    const token = select(getToken);
+    const res = yield get(token);
     if (res.status === 200) {
       yield success();
       yield put({type: actions.GET_COMPANY_SUCCESS, response: res.data});

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import signinImg from "../../../images/signup.svg";
 import Button from "../../../components/uielements/button";
@@ -7,14 +7,21 @@ import authAction from "../../../redux/auth/actions";
 import TextField from "../../../components/uielements/textfield";
 import Scrollbars from "../../../components/utility/customScrollBar";
 import SignInStyleWrapper from "./signin.style";
+import { CircularProgress } from "components/uielements/progress";
 
 const { login } = authAction;
 class SignIn extends Component {
   state = {
     redirectToReferrer: false,
-    username: "demo@gmail.com",
-    password: "demodemo"
+    username: "",
+    password: "",
+    loading: false,
+    error: {
+      status: false,
+      message: ""
+    }
   };
+
   componentWillReceiveProps(nextProps) {
     if (
       this.props.isLoggedIn !== nextProps.isLoggedIn &&
@@ -23,14 +30,45 @@ class SignIn extends Component {
       this.setState({ redirectToReferrer: true });
     }
   }
+
   handleLogin = () => {
     const { login } = this.props;
     const { username, password } = this.state;
-    login({ username, password });
-    this.props.history.push("/dashboard");
+    this.setState(
+      {
+        loading: true
+      },
+      () => {
+        login({ username, password }, this.onSuccess, this.onFail);
+      }
+    );
   };
+
+  onSuccess = () => {
+    this.setState(
+      {
+        loading: false
+      },
+      () => {
+        this.props.history.push("/dashboard");
+      }
+    );
+  };
+
+  onFail = error => {
+    this.setState({
+      loading: false,
+      error: {
+        status: true,
+        message: error
+      }
+    });
+  };
+
   onChangeUsername = event => this.setState({ username: event.target.value });
+
   onChangePassword = event => this.setState({ password: event.target.value });
+
   render() {
     const from = { pathname: "/dashboard" };
     const { redirectToReferrer, username, password } = this.state;
@@ -47,6 +85,11 @@ class SignIn extends Component {
         </div>
         <div className="mateSignInPageContent">
           <Scrollbars style={{ height: "100%" }}>
+            <div>
+              { this.state.error.status && (
+                <h3>{this.state.error.message}</h3>
+                )}
+            </div>
             <div>
               <div>
                 <TextField
@@ -69,18 +112,22 @@ class SignIn extends Component {
                   onChange={this.onChangePassword}
                 />
               </div>
-              <div className="mateLoginSubmit">
-                <Button
-                  type="primary"
-                  variant="contained"
-                  color="primary"
-                  margin="normal"
-                  fullWidth
-                  onClick={this.handleLogin}
-                >
-                  Login
-                </Button>
-              </div>
+              {this.state.loading ? (
+                <CircularProgress />
+              ) : (
+                <div className="mateLoginSubmit">
+                  <Button
+                    type="primary"
+                    variant="contained"
+                    color="primary"
+                    margin="normal"
+                    fullWidth
+                    onClick={this.handleLogin}
+                  >
+                    Login
+                  </Button>
+                </div>
+              )}
             </div>
           </Scrollbars>
         </div>

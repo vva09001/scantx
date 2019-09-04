@@ -1,19 +1,27 @@
 import { all, takeEvery, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import { clearToken, getToken } from '../../helpers/utility';
+import { login, register } from 'services/auth';
 import actions from './actions';
 
-const fakeApiCall = true; // auth0 or express JWT
-
-export function* loginRequest() {
-  if (fakeApiCall) {
-    yield put({
-      type: actions.LOGIN_SUCCESS,
-      payload: { token: 'secret token' },
-      profile: 'Profile',
-    });
-  } else {
-    yield put({ type: actions.LOGIN_ERROR });
+export function* loginRequest(data) {
+  const { params, success, fail } = data;
+  try {
+    const res = yield login(params);
+    if (res.status === 200) {
+      yield put({
+        type: actions.LOGIN_SUCCESS,
+        payload: { 
+          token: res.data.token,
+          profile: res.data
+        }
+      });
+      yield success();
+    } else {
+      yield fail(res.data.message);
+    }
+  } catch (error) {
+    yield fail('Không thể kết nối đến Sever');
   }
 }
 
@@ -37,6 +45,21 @@ export function* checkAuthorization() {
     });
   }
 }
+
+export function* registerSaga(data) {
+  const { params, success, fail } = data;
+  try {
+    const res = yield register(params);
+    if (res.status === 200) {
+      yield success();
+    } else {
+      yield fail(res.data.message);
+    }
+  } catch (error) {
+    yield fail('Không thể kết nối đến Sever');
+  }
+}
+
 export default function* rootSaga() {
   yield all([
     yield takeEvery(actions.CHECK_AUTHORIZATION, checkAuthorization),
@@ -44,5 +67,6 @@ export default function* rootSaga() {
     yield takeEvery(actions.LOGIN_SUCCESS, loginSuccess),
     yield takeEvery(actions.LOGIN_ERROR, loginError),
     yield takeEvery(actions.LOGOUT, logout),
+    yield takeEvery(actions.REGISTER_REQUEST, registerSaga),
   ]);
 }
