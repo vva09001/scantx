@@ -27,7 +27,8 @@ class Company extends Component {
             loading: true,
             toggle: false,
             delete: false,
-            params: {}
+            params: {},
+            editAble: false
         }
     }
     
@@ -67,6 +68,14 @@ class Company extends Component {
     
     delete = () => {
 
+    }
+
+    onSubmit = (params) => {
+        if(this.state.editAble) {
+            this.props.edit(params);
+        } else {
+            this.props.add(params);
+        }
     }
     
     render() {
@@ -121,7 +130,12 @@ class Company extends Component {
                             </Button>
                         </Grid>
                     </Papersheet>
-                    <Form onToggle={this.onToggleForm} status={this.state.toggle} params={this.state.params}/>
+                    <Form 
+                        onToggle={this.onToggleForm} 
+                        status={this.state.toggle} 
+                        params={this.state.params}
+                        onSubmit={this.onSubmit}
+                    />
                     <DeleteAlert status={this.state.delete} onSubmit={this.delete} onClose={this.onToggleDelete}/>
                 </FullColumn>
             </LayoutWrapper>

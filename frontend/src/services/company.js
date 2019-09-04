@@ -1,13 +1,21 @@
 import request from 'helpers/request';
 
-const getCompany = () => {
+const get = () => {
     return request({
         url: '/company/get-company',
         method: 'get'
     })
 }
 
-const editCompany = params => {
+const add = params => {
+    return request({
+        url: '/company/add-company/',
+        method: 'post',
+        data: params
+    })
+}
+
+const edit = params => {
     return request({
         url: '/company/edit-company/',
         method: 'put',
@@ -15,7 +23,7 @@ const editCompany = params => {
     })
 }
 
-const deleteCompany = id => {
+const remove = id => {
     return request({
         url: '/company/delete-company/',
         method: 'post',
@@ -25,4 +33,4 @@ const deleteCompany = id => {
     })
 }
 
-export { getCompany, editCompany, deleteCompany };
+export { get, add, edit, remove };

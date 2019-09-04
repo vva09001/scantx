@@ -10,6 +10,11 @@ export default function companyReducer(state = initState, action) {
       return {
         list: action.response
       };
+    case actions.ADD_COMPANY_SUCCESS:
+      const newValue = state.unshift(action.response)
+      return {
+        list: newValue
+      };
     case actions.EDIT_COMPANY_SUCCESS:
       return {
         datas: action.response
