@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Lucene.Net.Support;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using QRCoder;
 using Spec_Project.Entities;
 using Spec_Project.Models;
