@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { CircularProgress } from "components/uielements/progress";
+import Form from "./Form";
 import LayoutWrapper from "components/utility/layoutWrapper";
 import Papersheet from "components/utility/papersheet";
 import { FullColumn } from "components/utility/rowColumn";
@@ -14,10 +15,14 @@ import _ from "lodash";
 import "styles/style.css";
 
 const role = roleId => {
-  if (roleId === "2") {
+  if (roleId === "1") {
+    return "superadmin";
+  } else if (roleId === "2") {
     return "admin";
   } else if (roleId === "3") {
     return "user";
+  } else if (roleId === "4") {
+    return "reader";
   } else {
     return "No Role";
   }
@@ -27,17 +32,33 @@ class User extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true
+      loading: true,
+      toggle: false,
+      params: {}
     };
   }
   componentDidMount() {
-    this.props.getUser({ userID: 1 }, this.onSuccess, this.onSuccess);
+    this.props.getUser({}, this.onSuccess, this.onSuccess);
   }
   onSuccess = () => {
     this.setState({
       loading: false
     });
   };
+
+  onToggleForm = status => {
+    this.setState({
+      toggle: status
+    });
+  };
+
+  add = (params, success, fail) => {
+    this.props.addUser(params, success, fail);
+    this.setState({
+      toggle: false
+    });
+  };
+
   renderData = () => {
     return _.map(this.props.users, item => {
       return (
@@ -75,7 +96,7 @@ class User extends Component {
                 className="buttonStyles"
                 variant="contained"
                 color="primary"
-                onClick={this.handleAddUser}
+                onClick={() => this.onToggleForm(true)}
               >
                 Add new user
               </Button>
@@ -95,6 +116,12 @@ class User extends Component {
               </Button>
             </Grid>
           </Papersheet>
+          {/* Add Form */}
+          <Form
+            onToggle={this.onToggleForm}
+            onSubmit={this.add}
+            status={this.state.toggle}
+          />
         </FullColumn>
       </LayoutWrapper>
     );
@@ -107,7 +134,8 @@ const mapSateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  getUser: userActions.getUser
+  getUser: userActions.getUser,
+  addUser: userActions.addUser
 };
 export default connect(
   mapSateToProps,
