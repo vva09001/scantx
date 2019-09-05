@@ -14,10 +14,13 @@ class Form extends React.Component {
     super(props);
     this.state = {
       loading: false,
-      params: {uid: 5}
+      params: {}
     };
   }
   componentDidMount() {}
+  componentWillReceiveProps(nextProps) {
+    this.setState({ params: { uid: nextProps.uid } });
+  }
   onSuccess = () => {
     this.setState({
       loading: false
@@ -47,6 +50,7 @@ class Form extends React.Component {
     });
   };
   render() {
+    console.log(this.state.params);
     const { status } = this.props;
     return (
       <Dialog open={status} onClose={this.onClose}>
@@ -114,12 +118,14 @@ class Form extends React.Component {
   }
 }
 
-const mapSateToProps = state => {
-  return {};
+const mapStateToProps = state => {
+  return {
+    uid: state.Auth.profile.id
+  };
 };
 
 const mapDispatchToProps = {};
 export default connect(
-  mapSateToProps,
+  mapStateToProps,
   mapDispatchToProps
 )(Form);

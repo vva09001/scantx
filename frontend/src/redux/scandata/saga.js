@@ -1,4 +1,4 @@
-import { all, takeLatest, put } from "redux-saga/effects";
+import { all, takeLatest, put, select } from "redux-saga/effects";
 import {
   getScanData,
   editScanData,
@@ -6,12 +6,14 @@ import {
   deleteScanData,
   deleteMultiScanData
 } from "services/scanData";
+import { getToken } from 'redux/selectors';
 import actions from "./actions";
 
 export function* getScanDataSagas(data) {
   const { success, fail } = data;
   try {
-    const res = yield getScanData();
+    const token = yield select(getToken);
+    const res = yield getScanData(token);
     if (res.status === 200) {
       yield success();
       yield put({ type: actions.GET_SCAN_DATA_SUCCESS, response: res.data });
@@ -26,9 +28,10 @@ export function* getScanDataSagas(data) {
 export function* editScanDataSagas(data) {
   const { params, success, fail } = data;
   try {
-    const res = yield editScanData(params);
+    const token = yield select(getToken);
+    const res = yield editScanData(params, token);
     if (res.status === 200) {
-      const res = yield getScanData();
+      const res = yield getScanData(token);
       if (res.status === 200) {
         yield success();
         yield put({ type: actions.GET_SCAN_DATA_SUCCESS, response: res.data });
@@ -46,9 +49,10 @@ export function* editScanDataSagas(data) {
 export function* addScanDataSagas(data) {
   const { params, success, fail } = data;
   try {
-    const res = yield addScanData(params);
+    const token = yield select(getToken);
+    const res = yield addScanData(params, token);
     if (res.status === 200) {
-      const res = yield getScanData();
+      const res = yield getScanData(token);
       if (res.status === 200) {
         yield success();
         yield put({ type: actions.GET_SCAN_DATA_SUCCESS, response: res.data });
@@ -66,9 +70,10 @@ export function* addScanDataSagas(data) {
 export function* deleteScanDataSagas(data) {
   const { id, success, fail } = data;
   try {
-    const res = yield deleteScanData(id);
+    const token = yield select(getToken);
+    const res = yield deleteScanData(id, token);
     if (res.status === 200) {
-      const res = yield getScanData();
+      const res = yield getScanData(token);
       if (res.status === 200) {
         yield success();
         yield put({ type: actions.GET_SCAN_DATA_SUCCESS, response: res.data });
@@ -86,9 +91,10 @@ export function* deleteScanDataSagas(data) {
 export function* deleteMultiScanDataSagas(data) {
   const { params, success, fail } = data;
   try {
-    const res = yield deleteMultiScanData(params);
+    const token = yield select(getToken);
+    const res = yield deleteMultiScanData(params, token);
     if (res.status === 200) {
-      const res = yield getScanData();
+      const res = yield getScanData(token);
       if (res.status === 200) {
         yield success();
         yield put({ type: actions.GET_SCAN_DATA_SUCCESS, response: res.data });

@@ -9,7 +9,7 @@ import Dialog, {
 import Button from "components/uielements/button";
 import { CircularProgress } from "components/uielements/progress";
 
-class Form extends React.Component {
+class EditForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -127,4 +127,4 @@ const mapDispatchToProps = {};
 export default connect(
   mapSateToProps,
   mapDispatchToProps
-)(Form);
+)(EditForm);

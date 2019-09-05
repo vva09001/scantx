@@ -1,43 +1,58 @@
 import request from "helpers/request";
 
-const getScanData = () => {
+const getScanData = token => {
   return request({
     url: "/scandata/get-scandata",
-    method: "get"
+    method: "get",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   });
 };
 
-const editScanData = params => {
+const editScanData = (params, token) => {
   return request({
     url: "/scandata/edit-scandata/",
     method: "put",
-    data: params
+    data: params,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   });
 };
 
-const addScanData = params => {
+const addScanData = (params, token) => {
   return request({
     url: "/scandata/add-scandata/",
     method: "post",
-    data: params
+    data: params,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   });
 };
 
-const deleteScanData = id => {
+const deleteScanData = (id, token) => {
   return request({
     url: "/scandata/delete-scandata/",
     method: "post",
     params: {
       scanid: id
+    },
+    headers: {
+      Authorization: `Bearer ${token}`
     }
   });
 };
 
-const deleteMultiScanData = params => {
+const deleteMultiScanData = (params, token) => {
   return request({
     url: "/scandata/delete-arr-scandata/",
     method: "post",
-    data: params
+    data: params,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   });
 };
 

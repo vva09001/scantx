@@ -233,7 +233,6 @@ class ScanData extends Component {
             onToggle={this.onToggleForm}
             onSubmit={this.add}
             status={this.state.toggle}
-            params={this.state.params}
           />
           {/* Edit Form */}
           <EditForm
