@@ -15,5 +15,32 @@ const actions = {
     success,
     fail
   }),
+
+  EDIT_USER_REQUEST: 'EDIT_USER_REQUEST',
+  EDIT_USER_SUCCESS: 'EDIT_USER_SUCCESS',
+  editUser: (params, success, fail) => ({
+    type: actions.EDIT_USER_REQUEST,
+    params,
+    success,
+    fail
+  }),
+
+  DELETE_USER_REQUEST: 'DELETE_USER_REQUEST',
+  DELETE_USER_SUCCESS: 'DELETE_USER_SUCCESS',
+  deleteUser: (id, success, fail) => ({
+    type: actions.DELETE_USER_REQUEST,
+    id,
+    success,
+    fail
+  }),
+
+  DELETE_MULTI_USER_REQUEST: 'DELETE_MULTI_USER_REQUEST',
+  DELETE_MULTI_USER_SUCCESS: 'DELETE_MULTI_USER_SUCCESS',
+  deleteMultiUser: (params, success, fail) => ({
+    type: actions.DELETE_MULTI_USER_REQUEST,
+    params,
+    success,
+    fail
+  }),
 };
 export default actions;
