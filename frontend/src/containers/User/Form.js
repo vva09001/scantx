@@ -204,7 +204,7 @@ class Form extends React.Component {
                 <option disabled={!this.state.adminRole} value={2}>
                   Admin
                 </option>
-                <option disabled={!this.state.superRole} value={1}>
+                <option disabled={!this.state.superadminRole} value={1}>
                   Superadmin
                 </option>
               </NativeSelect>
