@@ -35,6 +35,7 @@ class Alert extends React.Component {
         loading: false
       },
       () => {
+        this.props.remove(true);
         this.props.onClose(false);
       }
     );

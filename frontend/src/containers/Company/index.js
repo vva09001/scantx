@@ -89,7 +89,10 @@ class Company extends Component {
     return _.map(this.props.companies, item => (
       <TableRow key={item.cid}>
         <TableCell padding="checkbox">
-          <Checkbox onChange={() => this.onSelected(item.cid)} />
+          <Checkbox
+            onChange={() => this.onSelected(item.cid)}
+            checked={_.includes(this.state.selected, item.cid)}
+          />
         </TableCell>
         <TableCell>{item.name}</TableCell>
         <TableCell>{item.address}</TableCell>
@@ -114,11 +117,11 @@ class Company extends Component {
     }
   };
 
-  onSelectedAll = () => {
+  onSelectedAll = (status = false) => {
     const { selected } = this.state;
     const { companies } = this.props;
 
-    if (selected.length === companies.length) {
+    if (selected.length === companies.length || status) {
       this.setState({
         selected: []
       });
@@ -195,6 +198,7 @@ class Company extends Component {
             status={this.state.delete}
             selected={this.state.selected}
             onClose={this.onToggleDelete}
+            remove={this.onSelectedAll}
           />
         </FullColumn>
       </LayoutWrapper>
