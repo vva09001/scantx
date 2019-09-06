@@ -25,10 +25,40 @@ class Form extends React.Component {
       userRole: false,
       adminRole: false,
       superadminRole: false,
-      params: { contactByEmail: false, encryptionActive: false }
+      params: {}
     };
   }
   componentDidMount() {}
+  componentWillReceiveProps(nextProps) {
+    // Get neccessary user info
+    let {
+      id,
+      userName,
+      familyName,
+      givenName,
+      typeOfAccount,
+      roleId,
+      cid,
+      email,
+      contactByEmail,
+      encryptionActive
+    } = nextProps.params;
+    this.setState({
+      params: {
+        id,
+        userName,
+        familyName,
+        givenName,
+        typeOfAccount,
+        roleId,
+        cid,
+        email,
+        contactByEmail,
+        encryptionActive,
+        password: ""
+      }
+    });
+  }
   onSuccess = () => {
     this.setState({
       loading: false
@@ -134,19 +164,8 @@ class Form extends React.Component {
     const { status } = this.props;
     return (
       <Dialog open={status} onClose={this.onClose} fullWidth>
-        <DialogTitle>{"Add new user"}</DialogTitle>
+        <DialogTitle>{"Edit user"}</DialogTitle>
         <DialogContent>
-          <div>
-            <TextField
-              required
-              name="userName"
-              label="Username"
-              margin="normal"
-              fullWidth
-              value={this.state.params.userName}
-              onChange={e => this.onChange(e)}
-            />
-          </div>
           <div>
             <TextField
               required
@@ -178,7 +197,7 @@ class Form extends React.Component {
                 value={this.state.params.typeOfAccount}
                 onChange={e => this.onChange(e)}
               >
-                <option value={null}></option>
+                <option value={""}></option>
                 <option value={"Commercial"}>Commercial</option>
                 <option value={"Test"}>Test</option>
                 <option value={"Private"}>Private</option>
@@ -250,7 +269,11 @@ class Form extends React.Component {
               <FormLabel>Please contact me by email</FormLabel>
               <FormControlLabel
                 control={
-                  <Checkbox name="contactByEmail" onChange={this.onCheck} />
+                  <Checkbox
+                    name="contactByEmail"
+                    checked={this.state.params.contactByEmail}
+                    onChange={this.onCheck}
+                  />
                 }
               />
             </FormControl>
@@ -260,7 +283,11 @@ class Form extends React.Component {
               <FormLabel>Encryption active</FormLabel>
               <FormControlLabel
                 control={
-                  <Checkbox name="encryptionActive" onChange={this.onCheck} />
+                  <Checkbox
+                    name="encryptionActive"
+                    checked={this.state.params.encryptionActive}
+                    onChange={this.onCheck}
+                  />
                 }
               />
             </FormControl>
