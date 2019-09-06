@@ -193,6 +193,7 @@ class Company extends Component {
             params={this.state.params}
             onChange={this.onChange}
             onSubmit={this.onSubmit}
+            remove={this.onSelectedAll}
           />
           <DeleteAlert
             status={this.state.delete}

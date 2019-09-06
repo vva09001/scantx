@@ -39,6 +39,7 @@ class Form extends React.Component {
         loading: false
       },
       () => {
+        this.props.remove(true);
         this.onClose();
       }
     );
