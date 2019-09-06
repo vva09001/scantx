@@ -53,7 +53,6 @@ class UserProfile extends React.Component {
 }
 
 const mapSateToProps = state => {
-    console.log(state.Auth.profile)
     return {
         profile: state.Auth.profile
     };
