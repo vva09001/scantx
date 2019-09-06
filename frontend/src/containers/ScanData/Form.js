@@ -50,7 +50,6 @@ class Form extends React.Component {
     });
   };
   render() {
-    console.log(this.state.params);
     const { status } = this.props;
     return (
       <Dialog open={status} onClose={this.onClose}>

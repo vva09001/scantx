@@ -1,19 +1,24 @@
 import request from 'helpers/request';
 
-const getUserIdByID = params => {
+const getUsers = token => {
     return request({
-      url: '/start/get-user-by-id',
+      url: '/user/get-all-user',
       method: 'get',
-      params: params
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
   };
 
-const addUser = params => {
+const addUser = (params, token) => {
     return request({
-      url: '/start/add-user',
-      method: 'get',
-      params: params
+      url: '/user/register',
+      method: 'post',
+      data: params,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     })
   }
 
-export { getUserIdByID, addUser };
+export { getUsers, addUser };

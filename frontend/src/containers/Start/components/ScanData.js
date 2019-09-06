@@ -42,7 +42,7 @@ class ScanData extends React.Component {
                     this.state.loading ? (
                         <CircularProgress />
                     ) : (
-                        <Papersheet title="Scan Input: 123" style={style.papersheet}>
+                        <Papersheet title="Scan Input" style={style.papersheet}>
                             {this.renderData()}
                         </Papersheet>
                     )
