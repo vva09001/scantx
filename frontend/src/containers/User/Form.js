@@ -226,6 +226,7 @@ class Form extends React.Component {
                 value={this.state.params.cid}
                 onChange={e => this.onChange(e)}
               >
+                <option value={""}></option>
                 {this.renderCompanies()}
               </NativeSelect>
             </FormControl>
