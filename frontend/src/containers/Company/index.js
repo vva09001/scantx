@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import Form from "./Form";
 import { CircularProgress } from "components/uielements/progress";
 import DeleteAlert from "./Alert";
+import SelectAlert from "./SelectAlert";
 import LayoutWrapper from "components/utility/layoutWrapper";
 import Papersheet from "components/utility/papersheet";
 import { FullColumn } from "components/utility/rowColumn";
@@ -29,7 +30,8 @@ class Company extends Component {
       delete: false,
       params: {},
       editAble: false,
-      selected: []
+      selected: [],
+      selectAlert: false
     };
   }
 
@@ -72,9 +74,16 @@ class Company extends Component {
   };
 
   onToggleDelete = status => {
-    this.setState({
-      delete: status
-    });
+    if (this.state.selected.length <= 0) {
+      this.setState({
+        selectAlert: status
+      });
+    }
+    else {
+      this.setState({
+        delete: status
+      });
+    }
   };
 
   onSubmit = (params, success, fail) => {
@@ -133,6 +142,10 @@ class Company extends Component {
       });
     }
   };
+
+  onToggleSelectAlert = status => {
+    this.setState({ selectAlert: status });
+  }
 
   render() {
     if (this.state.loading) {
@@ -200,6 +213,11 @@ class Company extends Component {
             selected={this.state.selected}
             onClose={this.onToggleDelete}
             remove={this.onSelectedAll}
+          />
+          {/* Select Alert */}
+          <SelectAlert
+            status={this.state.selectAlert}
+            onClose={this.onToggleSelectAlert}
           />
         </FullColumn>
       </LayoutWrapper>
