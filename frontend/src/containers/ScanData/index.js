@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { CircularProgress } from "components/uielements/progress";
+import CopyToClipboard from "./CopyToClipboard";
 import Form from "./Form";
 import EditForm from "./EditForm";
 import DeleteAlert from "./Alert";
@@ -94,8 +95,7 @@ class ScanData extends Component {
         toggleEdit: status,
         params: item
       });
-    }
-    else {
+    } else {
       this.setState({
         toggleEdit: status
       });
@@ -123,7 +123,7 @@ class ScanData extends Component {
 
   onToggleSelectAlert = status => {
     this.setState({ selectAlert: status });
-  }
+  };
 
   handleCheck = (event, id) => {
     if (event.target.checked) {
@@ -141,7 +141,7 @@ class ScanData extends Component {
     this.props.editScanData(params, success, fail);
     this.setState({
       toggleEdit: false,
-      params: {},
+      params: {}
     });
   };
 
@@ -175,6 +175,20 @@ class ScanData extends Component {
       multiId: []
     });
   };
+
+  copyScanData = () => {
+    let content = "";
+    _.map(this.props.datas, item => {
+      if (_.includes(this.state.multiId, item.scanId)) {
+        content += Date(item.createdOn) + "\t";
+        content += Time(item.createdOn) + "\t";
+        content += item.dataType + "\t";
+        content += item.status + "\t";
+        content += "\n";
+      }
+    });
+    return content;
+  }
 
   render() {
     if (this.state.loading) {
@@ -223,13 +237,18 @@ class ScanData extends Component {
               >
                 Add new scan data
               </Button>
-              <Button
-                className="buttonStyles"
-                variant="contained"
-                color="primary"
-              >
-                Copy selected
-              </Button>
+              <CopyToClipboard>
+                {({ copy }) => (
+                  <Button
+                    className="buttonStyles"
+                    variant="contained"
+                    color="primary"
+                    onClick={() => copy(this.copyScanData())}
+                  >
+                    Copy selected
+                  </Button>
+                )}
+              </CopyToClipboard>
               <Button
                 className="buttonStyles"
                 variant="contained"
