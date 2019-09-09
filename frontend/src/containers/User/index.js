@@ -31,6 +31,17 @@ const role = roleId => {
   }
 };
 
+const generatePassword = () => {
+  const length = 8;
+  const charset = "23456789abcdefghmnpqrstuvwxyzABCDEFGHLMNPQRSTUVWXYZ";
+  const n = charset.length;
+  let password = "";
+  for (let i = 0; i < length; ++i) {
+    password += charset.charAt(Math.floor(Math.random() * n));
+  }
+  return password;
+};
+
 class User extends Component {
   constructor(props) {
     super(props);
@@ -41,6 +52,7 @@ class User extends Component {
       editAlert: false,
       deleteMulti: false,
       multiId: [],
+      password: "",
       params: {}
     };
   }
@@ -55,9 +67,16 @@ class User extends Component {
   };
 
   onToggleForm = status => {
-    this.setState({
-      toggle: status
-    });
+    if (status === true) {
+      this.setState({
+        toggle: status,
+        password: generatePassword()
+      });
+    } else {
+      this.setState({
+        toggle: status
+      });
+    }
   };
 
   onToggleEditForm = (status, item) => {
@@ -198,6 +217,7 @@ class User extends Component {
             onSubmit={this.add}
             status={this.state.toggle}
             companies={this.props.companies}
+            password={this.state.password}
           />
           {/* Edit Form */}
           <EditForm

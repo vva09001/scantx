@@ -29,6 +29,14 @@ class Form extends React.Component {
     };
   }
   componentDidMount() {}
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      params: {
+        ...this.state.params,
+        password: nextProps.password
+      }
+    });
+  }
   onSuccess = () => {
     this.setState({
       loading: false
