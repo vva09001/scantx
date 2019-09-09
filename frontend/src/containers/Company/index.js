@@ -4,6 +4,7 @@ import Form from "./Form";
 import { CircularProgress } from "components/uielements/progress";
 import DeleteAlert from "./Alert";
 import SelectAlert from "./SelectAlert";
+import EditAlert from "./EditAlert";
 import LayoutWrapper from "components/utility/layoutWrapper";
 import Papersheet from "components/utility/papersheet";
 import { FullColumn } from "components/utility/rowColumn";
@@ -31,7 +32,8 @@ class Company extends Component {
       params: {},
       editAble: false,
       selected: [],
-      selectAlert: false
+      selectAlert: false,
+      editAlert: false
     };
   }
 
@@ -69,6 +71,10 @@ class Company extends Component {
         toggle: status,
         editAble: true,
         params: selected[0]
+      });
+    } else {
+      this.setState({
+        editAlert: status
       });
     }
   };
@@ -147,6 +153,10 @@ class Company extends Component {
     this.setState({ selectAlert: status });
   }
 
+  onToggleEditAlert = status => {
+    this.setState({ editAlert: status });
+  }
+
   render() {
     if (this.state.loading) {
       return <CircularProgress />;
@@ -219,12 +229,17 @@ class Company extends Component {
             status={this.state.selectAlert}
             onClose={this.onToggleSelectAlert}
           />
+          {/* Edit Alert */}
+          <EditAlert
+            status={this.state.editAlert}
+            onClose={this.onToggleEditAlert}
+          />
         </FullColumn>
       </LayoutWrapper>
     );
   }
 }
-const mapSateToProps = state => {
+const mapStateToProps = state => {
   return {
     companies: state.Company.list
   };
@@ -236,6 +251,6 @@ const mapDispatchToProps = {
   edit: companyActions.edit
 };
 export default connect(
-  mapSateToProps,
+  mapStateToProps,
   mapDispatchToProps
 )(Company);
