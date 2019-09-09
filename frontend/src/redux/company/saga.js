@@ -3,7 +3,7 @@ import { get, add, edit, remove } from "services/company";
 import { getToken } from "redux/selectors";
 import actions from "./actions";
 
-export function* getCompnaySagas(data) {
+export function* getCompanySagas(data) {
   const { success, fail } = data;
   try {
     const token = yield select(getToken);
@@ -19,7 +19,7 @@ export function* getCompnaySagas(data) {
   }
 }
 
-export function* addCompnaySagas(data) {
+export function* addCompanySagas(data) {
   const { params, success, fail } = data;
   try {
     const token = yield select(getToken);
@@ -32,6 +32,8 @@ export function* addCompnaySagas(data) {
       } else {
         yield fail(res.data.message);
       }
+      // yield success();
+      // yield put({ type: actions.ADD_COMPANY_SUCCESS, response: res.data.data.entity });
     } else {
       yield fail(res.data.message);
     }
@@ -40,7 +42,7 @@ export function* addCompnaySagas(data) {
   }
 }
 
-export function* editCompnaySagas(data) {
+export function* editCompanySagas(data) {
   const { params, success, fail } = data;
   const body = {
     address: params.address,
@@ -66,7 +68,7 @@ export function* editCompnaySagas(data) {
   }
 }
 
-export function* deleteCompnaySagas(data) {
+export function* deleteCompanySagas(data) {
   const { params, success, fail } = data;
   try {
     const token = yield select(getToken);
@@ -84,9 +86,9 @@ export function* deleteCompnaySagas(data) {
 
 export default function* rootSaga() {
   yield all([
-    yield takeLatest(actions.GET_COMPANY_REQUEST, getCompnaySagas),
-    yield takeLatest(actions.ADD_COMPANY_REQUEST, addCompnaySagas),
-    yield takeLatest(actions.EDIT_COMPANY_REQUEST, editCompnaySagas),
-    yield takeLatest(actions.DELETE_COMPANY_REQUEST, deleteCompnaySagas)
+    yield takeLatest(actions.GET_COMPANY_REQUEST, getCompanySagas),
+    yield takeLatest(actions.ADD_COMPANY_REQUEST, addCompanySagas),
+    yield takeLatest(actions.EDIT_COMPANY_REQUEST, editCompanySagas),
+    yield takeLatest(actions.DELETE_COMPANY_REQUEST, deleteCompanySagas)
   ]);
 }

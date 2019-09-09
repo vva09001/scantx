@@ -4,6 +4,7 @@ import { CircularProgress } from "components/uielements/progress";
 import Form from "./Form";
 import EditForm from "./EditForm";
 import DeleteAlert from "./Alert";
+import SelectAlert from "./SelectAlert";
 import LayoutWrapper from "components/utility/layoutWrapper";
 import Papersheet from "components/utility/papersheet";
 import { FullColumn } from "components/utility/rowColumn";
@@ -52,6 +53,7 @@ class User extends Component {
       editAlert: false,
       deleteMulti: false,
       multiId: [],
+      selectAlert: false,
       password: "",
       params: {}
     };
@@ -100,10 +102,20 @@ class User extends Component {
   };
 
   onToggleDeleteMulti = status => {
-    this.setState({
-      deleteMulti: status
-    });
+    if (this.state.multiId.length <= 0) {
+      this.setState({
+        selectAlert: status
+      });
+    } else {
+      this.setState({
+        deleteMulti: status
+      });
+    }
   };
+
+  onToggleSelectAlert = status => {
+    this.setState({ selectAlert: status });
+  }
 
   handleCheck = (event, id) => {
     if (event.target.checked) {
@@ -194,13 +206,6 @@ class User extends Component {
               >
                 Add new user
               </Button>
-              {/* <Button
-                className="buttonStyles"
-                variant="contained"
-                color="primary"
-              >
-                Edit selected
-              </Button> */}
               <Button
                 className="buttonStyles"
                 variant="contained"
@@ -232,6 +237,11 @@ class User extends Component {
             status={this.state.deleteMulti}
             onSubmit={this.deleteMulti}
             onClose={this.onToggleDeleteMulti}
+          />
+          {/* Select Alert */}
+          <SelectAlert
+            status={this.state.selectAlert}
+            onClose={this.onToggleSelectAlert}
           />
         </FullColumn>
       </LayoutWrapper>
