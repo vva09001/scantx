@@ -64,6 +64,7 @@ class Company extends Component {
     if (status === true) {
       this.setState({
         toggle: status,
+        editAble: true,
         params: item
       });
     } else {
