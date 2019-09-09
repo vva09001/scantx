@@ -25,15 +25,8 @@ export function* addCompanySagas(data) {
     const token = yield select(getToken);
     const res = yield add(params, token);
     if (res.status === 200) {
-      const res = yield get(token);
-      if (res.status === 200) {
-        yield success();
-        yield put({ type: actions.GET_COMPANY_SUCCESS, response: res.data });
-      } else {
-        yield fail(res.data.message);
-      }
-      // yield success();
-      // yield put({ type: actions.ADD_COMPANY_SUCCESS, response: res.data.data.entity });
+      yield success();
+      yield put({ type: actions.ADD_COMPANY_SUCCESS, response: res.data.data });
     } else {
       yield fail(res.data.message);
     }

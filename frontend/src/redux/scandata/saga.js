@@ -6,7 +6,7 @@ import {
   deleteScanData,
   deleteMultiScanData
 } from "services/scanData";
-import { getToken } from 'redux/selectors';
+import { getToken } from "redux/selectors";
 import actions from "./actions";
 
 export function* getScanDataSagas(data) {
@@ -31,13 +31,11 @@ export function* editScanDataSagas(data) {
     const token = yield select(getToken);
     const res = yield editScanData(params, token);
     if (res.status === 200) {
-      const res = yield getScanData(token);
-      if (res.status === 200) {
-        yield success();
-        yield put({ type: actions.GET_SCAN_DATA_SUCCESS, response: res.data });
-      } else {
-        yield fail(res.data.message);
-      }
+      yield success();
+      yield put({
+        type: actions.EDIT_SCAN_DATA_SUCCESS,
+        response: res.data.data
+      });
     } else {
       yield fail(res.data.message);
     }
@@ -52,13 +50,11 @@ export function* addScanDataSagas(data) {
     const token = yield select(getToken);
     const res = yield addScanData(params, token);
     if (res.status === 200) {
-      const res = yield getScanData(token);
-      if (res.status === 200) {
-        yield success();
-        yield put({ type: actions.GET_SCAN_DATA_SUCCESS, response: res.data });
-      } else {
-        yield fail(res.data.message);
-      }
+      yield success();
+      yield put({
+        type: actions.ADD_SCAN_DATA_SUCCESS,
+        response: res.data.data
+      });
     } else {
       yield fail(res.data.message);
     }
@@ -73,13 +69,11 @@ export function* deleteScanDataSagas(data) {
     const token = yield select(getToken);
     const res = yield deleteScanData(id, token);
     if (res.status === 200) {
-      const res = yield getScanData(token);
-      if (res.status === 200) {
-        yield success();
-        yield put({ type: actions.GET_SCAN_DATA_SUCCESS, response: res.data });
-      } else {
-        yield fail(res.data.message);
-      }
+      yield success();
+      yield put({
+        type: actions.DELETE_SCAN_DATA_SUCCESS,
+        response: res.data.data
+      });
     } else {
       yield fail(res.data.message);
     }
@@ -94,13 +88,11 @@ export function* deleteMultiScanDataSagas(data) {
     const token = yield select(getToken);
     const res = yield deleteMultiScanData(params, token);
     if (res.status === 200) {
-      const res = yield getScanData(token);
-      if (res.status === 200) {
-        yield success();
-        yield put({ type: actions.GET_SCAN_DATA_SUCCESS, response: res.data });
-      } else {
-        yield fail(res.data.message);
-      }
+      yield success();
+      yield put({
+        type: actions.DELETE_MULTI_SCAN_DATA_SUCCESS,
+        response: res.data.data
+      });
     } else {
       yield fail(res.data.message);
     }
