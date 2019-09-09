@@ -18,7 +18,7 @@ class Alert extends React.Component {
             <Dialog open={status} onClose={() => onClose(false)}>
                 <DialogTitle>{"Remove company"}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>Please choose one or more scan data to delete</DialogContentText>
+                    <DialogContentText>Please choose one or more companies to delete</DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => onClose(false)} color="primary">
