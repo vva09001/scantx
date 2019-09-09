@@ -31,13 +31,11 @@ export function* addUserSagas(data) {
     const token = yield select(getToken);
     const res = yield addUser(params, token);
     if (res.status === 200) {
-      const res = yield getUsers(token);
-      if (res.status === 200) {
-        yield success();
-        yield put({ type: actions.GET_USER_SUCCESS, response: res.data });
-      } else {
-        yield fail(res.data.message);
-      }
+      yield success();
+      yield put({
+        type: actions.ADD_USER_SUCCESS,
+        response: res.data.data
+      });
     } else {
       yield fail(res.data.message);
     }
@@ -52,13 +50,11 @@ export function* editUserSagas(data) {
     const token = yield select(getToken);
     const res = yield editUser(params, token);
     if (res.status === 200) {
-      const res = yield getUsers(token);
-      if (res.status === 200) {
-        yield success();
-        yield put({ type: actions.GET_USER_SUCCESS, response: res.data });
-      } else {
-        yield fail(res.data.message);
-      }
+      yield success();
+      yield put({
+        type: actions.EDIT_USER_SUCCESS,
+        response: res.data.data
+      });
     } else {
       yield fail(res.data.message);
     }
@@ -73,13 +69,11 @@ export function* deleteUserSagas(data) {
     const token = yield select(getToken);
     const res = yield deleteUserById(id, token);
     if (res.status === 200) {
-      const res = yield getUsers(token);
-      if (res.status === 200) {
-        yield success();
-        yield put({ type: actions.GET_USER_SUCCESS, response: res.data });
-      } else {
-        yield fail(res.data.message);
-      }
+      yield success();
+      yield put({
+        type: actions.DELETE_USER_SUCCESS,
+        response: res.data.data
+      });
     } else {
       yield fail(res.data.message);
     }
@@ -94,13 +88,11 @@ export function* deleteMultiUserSagas(data) {
     const token = yield select(getToken);
     const res = yield deleteMultiUser(params, token);
     if (res.status === 200) {
-      const res = yield getUsers(token);
-      if (res.status === 200) {
-        yield success();
-        yield put({ type: actions.GET_USER_SUCCESS, response: res.data });
-      } else {
-        yield fail(res.data.message);
-      }
+      yield success();
+      yield put({
+        type: actions.DELETE_MULTI_USER_SUCCESS,
+        response: res.data.data
+      });
     } else {
       yield fail(res.data.message);
     }

@@ -115,7 +115,7 @@ class User extends Component {
 
   onToggleSelectAlert = status => {
     this.setState({ selectAlert: status });
-  }
+  };
 
   handleCheck = (event, id) => {
     if (event.target.checked) {

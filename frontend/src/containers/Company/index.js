@@ -4,7 +4,6 @@ import Form from "./Form";
 import { CircularProgress } from "components/uielements/progress";
 import DeleteAlert from "./Alert";
 import SelectAlert from "./SelectAlert";
-import EditAlert from "./EditAlert";
 import LayoutWrapper from "components/utility/layoutWrapper";
 import Papersheet from "components/utility/papersheet";
 import { FullColumn } from "components/utility/rowColumn";
@@ -12,6 +11,7 @@ import Button from "components/uielements/button/index.js";
 import Grid from "components/uielements/grid";
 import Table from "components/uielements/table";
 import Checkbox from "components/uielements/checkbox";
+import Link from "@material-ui/core/Link";
 import {
   TableBody,
   TableCell,
@@ -32,8 +32,7 @@ class Company extends Component {
       params: {},
       editAble: false,
       selected: [],
-      selectAlert: false,
-      editAlert: false
+      selectAlert: false
     };
   }
 
@@ -61,20 +60,15 @@ class Company extends Component {
     });
   };
 
-  onToggleFormEdit = status => {
-    if (this.state.selected.length > 0 && this.state.selected.length < 2) {
-      const selected = _.filter(
-        this.props.companies,
-        item => this.state.selected[0] === item.cid
-      );
+  onToggleEditForm = (status, item) => {
+    if (status === true) {
       this.setState({
         toggle: status,
-        editAble: true,
-        params: selected[0]
+        params: item
       });
     } else {
       this.setState({
-        editAlert: status
+        toggle: status
       });
     }
   };
@@ -84,8 +78,7 @@ class Company extends Component {
       this.setState({
         selectAlert: status
       });
-    }
-    else {
+    } else {
       this.setState({
         delete: status
       });
@@ -112,6 +105,15 @@ class Company extends Component {
         <TableCell>{item.name}</TableCell>
         <TableCell>{item.address}</TableCell>
         <TableCell>{item.remark}</TableCell>
+        <TableCell>
+          <Link
+            component="button"
+            variant="body2"
+            onClick={() => this.onToggleEditForm(true, item)}
+          >
+            Edit
+          </Link>
+        </TableCell>
       </TableRow>
     ));
   };
@@ -151,11 +153,7 @@ class Company extends Component {
 
   onToggleSelectAlert = status => {
     this.setState({ selectAlert: status });
-  }
-
-  onToggleEditAlert = status => {
-    this.setState({ editAlert: status });
-  }
+  };
 
   render() {
     if (this.state.loading) {
@@ -174,6 +172,7 @@ class Company extends Component {
                   <TableCell>Name</TableCell>
                   <TableCell>Address</TableCell>
                   <TableCell>Remark</TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>{this.renderData()}</TableBody>
@@ -191,14 +190,6 @@ class Company extends Component {
                 onClick={() => this.onToggleForm(true)}
               >
                 Add new company
-              </Button>
-              <Button
-                className="buttonStyles"
-                variant="contained"
-                color="primary"
-                onClick={() => this.onToggleFormEdit(true)}
-              >
-                Edit selected
               </Button>
               <Button
                 className="buttonStyles"
@@ -228,11 +219,6 @@ class Company extends Component {
           <SelectAlert
             status={this.state.selectAlert}
             onClose={this.onToggleSelectAlert}
-          />
-          {/* Edit Alert */}
-          <EditAlert
-            status={this.state.editAlert}
-            onClose={this.onToggleEditAlert}
           />
         </FullColumn>
       </LayoutWrapper>

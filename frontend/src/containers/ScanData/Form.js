@@ -52,67 +52,73 @@ class Form extends React.Component {
   render() {
     const { status } = this.props;
     return (
-      <Dialog open={status} onClose={this.onClose}>
-        <DialogTitle>{"Edit scan data"}</DialogTitle>
-        <DialogContent>
-          <div>
-            <TextField
-              required
-              name="payload"
-              label="Payload"
-              margin="normal"
-              fullWidth
-              value={this.state.params.payload}
-              onChange={e => this.onChange(e)}
-            />
-          </div>
-          <div>
-            <TextField
-              required
-              name="dataType"
-              label="Data Type"
-              margin="normal"
-              fullWidth
-              value={this.state.params.dataType}
-              onChange={e => this.onChange(e)}
-            />
-          </div>
-          <div>
-            <TextField
-              required
-              name="fileName"
-              label="File Name"
-              margin="normal"
-              fullWidth
-              value={this.state.params.fileName}
-              onChange={e => this.onChange(e)}
-            />
-          </div>
-          <div>
-            <TextField
-              required
-              name="status"
-              label="Status"
-              margin="normal"
-              fullWidth
-              value={this.state.params.status}
-              onChange={e => this.onChange(e)}
-            />
-          </div>
-        </DialogContent>
+      <div>
         {this.state.loading ? (
           <CircularProgress />
         ) : (
-          <DialogActions>
-            <Button onClick={this.onClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={this.onSubmit} color="primary" autoFocus>
-              Submit
-            </Button>
-          </DialogActions>
+          <Dialog open={status} onClose={this.onClose}>
+            <DialogTitle>{"Edit scan data"}</DialogTitle>
+            <DialogContent>
+              <div>
+                <TextField
+                  required
+                  name="payload"
+                  label="Payload"
+                  margin="normal"
+                  fullWidth
+                  value={this.state.params.payload}
+                  onChange={e => this.onChange(e)}
+                />
+              </div>
+              <div>
+                <TextField
+                  required
+                  name="dataType"
+                  label="Data Type"
+                  margin="normal"
+                  fullWidth
+                  value={this.state.params.dataType}
+                  onChange={e => this.onChange(e)}
+                />
+              </div>
+              <div>
+                <TextField
+                  required
+                  name="fileName"
+                  label="File Name"
+                  margin="normal"
+                  fullWidth
+                  value={this.state.params.fileName}
+                  onChange={e => this.onChange(e)}
+                />
+              </div>
+              <div>
+                <TextField
+                  required
+                  name="status"
+                  label="Status"
+                  margin="normal"
+                  fullWidth
+                  value={this.state.params.status}
+                  onChange={e => this.onChange(e)}
+                />
+              </div>
+            </DialogContent>
+            {this.state.loading ? (
+              <CircularProgress />
+            ) : (
+              <DialogActions>
+                <Button onClick={this.onClose} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={this.onSubmit} color="primary" autoFocus>
+                  Submit
+                </Button>
+              </DialogActions>
+            )}
+          </Dialog>
         )}
-      </Dialog>
+      </div>
     );
   }
 }

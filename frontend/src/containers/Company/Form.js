@@ -66,7 +66,7 @@ class Form extends React.Component {
           <CircularProgress />
         ) : (
           <React.Fragment>
-            <DialogTitle>{"Create a new ScanTX company"}</DialogTitle>
+            <DialogTitle>{"Create/Edit ScanTX company"}</DialogTitle>
             <DialogContent>
               <div>
                 <TextField
