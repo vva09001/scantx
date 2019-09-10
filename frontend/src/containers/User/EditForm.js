@@ -162,6 +162,15 @@ class Form extends React.Component {
   };
   render() {
     const { status } = this.props;
+    let enableSubmit =
+      this.state.params.userName !== "" &&
+      this.state.params.givenName !== "" &&
+      this.state.params.familyName !== "" &&
+      this.state.params.typeOfAccount !== "" &&
+      this.state.params.roleId !== "" &&
+      this.state.params.cid !== "" &&
+      // this.state.params.password !== "" &&
+      this.state.params.email !== "";
     return (
       <div>
         {this.state.loading ? (
@@ -248,7 +257,6 @@ class Form extends React.Component {
               </div>
               <div>
                 <TextField
-                  required
                   name="password"
                   label="Password"
                   margin="normal"
@@ -306,7 +314,12 @@ class Form extends React.Component {
                 <Button onClick={this.onClose} color="primary">
                   Cancel
                 </Button>
-                <Button onClick={this.onSubmit} color="primary" autoFocus>
+                <Button
+                  disabled={!enableSubmit}
+                  onClick={this.onSubmit}
+                  color="primary"
+                  autoFocus
+                >
                   Submit
                 </Button>
               </DialogActions>

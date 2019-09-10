@@ -66,6 +66,16 @@ const getQr = token => {
   });
 };
 
+const downloadScanData = token => {
+  return request({
+    url: "/scandata/getqr/",
+    method: "get",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+}
+
 export {
   getScanData,
   editScanData,
