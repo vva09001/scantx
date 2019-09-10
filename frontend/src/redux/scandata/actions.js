@@ -49,5 +49,13 @@ const actions = {
     success,
     fail
   }),
+
+  DOWNLOAD_SCAN_DATA_REQUEST: 'DOWNLOAD_SCAN_DATA_REQUEST',
+  DOWNLOAD_SCAN_DATA_SUCCESS: 'DOWNLOAD_SCAN_DATA_SUCCESS',
+  download: (success, fail) => ({
+    type: actions.DOWNLOAD_SCAN_DATA_REQUEST,
+    success,
+    fail
+  }),
 };
 export default actions;

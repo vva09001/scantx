@@ -253,6 +253,13 @@ class ScanData extends Component {
                 className="buttonStyles"
                 variant="contained"
                 color="primary"
+              >
+                Download
+              </Button>
+              <Button
+                className="buttonStyles"
+                variant="contained"
+                color="primary"
                 onClick={() => this.onToggleDeleteMulti(true)}
               >
                 Delete selected
@@ -305,7 +312,8 @@ const mapDispatchToProps = {
   deleteScanData: scanDataActions.delete,
   deleteMultiScanData: scanDataActions.deleteMulti,
   editScanData: scanDataActions.edit,
-  addScanData: scanDataActions.add
+  addScanData: scanDataActions.add,
+  downloadScanData: scanDataActions.download
 };
 export default connect(
   mapSateToProps,
