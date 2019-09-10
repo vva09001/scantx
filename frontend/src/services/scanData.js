@@ -56,10 +56,21 @@ const deleteMultiScanData = (params, token) => {
   });
 };
 
+const getQr = token => {
+  return request({
+    url: "/scandata/getqr/",
+    method: "get",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+};
+
 export {
   getScanData,
   editScanData,
   addScanData,
   deleteScanData,
-  deleteMultiScanData
+  deleteMultiScanData,
+  getQr
 };

@@ -41,5 +41,13 @@ const actions = {
     success,
     fail
   }),
+
+  GET_QR_REQUEST: 'GET_QR_REQUEST',
+  GET_QR_SUCCESS: 'GET_QR_SUCCESS',
+  getQr: (success, fail) => ({
+    type: actions.GET_QR_REQUEST,
+    success,
+    fail
+  }),
 };
 export default actions;

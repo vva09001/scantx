@@ -4,7 +4,8 @@ import {
   editScanData,
   addScanData,
   deleteScanData,
-  deleteMultiScanData
+  deleteMultiScanData,
+  getQr
 } from "services/scanData";
 import { getToken } from "redux/selectors";
 import actions from "./actions";
@@ -101,6 +102,22 @@ export function* deleteMultiScanDataSagas(data) {
   }
 }
 
+export function* getQrSagas(data) {
+  const { success, fail } = data;
+  try {
+    const token = yield select(getToken);
+    const res = yield getQr(token);
+    if (res.status === 200) {
+      yield success();
+      yield put({ type: actions.GET_QR_SUCCESS, response: res.data.data });
+    } else {
+      yield fail(res.data.message);
+    }
+  } catch (error) {
+    yield fail("Không thể kết nối đến Sever");
+  }
+}
+
 export default function* rootSaga() {
   yield all([
     yield takeLatest(actions.GET_SCAN_DATA_REQUEST, getScanDataSagas),
@@ -110,6 +127,7 @@ export default function* rootSaga() {
     yield takeLatest(
       actions.DELETE_MULTI_SCAN_DATA_REQUEST,
       deleteMultiScanDataSagas
-    )
+    ),
+    yield takeLatest(actions.GET_QR_REQUEST, getQrSagas)
   ]);
 }
