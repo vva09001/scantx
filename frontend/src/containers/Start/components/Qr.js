@@ -1,6 +1,7 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Papersheet from "components/utility/papersheet";
+import { CircularProgress } from "components/uielements/progress";
 import { connect } from "react-redux";
 import { scanDataActions } from "redux/actions";
 import _ from "lodash";
@@ -17,6 +18,9 @@ const style = {
 class Qr extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      loading: true
+    };
   }
 
   componentDidMount() {
@@ -37,10 +41,14 @@ class Qr extends React.Component {
               </p>
             </Grid>
             <Grid item xs={6}>
-              <img
-                width="100%"
-                src={"data:image/png;base64, " + this.props.qr}
-              ></img>
+              {this.state.loading ? (
+                <CircularProgress />
+              ) : (
+                <img
+                  width="100%"
+                  src={"data:image/png;base64, " + this.props.qr}
+                ></img>
+              )}
             </Grid>
           </Grid>
         </Papersheet>
