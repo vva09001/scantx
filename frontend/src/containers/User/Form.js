@@ -136,7 +136,7 @@ class Form extends React.Component {
           userRole: false,
           adminRole: false,
           superadminRole: false,
-          params: { ...this.state.params, roleId: null }
+          params: { ...this.state.params, roleId: "" }
         });
     }
   };
