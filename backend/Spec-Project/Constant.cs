@@ -35,11 +35,13 @@ namespace Spec_Project
             }
         }
     }
-        public static class RoleConstant
-        {
-            public const int superadmin = 1;
-            public const string admin = "admin";
-            public const string user = "user";
-            public const int reader = 4;
-        }
+    public static class RoleConstant
+    {
+        public const int superadmin = 1;
+        public const string admin = "admin";
+        public const string user = "user";
+        public const int adminint = 2;
+        public const int userint = 3;
+        public const int reader = 4;
     }
+}

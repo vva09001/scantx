@@ -131,6 +131,8 @@ namespace Spec_Project.Controllers
             return Ok(userDto);
         }
 
+
+
         [Authorize]
         [DisableCors]
         [HttpPut("update")]

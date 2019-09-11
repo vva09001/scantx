@@ -19,7 +19,7 @@ namespace Spec_Project.Entities
         public string Cid { get; set; }
         public DateTime? DeletedOn { get; set; }
         public string RoleId { get; set; }
-
+        public virtual ICollection<TblScanData> TblScanData { get; set; }
         public virtual TblCustomer C { get; set; }
     }
 }
