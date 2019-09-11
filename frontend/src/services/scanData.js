@@ -82,5 +82,6 @@ export {
   addScanData,
   deleteScanData,
   deleteMultiScanData,
-  getQr
+  getQr,
+  downloadScanData
 };
