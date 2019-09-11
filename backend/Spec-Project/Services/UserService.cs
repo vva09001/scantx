@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Spec_Project.Entities;
 using Spec_Project.Helpers;
 using Spec_Project.Models;
@@ -12,9 +13,9 @@ namespace Spec_Project.Services
     public interface IUserService
     {
         TblUsers Authenticate(string username, string password);
-        IEnumerable<TblUsers> GetAll();
+        List<TblUsers> GetAll();
         TblUsers GetById(int id);
-        ResponseModel Create(UserDto user, string password);
+        ResponseModel Create(UserDto user, string password, string UserIDLogin);
         ResponseModel Update(TblUsers user, string password = null);
         ResponseModel Delete(int id);
 
@@ -24,12 +25,10 @@ namespace Spec_Project.Services
     {
         DataContext _context;
         IHttpContextAccessor _httpContextAccessor;
-        public UserService(IHttpContextAccessor httpContextAccessor)
+
+        public UserService(IHttpContextAccessor httpContextAccessor, DataContext context)
         {
             _httpContextAccessor = httpContextAccessor;
-        }
-        public UserService(DataContext context)
-        {
             _context = context;
         }
 
@@ -52,9 +51,10 @@ namespace Spec_Project.Services
             return user;
         }
 
-        public IEnumerable<TblUsers> GetAll()
+        public List<TblUsers> GetAll()
         {
-            return _context.TblUsers;
+            var data = _context.TblUsers.ToList();
+            return data;
         }
 
         public TblUsers GetById(int id)
@@ -62,74 +62,98 @@ namespace Spec_Project.Services
             return _context.TblUsers.Where(o => o.DeletedOn == null && o.Id == id).FirstOrDefault();
         }
 
-        public ResponseModel Create(UserDto user, string password)
+        public ResponseModel Create(UserDto userNew, string password, string UserIDLogin)
         {
-            var context = _httpContextAccessor.HttpContext;
-            if (UsersConstant.GetRole(context.User.Identity.Name) == "admin")
+            ResponseModel res = (new ResponseModel
             {
-                var tbluser = new TblUsers
-                {
+                Data = "",
+                Status = "200",
+                Message = ""
+            });
 
-                    UserName = user.UserName,
-                    FamilyName = user.FamilyName,
-                    GivenName = user.GivenName,
-                    TypeOfAccount = user.TypeOfAccount,
-                    Email = user.Email,
-                    ContactByEmail = user.ContactByEmail,
-                    EncryptionActive = user.EncryptionActive,
-                    DeletedOn = null
-                ,
-                    Cid = user.Cid,
-                    RoleId = user.RoleID
-                };
-                ResponseModel res = (new ResponseModel
-                {
-                    Data = "",
-                    Status = "200",
-                    Message = ""
-                });
+            var context = _httpContextAccessor.HttpContext;
+            //if (int.Parse(UsersConstant.GetRole(context.User.Identity.Name)) != RoleConstant.reader)
+            //{
+            //var userlogin = _context.TblUsers.Where(o=> o.Id == int.Parse(UserIDLogin)).FirstOrDefault();
+            //userNew.Cid = userlogin.Cid;
+            //userNew.TypeOfAccount = "Commercial";
+
+
+            if (userNew.TypeOfAccount == "Private" || userNew.TypeOfAccount == "Test")
+            {
                 try
                 {
-
-                    // validation
-                    if (string.IsNullOrWhiteSpace(password))
+                    CompanyService cpns = new CompanyService(_httpContextAccessor);
+                    cpns.addCompany(new TblCustomer
                     {
-                        res.Data = "";
-                        res.Status = "500";
-                        res.Message = "Password is required";
-                        return res;
-                    }
-
-                    if (_context.TblUsers.Any(x => x.UserName == user.UserName && x.DeletedOn == null))
-                    {
-                        res.Data = "";
-                        res.Status = "500";
-                        res.Message = "Username \"" + user.UserName + "\" is already taken";
-                        return res;
-                    }
-
-
-                    byte[] passwordHash, passwordSalt;
-                    CreatePasswordHash(password, out passwordHash, out passwordSalt);
-
-                    tbluser.PasswordHash = passwordHash;
-                    tbluser.PasswordSalt = passwordSalt;
-
-                    _context.TblUsers.Add(tbluser);
-                    _context.SaveChanges();
+                        Name = userNew.UserName
+                    });
                 }
                 catch (Exception ex)
                 {
+                    return res = new ResponseModel {
+                    Data = "",
+                    Status = "500",
+                    Message= ex.Message
+                    };
+                }
+            }
+            
+            var tbluser = new TblUsers
+            {
+
+                UserName = userNew.UserName,
+                FamilyName = userNew.FamilyName,
+                GivenName = userNew.GivenName,
+                TypeOfAccount = userNew.TypeOfAccount,
+                Email = userNew.Email,
+                ContactByEmail = userNew.ContactByEmail,
+                EncryptionActive = userNew.EncryptionActive,
+                DeletedOn = null,
+                Cid = _context.TblCustomer.Where(o=>o.Name == userNew.UserName).Select(o=>o.Cid).FirstOrDefault(),
+                RoleId = userNew.RoleID
+            };
+           
+            try
+            {
+
+                // validation
+                if (string.IsNullOrWhiteSpace(password))
+                {
                     res.Data = "";
                     res.Status = "500";
-                    res.Message = ex.Message;
+                    res.Message = "Password is required";
+                    return res;
                 }
-                return res;
+
+                if (_context.TblUsers.Any(x => x.UserName == userNew.UserName && x.DeletedOn == null))
+                {
+                    res.Data = "";
+                    res.Status = "500";
+                    res.Message = "Username \"" + userNew.UserName + "\" is already taken";
+                    return res;
+                }
+
+
+                byte[] passwordHash, passwordSalt;
+                CreatePasswordHash(password, out passwordHash, out passwordSalt);
+
+                tbluser.PasswordHash = passwordHash;
+                tbluser.PasswordSalt = passwordSalt;
+
+                _context.TblUsers.Add(tbluser);
+                _context.SaveChanges();
             }
-            return null;
+            catch (Exception ex)
+            {
+                res.Data = "";
+                res.Status = "500";
+                res.Message = ex.Message;
+            }
+            return res;
+            //}
+
         }
-
-
 
         public ResponseModel Update(TblUsers userParam, string password = null)
         {

@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Spec_Project.Entities
+namespace Spec_Project.Models
 {
     public partial class TblUsers
     {
+        public TblUsers()
+        {
+            TblScanData = new HashSet<TblScanData>();
+        }
+
         public int Id { get; set; }
         public string UserName { get; set; }
         public byte[] PasswordHash { get; set; }
@@ -19,7 +24,8 @@ namespace Spec_Project.Entities
         public string Cid { get; set; }
         public DateTime? DeletedOn { get; set; }
         public string RoleId { get; set; }
-        public virtual ICollection<TblScanData> TblScanData { get; set; }
+
         public virtual TblCustomer C { get; set; }
+        public virtual ICollection<TblScanData> TblScanData { get; set; }
     }
 }

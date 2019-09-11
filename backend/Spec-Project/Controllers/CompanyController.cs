@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Spec_Project.Entities;
+using Spec_Project.Models;
 using Spec_Project.Services;
 
 namespace Spec_Project.Controllers
@@ -35,6 +36,14 @@ namespace Spec_Project.Controllers
         public IActionResult getCompany()
         {
             return Ok(_ICompanyService.getCompany());
+        }
+
+        [Authorize]
+        [DisableCors]
+        [HttpGet("get-company-by-cid")]
+        public IActionResult getCompanyByCid(string cid)
+        {
+            return Ok(_ICompanyService.GetCompanyByCid(cid));
         }
 
         [Authorize]

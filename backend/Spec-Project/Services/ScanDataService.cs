@@ -42,7 +42,8 @@ namespace Spec_Project.Services
                 Status = "200",
                 Message = ""
             };
-            string mypath = @".\";
+            string mypath = @"h:\root\tmp\";
+            string mypath1 = @"E:\Miracles\spec-project\scantx\backend\Spec-Project\";
             try
             {
 
@@ -98,7 +99,7 @@ namespace Spec_Project.Services
                 {
 
                     datascan.Clear();
-                    datascan = db.TblScanData.Include(o => o.TblUserss).Where(o => o.Uid == int.Parse(Uid) && (o.TblUserss.RoleId == RoleConstant.user.ToString() || o.TblUserss.RoleId == RoleConstant.admin || o.TblUserss.RoleId == RoleConstant.reader.ToString())).Select(o => new TblScanData
+                    datascan = db.TblScanData.Include(o => o.U).Where(o => o.Uid == int.Parse(Uid) && (o.U.RoleId == RoleConstant.user.ToString() || o.U.RoleId == RoleConstant.admin || o.U.RoleId == RoleConstant.reader.ToString())).Select(o => new TblScanData
                     {
                         Uid = o.Uid,
                         CreatedOn = o.CreatedOn,
@@ -115,7 +116,7 @@ namespace Spec_Project.Services
                 if (role == RoleConstant.userint)
                 {
                     datascan.Clear();
-                    datascan = db.TblScanData.Include(o => o.TblUserss).Where(o => o.Uid == int.Parse(Uid) && (o.TblUserss.RoleId == RoleConstant.user.ToString() || o.TblUserss.RoleId == RoleConstant.reader.ToString())).Select(o => new TblScanData
+                    datascan = db.TblScanData.Include(o => o.U).Where(o => o.Uid == int.Parse(Uid) && (o.U.RoleId == RoleConstant.user.ToString() || o.U.RoleId == RoleConstant.reader.ToString())).Select(o => new TblScanData
                     {
                         Uid = o.Uid,
                         CreatedOn = o.CreatedOn,
@@ -134,7 +135,8 @@ namespace Spec_Project.Services
                     FileCultureName = "en-US"
                 };
                 CsvContext cc = new CsvContext();
-                string finalPath = mypath + "scandata_" + DateTime.Now.ToString("yyyyMMddhhmmssfff") + ".csv";
+
+                string finalPath = Directory.GetCurrentDirectory() + "\\tmp\\scandata_" + DateTime.Now.ToString("yyyyMMddhhmmssfff") + ".csv";
                 cc.Write(datascan, finalPath, outputFileDescription);
                 res.Data = finalPath;
                 res.Message = "";
@@ -153,15 +155,13 @@ namespace Spec_Project.Services
         public List<TblScanData> getScanData()
         {
             var cont = _httpContextAccessor.HttpContext;
-            if (UsersConstant.GetRole(cont.User.Identity.Name) == "admin")
-            {
+            
                 using (DataContext context = new DataContext())
                 {
                     var rs = context.TblScanData.Where(p => p.DeletedOn == null).OrderByDescending(p => p.CreatedOn).ToList();
                     return rs;
                 }
-            }
-            return null;
+            
         }
 
         public ResponseModel addScanData(TblScanData tblscandata)
