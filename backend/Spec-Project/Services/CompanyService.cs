@@ -14,6 +14,7 @@ namespace Spec_Project.Services
         ResponseModel EditCompany(TblCustomer customer);
         ResponseModel DeleteArrCompany(List<string> deleteIds);
         ResponseModel DeleteCompany(string cid);
+        TblCustomer GetCompanyByCid(string Cid);
     }
     public class CompanyService : ICompanyService
     {
@@ -33,12 +34,18 @@ namespace Spec_Project.Services
             }
             return null;
         }
+        public TblCustomer GetCompanyByCid(string Cid)
+        {
+                var companybycid = db.TblCustomer.Where(p => p.Cid == Cid && p.DeletedOn == null).FirstOrDefault();
+                return companybycid;
+            
+        }
 
         public ResponseModel addCompany(TblCustomer tblcustomer)
         {
             var context = _httpContextAccessor.HttpContext;
-            if (UsersConstant.GetRole(context.User.Identity.Name) == "admin")
-            {
+            //if (UsersConstant.GetRole(context.User.Identity.Name) == "admin")
+            //{
                 {
                     Guid g;
                     var res = new ResponseModel()
@@ -71,7 +78,7 @@ namespace Spec_Project.Services
                     }
 
                     return res;
-                }
+               // }
             }
             return null;
         }
