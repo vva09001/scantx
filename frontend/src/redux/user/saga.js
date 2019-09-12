@@ -10,10 +10,10 @@ import { getToken } from "redux/selectors";
 import actions from "./actions";
 
 export function* getUserSagas(data) {
-  const { success, fail } = data;
+  const { id, success, fail } = data;
   try {
     const token = yield select(getToken);
-    const res = yield getUsers(token);
+    const res = yield getUsers(id, token);
     if (res.status === 200) {
       yield success();
       yield put({ type: actions.GET_USER_SUCCESS, response: res.data });
@@ -21,7 +21,7 @@ export function* getUserSagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 
@@ -40,7 +40,7 @@ export function* addUserSagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 
@@ -59,7 +59,7 @@ export function* editUserSagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 
@@ -78,7 +78,7 @@ export function* deleteUserSagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 
@@ -97,7 +97,7 @@ export function* deleteMultiUserSagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 

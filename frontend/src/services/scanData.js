@@ -66,10 +66,13 @@ const getQr = token => {
   });
 };
 
-const downloadScanData = token => {
+const downloadScanData = (id, token) => {
   return request({
-    url: "/scandata/getqr/",
+    url: "/scandata/convert-scandata-to-csv",
     method: "get",
+    params: {
+      uid: id
+    },
     headers: {
       Authorization: `Bearer ${token}`
     }

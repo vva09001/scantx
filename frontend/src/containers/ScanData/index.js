@@ -56,11 +56,14 @@ class ScanData extends Component {
     return _.map(this.props.datas, item => (
       <TableRow key={item.scanId}>
         <TableCell padding="checkbox">
-          <Checkbox onChange={e => this.handleCheck(e, item.scanId)} />
+          <Checkbox
+            onChange={e => this.handleCheck(e, item.scanId)}
+            checked={_.includes(this.state.multiId, item.scanId)}
+          />
         </TableCell>
         <TableCell>{Date(item.createdOn)}</TableCell>
         <TableCell>{Time(item.createdOn)}</TableCell>
-        <TableCell>{item.dataType}</TableCell>
+        <TableCell>{item.payload}</TableCell>
         <TableCell>{item.status}</TableCell>
         <TableCell>
           <Link
@@ -137,6 +140,23 @@ class ScanData extends Component {
     }
   };
 
+  onSelectedAll = (status = false) => {
+    const { multiId } = this.state;
+    const { datas } = this.props;
+
+    if (multiId.length === datas.length || status) {
+      this.setState({
+        multiId: []
+      });
+    } else {
+      this.setState({
+        multiId: _.map(datas, item => {
+          return item.scanId;
+        })
+      });
+    }
+  };
+
   edit = (params, success, fail) => {
     this.props.editScanData(params, success, fail);
     this.setState({
@@ -182,12 +202,20 @@ class ScanData extends Component {
       if (_.includes(this.state.multiId, item.scanId)) {
         content += Date(item.createdOn) + "\t";
         content += Time(item.createdOn) + "\t";
-        content += item.dataType + "\t";
+        content += item.payload + "\t";
         content += item.status + "\t";
         content += "\n";
       }
     });
     return content;
+  };
+
+  downloadScanData = () => {
+    this.props.downloadScanData(
+      this.props.profile.id,
+      this.onSuccess,
+      this.onSuccess
+    );
   }
 
   render() {
@@ -212,7 +240,7 @@ class ScanData extends Component {
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox">
-                    <Checkbox />
+                    <Checkbox onChange={() => this.onSelectedAll()} />
                   </TableCell>
                   <TableCell>Date</TableCell>
                   <TableCell>Time</TableCell>
@@ -253,6 +281,7 @@ class ScanData extends Component {
                 className="buttonStyles"
                 variant="contained"
                 color="primary"
+                onClick={() => this.downloadScanData()}
               >
                 Download
               </Button>
@@ -303,7 +332,8 @@ class ScanData extends Component {
 }
 const mapSateToProps = state => {
   return {
-    datas: state.ScanData.list
+    datas: state.ScanData.list,
+    profile: state.Auth.profile
   };
 };
 

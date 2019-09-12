@@ -4,7 +4,6 @@ import Papersheet from "components/utility/papersheet";
 import { CircularProgress } from "components/uielements/progress";
 import { connect } from "react-redux";
 import { scanDataActions } from "redux/actions";
-import _ from "lodash";
 
 const style = {
   gridItem: {
@@ -47,6 +46,7 @@ class Qr extends React.Component {
                 <img
                   width="100%"
                   src={"data:image/png;base64, " + this.props.qr}
+                  alt="QR Code"
                 ></img>
               )}
             </Grid>

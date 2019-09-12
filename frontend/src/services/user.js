@@ -1,9 +1,12 @@
 import request from "helpers/request";
 
-const getUsers = token => {
+const getUsers = (id, token) => {
   return request({
-    url: "/user/get-user",
+    url: "/user/get-user-by-id",
     method: "get",
+    params: {
+      id: id
+    },
     headers: {
       Authorization: `Bearer ${token}`
     }

@@ -44,7 +44,8 @@ class Form extends React.Component {
     this.setState({
       params: {
         ...this.state.params,
-        password: nextProps.password
+        password: nextProps.password,
+        // currentId: nextProps.currentId
       }
     });
   }
@@ -88,7 +89,7 @@ class Form extends React.Component {
     this.setState({
       params: {
         ...this.state.params,
-        [key]: e.target.checked ? true : false
+        [key]: e.target.checked
       }
     });
   };
@@ -141,13 +142,31 @@ class Form extends React.Component {
     }
   };
   renderCompanies = () => {
-    return _.map(this.props.companies, item => {
-      return (
-        <option key={item.cid} value={item.cid}>
-          {item.name}
-        </option>
+    if (
+      this.state.params.typeOfAccount === "Test" ||
+      this.state.params.typeOfAccount === "Private"
+    ) {
+      return <option value={null}>{this.state.params.userName}</option>;
+    } else if (this.state.params.typeOfAccount === "Commercial") {
+      return _.map(
+        _.filter(this.props.companies, item => item.cid === this.props.cid),
+        item => {
+          return (
+            <option key={item.cid} value={item.cid}>
+              {item.name}
+            </option>
+          );
+        }
       );
-    });
+    } else {
+      return _.map(this.props.companies, item => {
+        return (
+          <option key={item.cid} value={item.cid}>
+            {item.name}
+          </option>
+        );
+      });
+    }
   };
   render() {
     const { status } = this.props;
@@ -328,7 +347,10 @@ class Form extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return {};
+  return {
+    currentId: state.Auth.profile.id,
+    cid: state.Auth.profile.cid
+  };
 };
 
 const mapDispatchToProps = {};

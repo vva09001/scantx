@@ -5,7 +5,6 @@ import { BrowserRouter } from "react-router-dom";
 // import Transition from './components/utility/transitionSwitch';
 import App from "./containers/App";
 import asyncComponent from "./helpers/AsyncFunc";
-import Auth0 from "./helpers/auth0";
 
 const RestrictedRoute = ({ component: Component, isLoggedIn, ...rest }) => (
   <Route

@@ -3,7 +3,8 @@ import _ from "lodash";
 
 const initState = {
   list: [],
-  qr: ""
+  qr: "",
+  download: ""
 };
 
 export default function scanDataReducer(state = initState, action) {
@@ -47,8 +48,6 @@ export default function scanDataReducer(state = initState, action) {
         ...state,
         qr: action.response
       }
-    case actions.DOWNLOAD_SCAN_DATA_SUCCESS:
-      return state;
     default:
       return state;
   }

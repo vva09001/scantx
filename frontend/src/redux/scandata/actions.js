@@ -52,8 +52,9 @@ const actions = {
 
   DOWNLOAD_SCAN_DATA_REQUEST: 'DOWNLOAD_SCAN_DATA_REQUEST',
   DOWNLOAD_SCAN_DATA_SUCCESS: 'DOWNLOAD_SCAN_DATA_SUCCESS',
-  download: (success, fail) => ({
+  download: (id, success, fail) => ({
     type: actions.DOWNLOAD_SCAN_DATA_REQUEST,
+    id,
     success,
     fail
   }),

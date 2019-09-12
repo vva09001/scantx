@@ -15,7 +15,7 @@ export function* getCompanySagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 
@@ -31,7 +31,7 @@ export function* addCompanySagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 
@@ -57,7 +57,7 @@ export function* editCompanySagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 
@@ -73,7 +73,7 @@ export function* deleteCompanySagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 

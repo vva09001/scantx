@@ -23,7 +23,7 @@ export function* getScanDataSagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 
@@ -42,7 +42,7 @@ export function* editScanDataSagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 
@@ -61,7 +61,7 @@ export function* addScanDataSagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 
@@ -80,7 +80,7 @@ export function* deleteScanDataSagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 
@@ -99,7 +99,7 @@ export function* deleteMultiScanDataSagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 
@@ -115,26 +115,27 @@ export function* getQrSagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 
 export function* downloadScanDataSagas(data) {
-  const { success, fail } = data;
+  const { id, success, fail } = data;
   try {
     const token = yield select(getToken);
-    const res = yield downloadScanData(token);
+    const res = yield downloadScanData(id, token);
     if (res.status === 200) {
+      const win = window.open("http://" + res.data.data, "_blank");
+      win.focus();
       yield success();
       yield put({
-        type: actions.DOWNLOAD_SCAN_DATA_SUCCESS,
-        response: res.data.data
+        type: actions.DOWNLOAD_SCAN_DATA_SUCCESS
       });
     } else {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail("Không thể kết nối đến Sever");
+    yield fail("Cannot connect to Server");
   }
 }
 
