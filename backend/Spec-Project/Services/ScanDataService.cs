@@ -9,24 +9,32 @@ using System.Drawing.Text;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+
+using CsvHelper;
+
 using System.Data.SqlClient;
 using LINQtoCSV;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Spec_Project.Services
 {
     public interface IScanDataService
     {
         List<TblScanData> getScanData();
-        ResponseModel addScanData(TblScanData tblscandata);
+        ResponseModel addScanData(ScanDataModel tblscandata);
         ResponseModel DeleteScanData(string scanid);
         ResponseModel DeleteArrScanData(List<string> deleteIds);
-        ResponseModel EditScandata(TblScanData tblscandata);
+
+        ResponseModel EditScandata(ScanDataModel tblscandata);
+        ResponseModel CreateQR();
+
         ResponseModel ConvertTblScanDataToCSV(string Uid);
+
     }
     public class ScanDataService : IScanDataService
     {
-
+        DataContext context = new DataContext();
         IHttpContextAccessor _httpContextAccessor;
         public ScanDataService(IHttpContextAccessor httpContextAccessor)
         {
@@ -136,9 +144,11 @@ namespace Spec_Project.Services
                 };
                 CsvContext cc = new CsvContext();
 
-                string finalPath = Directory.GetCurrentDirectory() + "\\tmp\\scandata_" + DateTime.Now.ToString("yyyyMMddhhmmssfff") + ".csv";
+                var now = DateTime.Now.ToString("yyyyMMddhhmmssfff");
+
+                string finalPath = Directory.GetCurrentDirectory() + "\\tmp\\scandata_" + now + ".csv";
                 cc.Write(datascan, finalPath, outputFileDescription);
-                res.Data = finalPath;
+                res.Data = "scantx.miracles.vn/mycsv/scandata_" + now +".csv";
                 res.Message = "";
                 res.Status = "200";
 
@@ -164,7 +174,7 @@ namespace Spec_Project.Services
             
         }
 
-        public ResponseModel addScanData(TblScanData tblscandata)
+        public ResponseModel addScanData(ScanDataModel tblscandata)
         {
             var contex = _httpContextAccessor.HttpContext;
             if (UsersConstant.GetRole(contex.User.Identity.Name) == "admin")
@@ -195,9 +205,20 @@ namespace Spec_Project.Services
                                 DeletedOn = null,
                             };
                             context.TblScanData.Add(x);
-                            res.Data = x;
+                            context.SaveChanges();
+                            var item = new ScanDataModel
+                            {
+                                ScanId = x.ScanId,
+                                Uid = x.Uid,
+                                CreatedOn = new DateTime(x.CreatedOn.Value.Ticks).ToString("o"),
+                                Payload = x.Payload,
+                                DataType = x.DataType,
+                                FileName = x.FileName,
+                                Status = x.Status,
+                                DeletedOn = null,
+                            };
+                            res.Data = item;
                         }
-                        context.SaveChanges();
                     }
                 }
                 catch (Exception ex)
@@ -280,7 +301,7 @@ namespace Spec_Project.Services
             }
             return null;
         }
-        public ResponseModel EditScandata(TblScanData tblscandata)
+        public ResponseModel EditScandata(ScanDataModel tblscandata)
         {
             var contex = _httpContextAccessor.HttpContext;
             if (UsersConstant.GetRole(contex.User.Identity.Name) == "admin")
@@ -298,7 +319,6 @@ namespace Spec_Project.Services
                         if (oldscandata != null)
                         {
                             oldscandata.Uid = tblscandata.Uid;
-                            oldscandata.CreatedOn = DateTime.UtcNow;
                             oldscandata.Payload = tblscandata.Payload;
                             oldscandata.DataType = tblscandata.DataType;
                             oldscandata.FileName = tblscandata.FileName;
@@ -317,6 +337,51 @@ namespace Spec_Project.Services
                 return res;
             }
             return null;
+        }
+        public ResponseModel CreateQR()
+        {
+            var context = _httpContextAccessor.HttpContext;
+            CreateQR createqr = new CreateQR();
+            var res = new ResponseModel()
+            {
+                Status = "200",
+                Message = "",
+            };
+            try
+            {
+                createqr.Command = "CONNECTTOTRX";
+                createqr.ServerAddress = "h2673771.stratoserver.net";
+                createqr.Port = 80;
+                createqr.URLPart = "webservicestx";
+                var x = UsersConstant.GetUserName(context.User.Identity.Name);
+                createqr.User = x;
+                createqr.EncryptionKey = "kJDJzwrVS6RTFgdafgc3d ";
+                var textboxQR = (createqr.Command + ":" + createqr.ServerAddress + ":" + createqr.Port + "/" + createqr.URLPart + "|" + createqr.EncryptionKey + "|" + createqr.User);
+                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(textboxQR.ToString(), QRCodeGenerator.ECCLevel.Q);
+                QRCode qrCode = new QRCode(qrCodeData);
+                Bitmap qrCodeImage = qrCode.GetGraphic(20);
+                var bitmapBytes = BitmapToBytes(qrCodeImage); //Convert bitmap into a byte array
+                string base64String = Convert.ToBase64String(bitmapBytes);
+                res.Data = base64String; //tra data kieu responsemodel
+                return res;
+            }
+            catch (Exception ex)
+            {
+                res.Status = "500";
+                res.Message = ex.Message;
+            }
+
+            return res;
+        }
+        // This method is for converting bitmap into a byte array
+        private static byte[] BitmapToBytes(Bitmap img)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                return stream.ToArray();
+            }
         }
 
     }

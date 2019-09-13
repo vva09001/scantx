@@ -31,9 +31,17 @@ namespace Spec_Project.Controllers
         }
 
         [Authorize]
+
+        [DisableCors]
+        [HttpGet("geta-company")]
+        public IActionResult getIDCompany(string cid)
+        {
+            return Ok(_ICompanyService.getIDCompany(cid));
+        }
+        //[Authorize]
         [DisableCors]
         [HttpGet("get-company")]
-        public IActionResult getCompany()
+        public IActionResult GetAllItems()
         {
             return Ok(_ICompanyService.getCompany());
         }
@@ -49,9 +57,10 @@ namespace Spec_Project.Controllers
         [Authorize]
         [DisableCors]
         [HttpPost("add-company")]
-        public IActionResult addCompany(TblCustomer tblcustomer)
+        public IActionResult addCompany(CustomerModel tblcustomer)
         {
-            return Ok(_ICompanyService.addCompany(tblcustomer));
+            var x = _ICompanyService.addCompany(tblcustomer);
+            return Ok(x);
         }
 
         [Authorize]
@@ -73,7 +82,7 @@ namespace Spec_Project.Controllers
         [Authorize]
         [DisableCors]
         [HttpPut("edit-company")]
-        public IActionResult EditCompany(TblCustomer customer)
+        public IActionResult EditCompany(CustomerModel customer)
         {
             return Ok(_ICompanyService.EditCompany(customer));
         }

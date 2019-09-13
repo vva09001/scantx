@@ -13,11 +13,19 @@ namespace Spec_Project.Services
     public interface IUserService
     {
         TblUsers Authenticate(string username, string password);
+
+
+
+
+
         List<TblUsers> GetAll();
-        TblUsers GetById(int id);
+        List<TblUsers> GetById(int id);
         ResponseModel Create(UserDto user, string password, string UserIDLogin);
+
         ResponseModel Update(TblUsers user, string password = null);
+        ResponseModel UpdateNoPass(TblUsers userParam);
         ResponseModel Delete(int id);
+        ResponseModel DeleteArrUser(List<int> deleteIds);
 
     }
 
@@ -26,7 +34,9 @@ namespace Spec_Project.Services
         DataContext _context;
         IHttpContextAccessor _httpContextAccessor;
 
+
         public UserService(IHttpContextAccessor httpContextAccessor, DataContext context)
+
         {
             _httpContextAccessor = httpContextAccessor;
             _context = context;
@@ -57,15 +67,48 @@ namespace Spec_Project.Services
             return data;
         }
 
-        public TblUsers GetById(int id)
-        {
-            return _context.TblUsers.Where(o => o.DeletedOn == null && o.Id == id).FirstOrDefault();
-        }
 
+        public List<TblUsers> getUser()
+        {
+            var context = _httpContextAccessor.HttpContext;
+            if (UsersConstant.GetRole(context.User.Identity.Name) == "admin")
+            {
+                var userss = _context.TblUsers.Where(p => p.DeletedOn == null).ToList();
+                return userss;
+            }
+            return null;
+        }
+    
         public ResponseModel Create(UserDto userNew, string password, string UserIDLogin)
         {
             ResponseModel res = (new ResponseModel
             {
+
+                //if (user.TypeOfAccount == TypeOfAccConstant.Private || user.TypeOfAccount == TypeOfAccConstant.Test)
+                //{
+
+                //}
+                var tbluser = new TblUsers
+                {
+
+                    UserName = user.UserName,
+                    FamilyName = user.FamilyName,
+                    GivenName = user.GivenName,
+                    TypeOfAccount = user.TypeOfAccount,
+                    Email = user.Email,
+                    ContactByEmail = user.ContactByEmail,
+                    EncryptionActive = user.EncryptionActive,
+                    DeletedOn = null,
+                    Cid = user.Cid,
+                    RoleId = user.RoleID
+                };
+                ResponseModel res = (new ResponseModel
+                {
+                    Data = "",
+                    Status = "200",
+                    Message = ""
+                });
+
                 Data = "",
                 Status = "200",
                 Message = ""
@@ -81,6 +124,7 @@ namespace Spec_Project.Services
 
             if (userNew.TypeOfAccount == "Private" || userNew.TypeOfAccount == "Test")
             {
+
                 try
                 {
                     CompanyService cpns = new CompanyService(_httpContextAccessor);
@@ -91,14 +135,15 @@ namespace Spec_Project.Services
                 }
                 catch (Exception ex)
                 {
-                    return res = new ResponseModel {
-                    Data = "",
-                    Status = "500",
-                    Message= ex.Message
+                    return res = new ResponseModel
+                    {
+                        Data = "",
+                        Status = "500",
+                        Message = ex.Message
                     };
                 }
             }
-            
+
             var tbluser = new TblUsers
             {
 
@@ -110,12 +155,17 @@ namespace Spec_Project.Services
                 ContactByEmail = userNew.ContactByEmail,
                 EncryptionActive = userNew.EncryptionActive,
                 DeletedOn = null,
-                Cid = _context.TblCustomer.Where(o=>o.Name == userNew.UserName).Select(o=>o.Cid).FirstOrDefault(),
+                Cid = _context.TblCustomer.Where(o => o.Name == userNew.UserName).Select(o => o.Cid).FirstOrDefault(),
                 RoleId = userNew.RoleID
             };
-           
+
             try
             {
+
+
+                    _context.TblUsers.Add(tbluser);
+                    _context.SaveChanges();
+                    res.Data = tbluser;
 
                 // validation
                 if (string.IsNullOrWhiteSpace(password))
@@ -124,6 +174,7 @@ namespace Spec_Project.Services
                     res.Status = "500";
                     res.Message = "Password is required";
                     return res;
+
                 }
 
                 if (_context.TblUsers.Any(x => x.UserName == userNew.UserName && x.DeletedOn == null))
@@ -167,7 +218,6 @@ namespace Spec_Project.Services
                     Data = "",
                     Status = "200",
                     Message = ""
-
                 });
                 try
                 {
@@ -188,6 +238,7 @@ namespace Spec_Project.Services
                             res.Status = "500";
                             res.Message = ("Username " + userParam.UserName + " is already taken");
                         }
+                        
                     }
 
                     // update user properties
@@ -199,6 +250,8 @@ namespace Spec_Project.Services
                     user.PasswordHash = userParam.PasswordHash;
                     user.PasswordSalt = userParam.PasswordSalt;
                     user.Email = userParam.Email;
+                    user.Cid = userParam.Cid;
+                    user.RoleId = userParam.RoleId;
                     user.ContactByEmail = userParam.ContactByEmail;
                     user.EncryptionActive = userParam.EncryptionActive;
 
@@ -206,12 +259,78 @@ namespace Spec_Project.Services
                     if (!string.IsNullOrWhiteSpace(password))
                     {
                         byte[] passwordHash, passwordSalt;
-                        CreatePasswordHash(password, out passwordHash, out passwordSalt);
+                        using (var hmac = new System.Security.Cryptography.HMACSHA512())
+                        {
+                            passwordSalt = hmac.Key;
+                            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                        }
 
                         user.PasswordHash = passwordHash;
                         user.PasswordSalt = passwordSalt;
                     }
 
+                    _context.TblUsers.Update(user);
+                    _context.SaveChanges();
+                    res.Data = userParam;
+
+                }
+                catch (Exception ex)
+                {
+                    res.Data = "";
+                    res.Status = "500";
+                    res.Message = ("Username " + userParam.UserName + " is already taken");
+                  
+                }
+                return res;
+            }
+            return null;
+        }
+
+        public ResponseModel UpdateNoPass(TblUsers userParam)
+        {
+            var context = _httpContextAccessor.HttpContext;
+            if (UsersConstant.GetRole(context.User.Identity.Name) == "admin")
+            {
+                var user = _context.TblUsers.Where(o => o.Id == userParam.Id && o.DeletedOn == null).FirstOrDefault();
+
+                ResponseModel res = (new ResponseModel
+                {
+                    Data = "",
+                    Status = "200",
+                    Message = ""
+                });
+                try
+                {
+                    if (user == null)
+                    {
+                        res.Data = "";
+                        res.Status = "500";
+                        res.Message = "User not found";
+                        return res;
+                    }
+
+                    if (userParam.UserName != user.UserName)
+                    {
+                        // username has changed so check if the new username is already taken
+                        if (_context.TblUsers.Any(x => x.UserName == userParam.UserName))
+                        {
+                            res.Data = "";
+                            res.Status = "500";
+                            res.Message = ("Username " + userParam.UserName + " is already taken");
+                        }
+
+                    }
+                    // update user properties
+
+                    user.FamilyName = userParam.FamilyName;
+                    user.GivenName = userParam.GivenName;
+                    user.UserName = userParam.UserName;
+                    user.TypeOfAccount = userParam.TypeOfAccount;
+                    user.Email = userParam.Email;
+                    user.Cid = userParam.Cid;
+                    user.RoleId = userParam.RoleId;
+                    user.ContactByEmail = userParam.ContactByEmail;
+                    user.EncryptionActive = userParam.EncryptionActive;
                     _context.TblUsers.Update(user);
                     _context.SaveChanges();
 
@@ -221,27 +340,10 @@ namespace Spec_Project.Services
                     res.Data = "";
                     res.Status = "500";
                     res.Message = ("Username " + userParam.UserName + " is already taken");
+
                 }
                 return res;
             }
-            //else
-            //{
-            //    var contextUser = _httpContextAccessor.HttpContext;
-            //    if (UsersConstant.GetRole(contextUser.User.Identity.Name) == "user")
-            //    {
-            //        //int userID = UsersConstant.GetID(contextUser.User.Identity.Name);
-            //        var user = _context.TblUsers.Where(o => o.Id == userParam.Id && o.DeletedOn == null && o.Id == UsersConstant.GetID(contextUser.User.Identity.Name)).FirstOrDefault();
-            //        user.FamilyName = userParam.FamilyName;
-            //        user.GivenName = userParam.GivenName;
-            //        user.UserName = userParam.UserName;
-            //        user.TypeOfAccount = userParam.TypeOfAccount;
-            //        user.PasswordHash = userParam.PasswordHash;
-            //        user.PasswordSalt = userParam.PasswordSalt;
-            //        user.Email = userParam.Email;
-            //        user.ContactByEmail = userParam.ContactByEmail;
-            //        user.EncryptionActive = userParam.EncryptionActive;
-            //    }
-            //}
             return null;
         }
 
@@ -305,6 +407,42 @@ namespace Spec_Project.Services
             }
 
             return true;
+        }
+
+        public ResponseModel DeleteArrUser(List<int> deleteIds)
+        {
+            var cont = _httpContextAccessor.HttpContext;
+            if (UsersConstant.GetRole(cont.User.Identity.Name) == "admin")
+            {
+                var res = new ResponseModel()
+                {
+                    Status = "200",
+                    Message = "",
+                };
+                try
+                {
+                    using (DataContext context = new DataContext())
+                    {
+                        foreach (var deleteId in deleteIds)
+                        {
+                            var user = context.TblUsers.FirstOrDefault(o => o.Id == deleteId);
+                            if (user != null)
+                            {
+                                user.DeletedOn = DateTime.UtcNow;
+                            }
+                        }
+                        res.Data = deleteIds;
+                        context.SaveChanges();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    res.Status = "500";
+                    res.Message = ex.Message;
+                }
+                return res;
+            }
+            return null;
         }
     }
 }

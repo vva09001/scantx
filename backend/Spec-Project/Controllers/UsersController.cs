@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
 using Lucene.Net.Support;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +15,11 @@ using Spec_Project.Models;
 using Spec_Project.Services;
 using Spec_Project.Helpers;
 using Microsoft.AspNetCore.Cors;
+
+using System.Linq;
+
 using Microsoft.AspNetCore.Http;
+
 
 namespace Spec_Project.Controllers
 {
@@ -28,6 +31,9 @@ namespace Spec_Project.Controllers
         private IUserService _userService;
         private IMapper _mapper;
         private readonly Helpers.AppSettings _appSettings;
+
+        DataContext _context;
+
         IHttpContextAccessor _httpContextAccessor;
         public UsersController(
             IUserService userService,
@@ -40,6 +46,7 @@ namespace Spec_Project.Controllers
         }
 
         [AllowAnonymous]
+        [DisableCors]
         [HttpPost("authenticate")]
         public IActionResult Authenticate(string username, string password)
         {
@@ -83,6 +90,7 @@ namespace Spec_Project.Controllers
         }
 
         [AllowAnonymous]
+        [DisableCors]
         [HttpPost("register")]
         public IActionResult Register([FromBody]UserDto userDto, string UserIDLogin)
         {
@@ -101,55 +109,34 @@ namespace Spec_Project.Controllers
             }
         }
 
+        [Authorize]
         [DisableCors]
-        [HttpGet("get-user")]
-        public List<UserDto> GetAll()
+
+        [HttpGet("get-all-user")]
+        public IActionResult GetAll()
         {
             var users = _userService.GetAll();
-            List<UserDto> listUserDto = new List<UserDto>();
-            foreach (var item in users)
-            {
-                listUserDto.Add(new UserDto
-                {
-                    Cid = item.Cid,
-                    ContactByEmail = item.ContactByEmail,
-                    Email = item.Email,
-                    EncryptionActive = item.EncryptionActive,
-                    FamilyName = item.FamilyName,
-                    GivenName = item.GivenName,
-                    Id = item.Id,
-                    RoleID = item.RoleId,
-                    TypeOfAccount = item.TypeOfAccount,
-                    UserName = item.UserName
-                });
-            }
+            var userDtos = _mapper.Map<IList<UserDto>>(users);
+            return Ok(userDtos);
+        }
 
-            return listUserDto;
+
+        [Authorize]
+        [DisableCors]
+        [HttpGet("get-user")]
+        public IActionResult GetUser()
+        {
+            return Ok(_userService.getUser());
         }
 
         [DisableCors]
-        [HttpGet("get-user-by-id")]
-        public IActionResult GetById(int id)
-        {
-            if (!User.IsInRole(RoleConstant.admin))
-            {
-                return Forbid();
-            }
-            var user = _userService.GetById(id);
-            var userDto = new UserDto
-            {
-                Id = user.Id,
-                Cid = user.Cid,
-                ContactByEmail = user.ContactByEmail,
-                Email = user.Email,
-                EncryptionActive = user.EncryptionActive,
-                FamilyName = user.FamilyName,
-                GivenName = user.GivenName,
-                TypeOfAccount = user.TypeOfAccount,
-                UserName = user.UserName
 
-            };
-            return Ok(userDto);
+        [HttpGet("get-user-by-id")]
+        public List<TblUsers> GetById(int id)
+        {
+            var user = _userService.GetById(id);
+            
+            return user;
         }
 
 
@@ -157,45 +144,87 @@ namespace Spec_Project.Controllers
         [Authorize]
         [DisableCors]
         [HttpPut("update")]
-        public IActionResult Update(int id, [FromBody]UserDto userDto)
+        public IActionResult Update([FromBody]UserDto userDto)
         {
             // map dto to entity and set id
             //var user = _mapper.Map<TblUsers>(userDto);
-            byte[] passwordHa, passwordSa;
-            UserService.CreatePasswordHash(userDto.Password, out passwordHa, out passwordSa);
-            var user = new TblUsers
+            
+            ResponseModel res = (new ResponseModel
             {
-                Id = userDto.Id,
-                Cid = userDto.Cid,
-                ContactByEmail = userDto.ContactByEmail,
-                Email = userDto.Email,
-                EncryptionActive = userDto.EncryptionActive,
-                FamilyName = userDto.FamilyName,
-                GivenName = userDto.GivenName,
-                TypeOfAccount = userDto.TypeOfAccount,
-                UserName = userDto.UserName,
-                PasswordHash = passwordHa,
-                PasswordSalt = passwordSa
-            };
-            user.Id = id;
-
-            try
+                Data = "",
+                Status = "200",
+                Message = ""
+            });
+            
+            var password = userDto.Password;
+            if (password != null)
             {
-                if (!User.IsInRole(RoleConstant.admin))
+                byte[] passwordHa, passwordSa;
+                using (var hmac = new System.Security.Cryptography.HMACSHA512())
                 {
-                    return Forbid();
+                    passwordSa = hmac.Key;
+                    passwordHa = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
                 }
-                else
+                var user = new TblUsers
+                {
+                    Id = userDto.Id,
+                    Cid = userDto.Cid,
+                    ContactByEmail = userDto.ContactByEmail,
+                    Email = userDto.Email,
+                    EncryptionActive = userDto.EncryptionActive,
+                    FamilyName = userDto.FamilyName,
+                    GivenName = userDto.GivenName,
+                    TypeOfAccount = userDto.TypeOfAccount,
+                    UserName = userDto.UserName,
+                    PasswordHash = passwordHa,
+                    PasswordSalt = passwordSa,
+                    RoleId = userDto.RoleID
+                };
+                //user.Id = id;
+
+                try
                 {
                     _userService.Update(user, userDto.Password);
+                    res.Data = user;
+                }
+                catch (Exception ex)
+                {
+                    // return error message if there was an exception
+                    return BadRequest(new { message = ex.Message });
+
                 }
             }
-            catch (Exception ex)
+            else
             {
-                // return error message if there was an exception
-                return BadRequest(new { message = ex.Message });
+                var user = new TblUsers
+                {
+                    Id = userDto.Id,
+                    Cid = userDto.Cid,
+                    ContactByEmail = userDto.ContactByEmail,
+                    Email = userDto.Email,
+                    EncryptionActive = userDto.EncryptionActive,
+                    FamilyName = userDto.FamilyName,
+                    GivenName = userDto.GivenName,
+                    TypeOfAccount = userDto.TypeOfAccount,
+                    UserName = userDto.UserName,
+                    RoleId = userDto.RoleID
+                };
+                
+                //user.Id = id;
+
+                try
+                {
+                    _userService.UpdateNoPass(user);
+                    res.Data = user;
+                }
+                catch (Exception ex)
+                {
+                    // return error message if there was an exception
+                    return BadRequest(new { message = ex.Message });
+
+                }
             }
-            return Ok();
+            return Ok(res);
         }
 
         [Authorize]
@@ -206,6 +235,14 @@ namespace Spec_Project.Controllers
 
             var rs = _userService.Delete(id);
             return Ok(rs);
+        }
+
+        [Authorize]
+        [DisableCors]
+        [HttpPost("delete-arr-user")]
+        public IActionResult DeleteArrUser(List<int> deleteIds)
+        {
+            return Ok(_userService.DeleteArrUser(deleteIds));
         }
     }
 }
