@@ -15,6 +15,15 @@ const actions = {
     fail
   }),
 
+  ADD_SCAN_DATA_REQUEST: 'ADD_SCAN_DATA_REQUEST',
+  ADD_SCAN_DATA_SUCCESS: 'ADD_SCAN_DATA_SUCCESS',
+  add: (params, success, fail) => ({
+    type: actions.ADD_SCAN_DATA_REQUEST,
+    params,
+    success,
+    fail
+  }),
+
   DELETE_SCAN_DATA_REQUEST: 'DELETE_SCAN_DATA_REQUEST',
   DELETE_SCAN_DATA_SUCCESS: 'DELETE_SCAN_DATA_SUCCESS',
   delete: (id, success, fail) => ({
@@ -29,6 +38,23 @@ const actions = {
   deleteMulti: (params, success, fail) => ({
     type: actions.DELETE_MULTI_SCAN_DATA_REQUEST,
     params,
+    success,
+    fail
+  }),
+
+  GET_QR_REQUEST: 'GET_QR_REQUEST',
+  GET_QR_SUCCESS: 'GET_QR_SUCCESS',
+  getQr: (success, fail) => ({
+    type: actions.GET_QR_REQUEST,
+    success,
+    fail
+  }),
+
+  DOWNLOAD_SCAN_DATA_REQUEST: 'DOWNLOAD_SCAN_DATA_REQUEST',
+  DOWNLOAD_SCAN_DATA_SUCCESS: 'DOWNLOAD_SCAN_DATA_SUCCESS',
+  download: (id, success, fail) => ({
+    type: actions.DOWNLOAD_SCAN_DATA_REQUEST,
+    id,
     success,
     fail
   }),

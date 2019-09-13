@@ -48,6 +48,14 @@ namespace Spec_Project.Controllers
 
         [Authorize]
         [DisableCors]
+        [HttpGet("get-company-by-cid")]
+        public IActionResult getCompanyByCid(string cid)
+        {
+            return Ok(_ICompanyService.GetCompanyByCid(cid));
+        }
+
+        [Authorize]
+        [DisableCors]
         [HttpPost("add-company")]
         public IActionResult addCompany(CustomerModel tblcustomer)
         {

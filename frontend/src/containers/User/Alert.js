@@ -20,7 +20,7 @@ class Alert extends React.Component {
     const { status, onSubmit, onClose } = this.props;
     return (
       <Dialog open={status} onClose={() => onClose(false)}>
-        <DialogTitle>{"Remove scan data"}</DialogTitle>
+        <DialogTitle>{"Remove user"}</DialogTitle>
         <DialogContent>
           <DialogContentText>Are you sure to remove ?</DialogContentText>
         </DialogContent>

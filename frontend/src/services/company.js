@@ -43,4 +43,18 @@ const remove = (data, token) => {
     })
 }
 
-export { get, add, edit, remove };
+const assign = (id, data, token) => {
+    return request({
+        url: '/company/assign/',
+        method: 'post',
+        params: {
+            cid: id
+        },
+        data: data,
+        headers: {
+            Authorization: `Bearer ${token}`
+        }, 
+    })
+}
+
+export { get, add, edit, remove, assign };

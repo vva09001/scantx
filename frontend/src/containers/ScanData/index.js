@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { CircularProgress } from "components/uielements/progress";
+import CopyToClipboard from "./CopyToClipboard";
 import Form from "./Form";
 import EditForm from "./EditForm";
 import DeleteAlert from "./Alert";
+import SelectAlert from "./SelectAlert";
 import LayoutWrapper from "components/utility/layoutWrapper";
 import Papersheet from "components/utility/papersheet";
 import { FullColumn } from "components/utility/rowColumn";
@@ -38,6 +40,7 @@ class ScanData extends Component {
       deleteMulti: false,
       deleteId: null,
       multiId: [],
+      selectAlert: false,
       params: {}
     };
   }
@@ -53,11 +56,14 @@ class ScanData extends Component {
     return _.map(this.props.datas, item => (
       <TableRow key={item.scanId}>
         <TableCell padding="checkbox">
-          <Checkbox onChange={e => this.handleCheck(e, item.scanId)} />
+          <Checkbox
+            onChange={e => this.handleCheck(e, item.scanId)}
+            checked={_.includes(this.state.multiId, item.scanId)}
+          />
         </TableCell>
         <TableCell>{Date(item.createdOn)}</TableCell>
         <TableCell>{Time(item.createdOn)}</TableCell>
-        <TableCell>{item.dataType}</TableCell>
+        <TableCell>{item.payload}</TableCell>
         <TableCell>{item.status}</TableCell>
         <TableCell>
           <Link
@@ -92,8 +98,7 @@ class ScanData extends Component {
         toggleEdit: status,
         params: item
       });
-    }
-    else {
+    } else {
       this.setState({
         toggleEdit: status
       });
@@ -108,9 +113,19 @@ class ScanData extends Component {
   };
 
   onToggleDeleteMulti = status => {
-    this.setState({
-      deleteMulti: status
-    });
+    if (this.state.multiId.length <= 0) {
+      this.setState({
+        selectAlert: status
+      });
+    } else {
+      this.setState({
+        deleteMulti: status
+      });
+    }
+  };
+
+  onToggleSelectAlert = status => {
+    this.setState({ selectAlert: status });
   };
 
   handleCheck = (event, id) => {
@@ -125,11 +140,35 @@ class ScanData extends Component {
     }
   };
 
+  onSelectedAll = (status = false) => {
+    const { multiId } = this.state;
+    const { datas } = this.props;
+
+    if (multiId.length === datas.length || status) {
+      this.setState({
+        multiId: []
+      });
+    } else {
+      this.setState({
+        multiId: _.map(datas, item => {
+          return item.scanId;
+        })
+      });
+    }
+  };
+
   edit = (params, success, fail) => {
     this.props.editScanData(params, success, fail);
     this.setState({
       toggleEdit: false,
-      params: {},
+      params: {}
+    });
+  };
+
+  add = (params, success, fail) => {
+    this.props.addScanData(params, success, fail);
+    this.setState({
+      toggle: false
     });
   };
 
@@ -157,6 +196,28 @@ class ScanData extends Component {
     });
   };
 
+  copyScanData = () => {
+    let content = "";
+    _.map(this.props.datas, item => {
+      if (_.includes(this.state.multiId, item.scanId)) {
+        content += Date(item.createdOn) + "\t";
+        content += Time(item.createdOn) + "\t";
+        content += item.payload + "\t";
+        content += item.status + "\t";
+        content += "\n";
+      }
+    });
+    return content;
+  };
+
+  downloadScanData = () => {
+    this.props.downloadScanData(
+      this.props.profile.id,
+      this.onSuccess,
+      this.onSuccess
+    );
+  }
+
   render() {
     if (this.state.loading) {
       return <CircularProgress />;
@@ -179,7 +240,7 @@ class ScanData extends Component {
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox">
-                    <Checkbox />
+                    <Checkbox onChange={() => this.onSelectedAll()} />
                   </TableCell>
                   <TableCell>Date</TableCell>
                   <TableCell>Time</TableCell>
@@ -204,12 +265,25 @@ class ScanData extends Component {
               >
                 Add new scan data
               </Button>
+              <CopyToClipboard>
+                {({ copy }) => (
+                  <Button
+                    className="buttonStyles"
+                    variant="contained"
+                    color="primary"
+                    onClick={() => copy(this.copyScanData())}
+                  >
+                    Copy selected
+                  </Button>
+                )}
+              </CopyToClipboard>
               <Button
                 className="buttonStyles"
                 variant="contained"
                 color="primary"
+                onClick={() => this.downloadScanData()}
               >
-                Copy selected
+                Download
               </Button>
               <Button
                 className="buttonStyles"
@@ -224,8 +298,8 @@ class ScanData extends Component {
           {/* Add Form */}
           <Form
             onToggle={this.onToggleForm}
+            onSubmit={this.add}
             status={this.state.toggle}
-            params={this.state.params}
           />
           {/* Edit Form */}
           <EditForm
@@ -246,6 +320,11 @@ class ScanData extends Component {
             onSubmit={this.deleteMulti}
             onClose={this.onToggleDeleteMulti}
           />
+          {/* Select Alert */}
+          <SelectAlert
+            status={this.state.selectAlert}
+            onClose={this.onToggleSelectAlert}
+          />
         </FullColumn>
       </LayoutWrapper>
     );
@@ -253,7 +332,8 @@ class ScanData extends Component {
 }
 const mapSateToProps = state => {
   return {
-    datas: state.ScanData.list
+    datas: state.ScanData.list,
+    profile: state.Auth.profile
   };
 };
 
@@ -261,7 +341,9 @@ const mapDispatchToProps = {
   getScanData: scanDataActions.getScanData,
   deleteScanData: scanDataActions.delete,
   deleteMultiScanData: scanDataActions.deleteMulti,
-  editScanData: scanDataActions.edit
+  editScanData: scanDataActions.edit,
+  addScanData: scanDataActions.add,
+  downloadScanData: scanDataActions.download
 };
 export default connect(
   mapSateToProps,

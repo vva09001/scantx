@@ -1,74 +1,110 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import {
-  TextField
-} from '@material-ui/core';
+import React from "react";
+import { connect } from "react-redux";
+import { TextField } from "@material-ui/core";
 import Dialog, {
   DialogActions,
   DialogContent,
-  DialogTitle,
-} from 'components/uielements/dialogs';
-import Button from 'components/uielements/button';
-import { CircularProgress } from 'components/uielements/progress';
+  DialogTitle
+} from "components/uielements/dialogs";
+import Button from "components/uielements/button";
+import { CircularProgress } from "components/uielements/progress";
 
 class Form extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
+      params: {}
+    };
+  }
+  componentDidMount() {}
+  componentWillReceiveProps(nextProps) {
+    this.setState({ params: { uid: nextProps.uid } });
+  }
+  onSuccess = () => {
+    this.setState({
       loading: false
-    }
-  }
-  componentDidMount() {
-    console.log(this.props.params)
-  }
+    });
+  };
   onClose = () => {
-    this.props.onToggle(false)
-  }
+    this.props.onToggle(false);
+  };
+  onSubmit = () => {
+    this.setState(
+      {
+        loading: true
+      },
+      () => {
+        this.props.onSubmit(this.state.params, this.onSuccess, this.onSuccess);
+      }
+    );
+  };
+  onChange = e => {
+    const key = e.target.name;
+    const value = e.target.value;
+    this.setState({
+      params: {
+        ...this.state.params,
+        [key]: value
+      }
+    });
+  };
   render() {
     const { status } = this.props;
     return (
-      <Dialog open={status} onClose={this.onClose}>
-          <DialogTitle>{"Create a new scan data"}</DialogTitle>
-          <DialogContent>
-            <div>
-              <TextField
-                required
-                id="payload"
-                label="Payload"
-                margin="normal"
-                fullWidth
-              />
-            </div>
-            <div>
-              <TextField
-                required
-                id="data-type"
-                label="Data Type"
-                margin="normal"
-                fullWidth
-              />
-            </div>
-            <div>
-              <TextField
-                required
-                id="file-name"
-                label="File Name"
-                margin="normal"
-                fullWidth
-              />
-            </div>
-            <div>
-              <TextField
-                required
-                id="status"
-                label="Status"
-                margin="normal"
-                fullWidth
-              />
-            </div>
-          </DialogContent>
-          {
-            this.state.loading ? (
+      <div>
+        {this.state.loading ? (
+          <CircularProgress />
+        ) : (
+          <Dialog open={status} onClose={this.onClose}>
+            <DialogTitle>{"Edit scan data"}</DialogTitle>
+            <DialogContent>
+              <div>
+                <TextField
+                  required
+                  name="payload"
+                  label="Payload"
+                  margin="normal"
+                  fullWidth
+                  value={this.state.params.payload}
+                  onChange={e => this.onChange(e)}
+                />
+              </div>
+              <div>
+                <TextField
+                  required
+                  name="dataType"
+                  label="Data Type"
+                  margin="normal"
+                  fullWidth
+                  value={this.state.params.dataType}
+                  onChange={e => this.onChange(e)}
+                />
+              </div>
+              <div>
+                <TextField
+                  required
+                  name="fileName"
+                  label="File Name"
+                  margin="normal"
+                  fullWidth
+                  value={this.state.params.fileName}
+                  onChange={e => this.onChange(e)}
+                />
+              </div>
+              <div>
+                <TextField
+                  required
+                  name="status"
+                  label="Status"
+                  margin="normal"
+                  fullWidth
+                  value={this.state.params.status}
+                  onChange={e => this.onChange(e)}
+                />
+              </div>
+            </DialogContent>
+            {this.state.loading ? (
               <CircularProgress />
             ) : (
               <DialogActions>
@@ -79,21 +115,22 @@ class Form extends React.Component {
                   Submit
                 </Button>
               </DialogActions>
-              )
-          }
-        </Dialog>
-    )
+            )}
+          </Dialog>
+        )}
+      </div>
+    );
   }
 }
 
-const mapSateToProps = state => {
+const mapStateToProps = state => {
   return {
+    uid: state.Auth.profile.id
   };
 };
 
-const mapDispatchToProps = {
-};
+const mapDispatchToProps = {};
 export default connect(
-  mapSateToProps,
+  mapStateToProps,
   mapDispatchToProps
 )(Form);

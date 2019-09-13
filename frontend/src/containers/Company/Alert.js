@@ -35,6 +35,7 @@ class Alert extends React.Component {
         loading: false
       },
       () => {
+        this.props.remove(true);
         this.props.onClose(false);
       }
     );
@@ -54,7 +55,7 @@ class Alert extends React.Component {
           <CircularProgress />
         ) : (
           <React.Fragment>
-            <DialogTitle>{"Create a new ScanTX company"}</DialogTitle>
+            <DialogTitle>{"Remove company"}</DialogTitle>
             <DialogContent>
               <DialogContentText>Are you sure to remove ?</DialogContentText>
             </DialogContent>

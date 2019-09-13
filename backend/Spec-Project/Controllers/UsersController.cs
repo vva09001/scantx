@@ -15,11 +15,15 @@ using Spec_Project.Models;
 using Spec_Project.Services;
 using Spec_Project.Helpers;
 using Microsoft.AspNetCore.Cors;
+
 using System.Linq;
+
+using Microsoft.AspNetCore.Http;
+
 
 namespace Spec_Project.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     [ApiController]
     [Route("api/user")]
     public class UsersController : ControllerBase
@@ -27,8 +31,10 @@ namespace Spec_Project.Controllers
         private IUserService _userService;
         private IMapper _mapper;
         private readonly Helpers.AppSettings _appSettings;
+
         DataContext _context;
 
+        IHttpContextAccessor _httpContextAccessor;
         public UsersController(
             IUserService userService,
             IMapper mapper,
@@ -40,8 +46,9 @@ namespace Spec_Project.Controllers
         }
 
         [AllowAnonymous]
+        [DisableCors]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate(string username , string password)
+        public IActionResult Authenticate(string username, string password)
         {
             var user = _userService.Authenticate(username, password);
 
@@ -49,7 +56,7 @@ namespace Spec_Project.Controllers
                 return BadRequest(new { message = "Username or password is incorrect" });
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            if(_appSettings.Secret == null)
+            if (_appSettings.Secret == null)
             {
                 _appSettings.Secret = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJmaXJzdG5hbWUiOiJ0dXllbiIsImxhc3RuYW1lIjoibmd1eWVuIiwidXNlcm5hbWUiOiJnZWFyMjE5IiwicGFzc3dvcmQiOiIxMjMifQ.a9jA6viURjMOzqeT58R39ORgmNovPp0OkbGp9VkaoVg";
             }
@@ -66,6 +73,8 @@ namespace Spec_Project.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
+            CompanyService cpn = new CompanyService(_httpContextAccessor);
+            var com = cpn.GetCompanyByCid(user.Cid);
             // return basic user info (without password) and token to store client side
             return Ok(new
             {
@@ -73,13 +82,17 @@ namespace Spec_Project.Controllers
                 Username = user.UserName,
                 FirstName = user.FamilyName,
                 LastName = user.GivenName,
+                CompanyName = com.Name,
+                Mail = user.Email,
+                Authorization = user.Authorization,
                 Token = tokenString
             });
         }
 
         [AllowAnonymous]
+        [DisableCors]
         [HttpPost("register")]
-        public IActionResult Register([FromBody]UserDto userDto)
+        public IActionResult Register([FromBody]UserDto userDto, string UserIDLogin)
         {
             // map dto to entity
             //var user = _mapper.Map<TblUsers>(userDto);
@@ -87,8 +100,7 @@ namespace Spec_Project.Controllers
             try
             {
                 // save 
-                
-                return Ok(_userService.Create(userDto, userDto.Password));
+                return Ok(_userService.Create(userDto, userDto.Password, UserIDLogin));
             }
             catch (Exception ex)
             {
@@ -99,6 +111,7 @@ namespace Spec_Project.Controllers
 
         [Authorize]
         [DisableCors]
+
         [HttpGet("get-all-user")]
         public IActionResult GetAll()
         {
@@ -117,29 +130,16 @@ namespace Spec_Project.Controllers
         }
 
         [DisableCors]
-        [HttpGet("get-user-by-id")]
-        public IActionResult GetById(int id)
-        {
-            if (!User.IsInRole(RoleConstant.admin))
-            {
-                return Forbid();
-            }
-            var user = _userService.GetById(id);
-            var userDto = new UserDto
-            {
-                Id = user.Id,
-                Cid = user.Cid,
-                ContactByEmail = user.ContactByEmail,
-                Email = user.Email,
-                EncryptionActive = user.EncryptionActive,
-                FamilyName = user.FamilyName,
-                GivenName = user.GivenName,
-                TypeOfAccount = user.TypeOfAccount,
-                UserName = user.UserName
 
-            };
-            return Ok(userDto);
+        [HttpGet("get-user-by-id")]
+        public List<TblUsers> GetById(int id)
+        {
+            var user = _userService.GetById(id);
+            
+            return user;
         }
+
+
 
         [Authorize]
         [DisableCors]

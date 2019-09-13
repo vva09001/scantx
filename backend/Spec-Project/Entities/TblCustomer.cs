@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Spec_Project.Entities
+namespace Spec_Project.Models
 {
     public partial class TblCustomer
     {

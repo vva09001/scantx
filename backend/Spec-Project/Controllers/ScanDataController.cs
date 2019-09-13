@@ -33,6 +33,13 @@ namespace Spec_Project.Controllers
             //_mapper = mapper;
             //_appSettings = appSettings.Value;
         }
+        [Authorize]
+        [DisableCors]
+        [HttpGet("convert-scandata-to-csv")]
+        public IActionResult ConvertTblScanDataToCSV(string uid)
+        {
+            return Ok(_IScanDataService.ConvertTblScanDataToCSV(uid));
+        }
 
         [Authorize]
         [DisableCors]
@@ -76,7 +83,8 @@ namespace Spec_Project.Controllers
         //[Authorize]
         [DisableCors]
         [HttpGet("getqr")]
-        public IActionResult CreateQR()
+        public ResponseModel CreateQR()
+
         {
             return Ok(_IScanDataService.CreateQR());
         }

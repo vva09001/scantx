@@ -9,7 +9,7 @@ import Dialog, {
 import Button from "components/uielements/button";
 import { CircularProgress } from "components/uielements/progress";
 
-class EditForm extends React.Component {
+class AssignForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,11 +18,6 @@ class EditForm extends React.Component {
     };
   }
   componentDidMount() {}
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      params: nextProps.params
-    });
-  }
   onSuccess = () => {
     this.setState({
       loading: false
@@ -59,49 +54,27 @@ class EditForm extends React.Component {
           <CircularProgress />
         ) : (
           <Dialog open={status} onClose={this.onClose}>
-            <DialogTitle>{"Edit scan data"}</DialogTitle>
+            <DialogTitle>{"Assign user to company"}</DialogTitle>
             <DialogContent>
               <div>
                 <TextField
                   required
-                  name="payload"
-                  label="Payload"
+                  name="userName"
+                  label="Username"
                   margin="normal"
                   fullWidth
-                  value={this.state.params.payload}
+                  value={this.state.params.userName}
                   onChange={e => this.onChange(e)}
                 />
               </div>
               <div>
                 <TextField
                   required
-                  name="dataType"
-                  label="Data Type"
+                  name="email"
+                  label="Email"
                   margin="normal"
                   fullWidth
-                  value={this.state.params.dataType}
-                  onChange={e => this.onChange(e)}
-                />
-              </div>
-              <div>
-                <TextField
-                  required
-                  name="fileName"
-                  label="File Name"
-                  margin="normal"
-                  fullWidth
-                  value={this.state.params.fileName}
-                  onChange={e => this.onChange(e)}
-                />
-              </div>
-              <div>
-                <TextField
-                  required
-                  name="status"
-                  label="Status"
-                  margin="normal"
-                  fullWidth
-                  value={this.state.params.status}
+                  value={this.state.params.email}
                   onChange={e => this.onChange(e)}
                 />
               </div>
@@ -125,12 +98,12 @@ class EditForm extends React.Component {
   }
 }
 
-const mapSateToProps = state => {
+const mapStateToProps = state => {
   return {};
 };
 
 const mapDispatchToProps = {};
 export default connect(
-  mapSateToProps,
+  mapStateToProps,
   mapDispatchToProps
-)(EditForm);
+)(AssignForm);

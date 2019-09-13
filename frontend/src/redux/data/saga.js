@@ -13,7 +13,7 @@ export function* getDataSagas(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail('Không thể kết nối đến Sever');
+    yield fail('Cannot connect to Server');
   }
 }
 

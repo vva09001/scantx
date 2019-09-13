@@ -12,6 +12,8 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace Spec_Project
 {
@@ -54,20 +56,20 @@ namespace Spec_Project
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-         .AddJwtBearer(x =>
-         {
+                .AddJwtBearer(x =>
+           {
              x.Events = new JwtBearerEvents
              {
                  OnTokenValidated = context =>
                  {
                      var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                    // var saleService = context.HttpContext.RequestServices.GetRequiredService<IReportSales>();
+                     // var saleService = context.HttpContext.RequestServices.GetRequiredService<IReportSales>();
                      var userId = int.Parse(context.Principal.Identity.Name);
                      var user = userService.GetById(userId);
                      if (user == null)
                      {
-                            // return unauthorized if user no longer exists
-                            context.Fail("Unauthorized");
+                         // return unauthorized if user no longer exists
+                         context.Fail("Unauthorized");
                      }
                      return Task.CompletedTask;
                  }
@@ -82,6 +84,8 @@ namespace Spec_Project
                  ValidateAudience = false
              };
          });
+
+            services.AddDirectoryBrowser();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -101,6 +105,21 @@ namespace Spec_Project
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "tmp")),
+                RequestPath = "/mycsv"
+            });
+
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "tmp")),
+                RequestPath = "/mycsv"
+            });
         }
     }
 }

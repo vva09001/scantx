@@ -1,41 +1,112 @@
-import { all, takeLatest, put } from 'redux-saga/effects';
-import { push } from 'react-router-redux';
-import { getUserIdByID, addUser } from 'services/user';
-import actions from './actions';
+import { all, takeLatest, put, select } from "redux-saga/effects";
+import {
+  getUsers,
+  addUser,
+  editUser,
+  deleteUserById,
+  deleteMultiUser
+} from "services/user";
+import { getToken } from "redux/selectors";
+import actions from "./actions";
 
 export function* getUserSagas(data) {
-  const { params, success, fail } = data;
+  const { id, success, fail } = data;
   try {
-    const res = yield getUserIdByID(params);
+    const token = yield select(getToken);
+    const res = yield getUsers(id, token);
     if (res.status === 200) {
       yield success();
-      yield put({type: actions.GET_USER_SUCCESS, response: res.data});
+      yield put({ type: actions.GET_USER_SUCCESS, response: res.data });
     } else {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail('Không thể kết nối đến Sever');
+    yield fail("Cannot connect to Server");
   }
 }
 
 export function* addUserSagas(data) {
   const { params, success, fail } = data;
   try {
-    const res = yield addUser(params);
+    const token = yield select(getToken);
+    const res = yield addUser(params, token);
     if (res.status === 200) {
       yield success();
-      yield put({type: actions.ADD_USER_SUCCESS, response: res.data});
+      yield put({
+        type: actions.ADD_USER_SUCCESS,
+        response: res.data.data
+      });
     } else {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail('Không thể kết nối đến Sever');
+    yield fail("Cannot connect to Server");
+  }
+}
+
+export function* editUserSagas(data) {
+  const { params, success, fail } = data;
+  try {
+    const token = yield select(getToken);
+    const res = yield editUser(params, token);
+    if (res.status === 200) {
+      yield success();
+      yield put({
+        type: actions.EDIT_USER_SUCCESS,
+        response: res.data.data
+      });
+    } else {
+      yield fail(res.data.message);
+    }
+  } catch (error) {
+    yield fail("Cannot connect to Server");
+  }
+}
+
+export function* deleteUserSagas(data) {
+  const { id, success, fail } = data;
+  try {
+    const token = yield select(getToken);
+    const res = yield deleteUserById(id, token);
+    if (res.status === 200) {
+      yield success();
+      yield put({
+        type: actions.DELETE_USER_SUCCESS,
+        response: res.data.data
+      });
+    } else {
+      yield fail(res.data.message);
+    }
+  } catch (error) {
+    yield fail("Cannot connect to Server");
+  }
+}
+
+export function* deleteMultiUserSagas(data) {
+  const { params, success, fail } = data;
+  try {
+    const token = yield select(getToken);
+    const res = yield deleteMultiUser(params, token);
+    if (res.status === 200) {
+      yield success();
+      yield put({
+        type: actions.DELETE_MULTI_USER_SUCCESS,
+        response: res.data.data
+      });
+    } else {
+      yield fail(res.data.message);
+    }
+  } catch (error) {
+    yield fail("Cannot connect to Server");
   }
 }
 
 export default function* rootSaga() {
   yield all([
     yield takeLatest(actions.GET_USER_REQUEST, getUserSagas),
-    yield takeLatest(actions.ADD_USER_REQUEST, addUserSagas)
+    yield takeLatest(actions.ADD_USER_REQUEST, addUserSagas),
+    yield takeLatest(actions.EDIT_USER_REQUEST, editUserSagas),
+    yield takeLatest(actions.DELETE_USER_REQUEST, deleteUserSagas),
+    yield takeLatest(actions.DELETE_MULTI_USER_REQUEST, deleteMultiUserSagas)
   ]);
 }
