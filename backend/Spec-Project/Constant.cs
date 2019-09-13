@@ -34,6 +34,15 @@ namespace Spec_Project
                 return roleid;
             }
         }
+        public static string GetUserName(string userid)
+        {
+            var userID = int.Parse(userid);
+            using (DataContext db = new DataContext())
+            {
+                var username = db.TblUsers.Where(o => o.Id == userID).Select(o => o.UserName).FirstOrDefault();
+                return username;
+            }
+        }
     }
         public static class RoleConstant
         {
@@ -42,4 +51,10 @@ namespace Spec_Project
             public const string user = "user";
             public const int reader = 4;
         }
+    public static class TypeOfAccConstant
+    {
+        public const int Private = 1;
+        public const int Test = 2;
+        public const int Commercial = 3;
     }
+}

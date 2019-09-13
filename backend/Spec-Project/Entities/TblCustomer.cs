@@ -15,6 +15,7 @@ namespace Spec_Project.Entities
         public string Address { get; set; }
         public string Status { get; set; }
         public DateTime? DeletedOn { get; set; }
+        public DateTime? CreateOn { get; set; }
 
         public virtual ICollection<TblUsers> TblUsers { get; set; }
     }

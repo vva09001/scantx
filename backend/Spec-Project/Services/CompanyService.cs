@@ -10,10 +10,11 @@ namespace Spec_Project.Services
     public interface ICompanyService
     {
         List<TblCustomer> getCompany();
-        ResponseModel addCompany(TblCustomer tblcustomer);
-        ResponseModel EditCompany(TblCustomer customer);
+        ResponseModel addCompany(CustomerModel tblcustomer);
+        ResponseModel EditCompany(CustomerModel customer);
         ResponseModel DeleteArrCompany(List<string> deleteIds);
         ResponseModel DeleteCompany(string cid);
+        string getIDCompany(string cid);
     }
     public class CompanyService : ICompanyService
     {
@@ -22,6 +23,17 @@ namespace Spec_Project.Services
         public CompanyService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
+        }
+
+
+        public string getIDCompany(string cid)
+        {
+            var a = db.TblCustomer.Where(p => p.Cid == cid).FirstOrDefault();
+            if (a != null)
+            {
+                return a.Address;
+            }
+            return null;
         }
         public List<TblCustomer> getCompany()
         {
@@ -34,7 +46,7 @@ namespace Spec_Project.Services
             return null;
         }
 
-        public ResponseModel addCompany(TblCustomer tblcustomer)
+        public ResponseModel addCompany(CustomerModel tblcustomer)
         {
             var context = _httpContextAccessor.HttpContext;
             if (UsersConstant.GetRole(context.User.Identity.Name) == "admin")
@@ -52,15 +64,25 @@ namespace Spec_Project.Services
                         if (listcustomer != null)
                         {
                             g = Guid.NewGuid();
-                            var add = db.TblCustomer.Add(new TblCustomer
+                            var item = new TblCustomer
                             {
                                 Cid = g.ToString(),
                                 Name = tblcustomer.Name,
                                 Address = tblcustomer.Address,
-                                Status = tblcustomer.Status
-                            });
+                                Status = tblcustomer.Status,
+                                CreateOn = DateTime.UtcNow
+                        };
+                            db.TblCustomer.Add(item);
                             db.SaveChanges();
-                            res.Data = add;
+                            var model = new CustomerModel
+                            {
+                                Cid = item.Cid,
+                                Name = item.Name,
+                                Address = item.Address,
+                                Status = item.Status,
+                                CreateOn = new DateTime(item.CreateOn.Value.Ticks).ToString("o")
+                            };
+                            res.Data = model;
                         }
 
                     }
@@ -143,7 +165,7 @@ namespace Spec_Project.Services
             }
             return null;
         }
-        public ResponseModel EditCompany(TblCustomer customer)
+        public ResponseModel EditCompany(CustomerModel customer)
         {
             var cont = _httpContextAccessor.HttpContext;
             if (UsersConstant.GetRole(cont.User.Identity.Name) == "admin")

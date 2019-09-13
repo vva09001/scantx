@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QRCoder;
 using Spec_Project.Entities;
@@ -17,11 +22,12 @@ namespace Spec_Project.Controllers
     [ApiController]
     public class ScanDataController : ControllerBase
     {
+        IHttpContextAccessor _httpContextAccessor;
         private IScanDataService _IScanDataService;
+        DataContext context = new DataContext();
         //private IMapper _mapper;
         //private readonly AppSettings _appSettings;
-        public ScanDataController(
-        IScanDataService scandataService)
+        public ScanDataController(IScanDataService scandataService)
         {
             _IScanDataService = scandataService;
             //_mapper = mapper;
@@ -39,7 +45,7 @@ namespace Spec_Project.Controllers
         [Authorize]
         [DisableCors]
         [HttpPost("add-scandata")]
-        public IActionResult addScanData(TblScanData tblscandata)
+        public IActionResult addScanData(ScanDataModel tblscandata)
         {
             return Ok(_IScanDataService.addScanData(tblscandata));
         }
@@ -62,50 +68,58 @@ namespace Spec_Project.Controllers
         [Authorize]
         [DisableCors]
         [HttpPut("edit-scandata")]
-        public IActionResult EditScandata(TblScanData tblscandata)
+        public IActionResult EditScandata(ScanDataModel tblscandata)
         {
             return Ok(_IScanDataService.EditScandata(tblscandata));
         }
 
-        [Authorize]
+        //[Authorize]
         [DisableCors]
-        [HttpPost("getqr")]
-        public ResponseModel CreateQR()
+        [HttpGet("getqr")]
+        public IActionResult CreateQR()
         {
-            var res = new ResponseModel()
-            {
-                Status = "200",
-                Message = "",
-            };
-            try
-            {
-                DataContext db = new DataContext();
-                CreateQR createqr = new CreateQR();
-                var textboxQR = (createqr.Command + createqr.ServerAddress + createqr.Port + createqr.URLPart + createqr.EncryptionKey + createqr.User + createqr.Password);
-                QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(textboxQR.ToString(), QRCodeGenerator.ECCLevel.Q);
-                QRCode qrCode = new QRCode(qrCodeData);
-                Bitmap qrCodeImage = qrCode.GetGraphic(20);
-                var bitmapBytes = BitmapToBytes(qrCodeImage); //Convert bitmap into a byte array
-                string base64String = Convert.ToBase64String(bitmapBytes);
-                res.Data = base64String; //tra data kieu responsemodel
-                return res;
-            }
-            catch (Exception ex)
-            {
-                res.Status = "500";
-                res.Message = ex.Message;
-            }
-
-            return res;
+            return Ok(_IScanDataService.CreateQR());
         }
-        // This method is for converting bitmap into a byte array
-        private static byte[] BitmapToBytes(Bitmap img)
+
+        [DisableCors]
+        [HttpGet("getfile")]
+        public IActionResult MyExportAction()
         {
-            using (MemoryStream stream = new MemoryStream())
+
+
+            var progresses = context.TblScanData.Where(p => p.DeletedOn == null).ToList().Select(progress =>
+                    new TblScanData()
+                    {
+                        ScanId = progress.ScanId,
+                        Uid = progress.Uid,
+                        Status = progress.Status,
+                        DataType = progress.DataType,
+                        CreatedOn = progress.CreatedOn,
+                        FileName = progress.FileName,
+                        Payload = progress.Payload
+                    }
+                );
+
+            List<TblScanData> reportCSVModels = progresses.ToList();
+            using (var writer = new StreamWriter("Tmp/file.csv"))
+            using (var csv = new CsvWriter(writer))
             {
-                img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                return stream.ToArray();
+                csv.WriteRecords(reportCSVModels);
+            }
+            //var stream = new MemoryStream();
+            //var writeFile = new StreamWriter(stream);
+            //var csv = new CsvWriter(writeFile);
+            ////csv.Configuration.RegisterClassMap<GroupReportCSVMap>();
+            //csv.WriteRecords(reportCSVModels);
+            //stream.Position = 0; //reset stream
+            //return File(stream, "application/octet-stream", "Reports.csv");
+            return null;
+        }
+        public class GroupReportCSVMap : ClassMap<ScanDataModel>
+        {
+            public GroupReportCSVMap()
+            {
+                Map(m => m.DeletedOn).TypeConverterOption.Format("yyyy-MM-dd HH:mm:ss.fff");
             }
         }
     }
