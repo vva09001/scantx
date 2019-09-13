@@ -37,7 +37,7 @@ class UserProfile extends React.Component {
           <Papersheet title="User" style={style.papersheet}>
             <p>{profile.username}</p>
             <p>Mail: {profile.mail}</p>
-            <p>Company: {profile.companyName}</p>
+            <p>Company: {profile.nameCompany}</p>
             <p>Authorization: {profile.authorization}</p>
           </Papersheet>
         )}

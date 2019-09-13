@@ -18,14 +18,14 @@ import { userActions, companyActions } from "redux/actions";
 import _ from "lodash";
 import "styles/style.css";
 
-const role = roleId => {
-  if (roleId === "1") {
+const role = roleID => {
+  if (roleID == 1) {
     return "superadmin";
-  } else if (roleId === "2") {
+  } else if (roleID == 2) {
     return "admin";
-  } else if (roleId === "3") {
+  } else if (roleID == 3) {
     return "user";
-  } else if (roleId === "4") {
+  } else if (roleID == 4) {
     return "reader";
   } else {
     return "No Role";
@@ -59,7 +59,7 @@ class User extends Component {
     };
   }
   componentDidMount() {
-    this.props.getUser(this.props.profile.id, this.onSuccess, this.onSuccess);
+    this.props.getUser(this.onSuccess, this.onSuccess);
     this.props.getCompanies(this.onSuccess, this.onSuccess);
   }
   onSuccess = () => {
@@ -167,7 +167,7 @@ class User extends Component {
             {item.givenName} {item.familyName}
           </TableCell>
           <TableCell>{item.email}</TableCell>
-          <TableCell>{role(item.roleId)}</TableCell>
+          <TableCell>{role(item.roleID)}</TableCell>
           <TableCell>
             <Link
               component="button"
@@ -230,7 +230,6 @@ class User extends Component {
             onSubmit={this.edit}
             status={this.state.toggleEdit}
             params={this.state.params}
-            companies={this.props.companies}
           />
           {/* Delete Multi Alert */}
           <DeleteAlert
