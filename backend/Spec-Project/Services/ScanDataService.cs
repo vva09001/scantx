@@ -136,9 +136,11 @@ namespace Spec_Project.Services
                 };
                 CsvContext cc = new CsvContext();
 
-                string finalPath = Directory.GetCurrentDirectory() + "\\tmp\\scandata_" + DateTime.Now.ToString("yyyyMMddhhmmssfff") + ".csv";
+                var now = DateTime.Now.ToString("yyyyMMddhhmmssfff");
+
+                string finalPath = Directory.GetCurrentDirectory() + "\\tmp\\scandata_" + now + ".csv";
                 cc.Write(datascan, finalPath, outputFileDescription);
-                res.Data = finalPath;
+                res.Data = "scantx.miracles.vn/mycsv/scandata_" + now +".csv";
                 res.Message = "";
                 res.Status = "200";
 

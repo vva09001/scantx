@@ -14,7 +14,7 @@ namespace Spec_Project.Services
     {
         TblUsers Authenticate(string username, string password);
         List<TblUsers> GetAll();
-        TblUsers GetById(int id);
+        List<TblUsers> GetById(int id);
         ResponseModel Create(UserDto user, string password, string UserIDLogin);
         ResponseModel Update(TblUsers user, string password = null);
         ResponseModel Delete(int id);
@@ -57,9 +57,17 @@ namespace Spec_Project.Services
             return data;
         }
 
-        public TblUsers GetById(int id)
+        public List<TblUsers> GetById(int id)
         {
-            return _context.TblUsers.Where(o => o.DeletedOn == null && o.Id == id).FirstOrDefault();
+            var user = _context.TblUsers.Where(o => o.Id == id).FirstOrDefault();
+            if (int.Parse(user.RoleId) == RoleConstant.superadmin)
+            {
+                return GetAll();
+            }
+            else
+            {
+                return _context.TblUsers.Where(c => c.Cid == user.Cid).ToList();
+            }
         }
 
         public ResponseModel Create(UserDto userNew, string password, string UserIDLogin)
@@ -91,14 +99,15 @@ namespace Spec_Project.Services
                 }
                 catch (Exception ex)
                 {
-                    return res = new ResponseModel {
-                    Data = "",
-                    Status = "500",
-                    Message= ex.Message
+                    return res = new ResponseModel
+                    {
+                        Data = "",
+                        Status = "500",
+                        Message = ex.Message
                     };
                 }
             }
-            
+
             var tbluser = new TblUsers
             {
 
@@ -110,10 +119,10 @@ namespace Spec_Project.Services
                 ContactByEmail = userNew.ContactByEmail,
                 EncryptionActive = userNew.EncryptionActive,
                 DeletedOn = null,
-                Cid = _context.TblCustomer.Where(o=>o.Name == userNew.UserName).Select(o=>o.Cid).FirstOrDefault(),
+                Cid = _context.TblCustomer.Where(o => o.Name == userNew.UserName).Select(o => o.Cid).FirstOrDefault(),
                 RoleId = userNew.RoleID
             };
-           
+
             try
             {
 

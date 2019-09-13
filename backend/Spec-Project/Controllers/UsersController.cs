@@ -40,6 +40,7 @@ namespace Spec_Project.Controllers
         }
 
         [AllowAnonymous]
+        [DisableCors]
         [HttpPost("authenticate")]
         public IActionResult Authenticate(string username, string password)
         {
@@ -83,6 +84,7 @@ namespace Spec_Project.Controllers
         }
 
         [AllowAnonymous]
+        [DisableCors]
         [HttpPost("register")]
         public IActionResult Register([FromBody]UserDto userDto, string UserIDLogin)
         {
@@ -101,55 +103,14 @@ namespace Spec_Project.Controllers
             }
         }
 
-        [DisableCors]
-        [HttpGet("get-user")]
-        public List<UserDto> GetAll()
-        {
-            var users = _userService.GetAll();
-            List<UserDto> listUserDto = new List<UserDto>();
-            foreach (var item in users)
-            {
-                listUserDto.Add(new UserDto
-                {
-                    Cid = item.Cid,
-                    ContactByEmail = item.ContactByEmail,
-                    Email = item.Email,
-                    EncryptionActive = item.EncryptionActive,
-                    FamilyName = item.FamilyName,
-                    GivenName = item.GivenName,
-                    Id = item.Id,
-                    RoleID = item.RoleId,
-                    TypeOfAccount = item.TypeOfAccount,
-                    UserName = item.UserName
-                });
-            }
-
-            return listUserDto;
-        }
-
+        [Authorize]
         [DisableCors]
         [HttpGet("get-user-by-id")]
-        public IActionResult GetById(int id)
+        public List<TblUsers> GetById(int id)
         {
-            if (!User.IsInRole(RoleConstant.admin))
-            {
-                return Forbid();
-            }
             var user = _userService.GetById(id);
-            var userDto = new UserDto
-            {
-                Id = user.Id,
-                Cid = user.Cid,
-                ContactByEmail = user.ContactByEmail,
-                Email = user.Email,
-                EncryptionActive = user.EncryptionActive,
-                FamilyName = user.FamilyName,
-                GivenName = user.GivenName,
-                TypeOfAccount = user.TypeOfAccount,
-                UserName = user.UserName
-
-            };
-            return Ok(userDto);
+            
+            return user;
         }
 
 

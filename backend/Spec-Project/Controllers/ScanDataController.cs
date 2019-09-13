@@ -76,7 +76,7 @@ namespace Spec_Project.Controllers
 
         [Authorize]
         [DisableCors]
-        [HttpPost("getqr")]
+        [HttpGet("getqr")]
         public ResponseModel CreateQR()
         {
             var res = new ResponseModel()
