@@ -1,20 +1,11 @@
 import React from "react";
 import LayoutWrapper from "components/utility/layoutWrapper";
 import Grid from "@material-ui/core/Grid";
-import { connect } from 'react-redux';
-import { UserProfile, ScanData, Qr } from './components';
-
-const style = {
-  gridItem: {
-    padding: 10,
-  },
-  papersheet: {
-    height: '100%'
-  },
-};
+import { connect } from "react-redux";
+import { UserProfile, ScanData, Qr } from "./components";
 
 class Start extends React.Component {
-  render(){
+  render() {
     return (
       <LayoutWrapper>
         <Grid container>
@@ -25,15 +16,13 @@ class Start extends React.Component {
       </LayoutWrapper>
     );
   }
-};
+}
 
 const mapStateToProps = state => {
-  return {
-  };
+  return {};
 };
 
-const mapDispatchToProps = {
-};
+const mapDispatchToProps = {};
 export default connect(
   mapStateToProps,
   mapDispatchToProps

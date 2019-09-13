@@ -21,7 +21,7 @@ export function* loginRequest(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail('Không thể kết nối đến Sever');
+    yield fail('Cannot connect to Server');
   }
 }
 
@@ -56,7 +56,7 @@ export function* registerSaga(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail('Không thể kết nối đến Sever');
+    yield fail('Cannot connect to Server');
   }
 }
 

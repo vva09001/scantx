@@ -99,7 +99,7 @@ class Form extends React.Component {
     this.setState({
       params: {
         ...this.state.params,
-        [key]: e.target.checked ? true : false
+        [key]: e.target.checked
       }
     });
   };

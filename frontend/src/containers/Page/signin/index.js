@@ -8,6 +8,7 @@ import TextField from "../../../components/uielements/textfield";
 import Scrollbars from "../../../components/utility/customScrollBar";
 import SignInStyleWrapper from "./signin.style";
 import { CircularProgress } from "components/uielements/progress";
+import Link from "@material-ui/core/Link";
 
 const { login } = authAction;
 class SignIn extends Component {
@@ -86,9 +87,7 @@ class SignIn extends Component {
         <div className="mateSignInPageContent">
           <Scrollbars style={{ height: "100%" }}>
             <div>
-              { this.state.error.status && (
-                <h3>{this.state.error.message}</h3>
-                )}
+              {this.state.error.status && <h3>{this.state.error.message}</h3>}
             </div>
             <div>
               <div>
@@ -129,6 +128,13 @@ class SignIn extends Component {
                 </div>
               )}
             </div>
+            <Link
+              href="/signup"
+              variant="body2"
+              margin="normal"
+            >
+              Register
+            </Link>
           </Scrollbars>
         </div>
       </SignInStyleWrapper>

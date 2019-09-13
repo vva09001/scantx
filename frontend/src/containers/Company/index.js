@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Form from "./Form";
+import AssignForm from "./AssignForm";
 import { CircularProgress } from "components/uielements/progress";
 import DeleteAlert from "./Alert";
 import SelectAlert from "./SelectAlert";
@@ -32,7 +33,9 @@ class Company extends Component {
       params: {},
       editAble: false,
       selected: [],
-      selectAlert: false
+      selectAlert: false,
+      assignCid: null,
+      toggleAssign: false
     };
   }
 
@@ -110,6 +113,13 @@ class Company extends Component {
           <Link
             component="button"
             variant="body2"
+            onClick={() => this.onToggleAssign(true, item.cid)}
+          >
+            Assign|
+          </Link>
+          <Link
+            component="button"
+            variant="body2"
             onClick={() => this.onToggleEditForm(true, item)}
           >
             Edit
@@ -117,6 +127,17 @@ class Company extends Component {
         </TableCell>
       </TableRow>
     ));
+  };
+
+  onToggleAssign = (status, assignCid) => {
+    this.setState({
+      toggleAssign: status,
+      assignCid: assignCid
+    });
+  };
+
+  onAssign = (params, success, fail) => {
+    this.props.assign(this.state.assignCid, params, success, fail);
   };
 
   onSelected = id => {
@@ -210,6 +231,12 @@ class Company extends Component {
             onSubmit={this.onSubmit}
             remove={this.onSelectedAll}
           />
+          {/* Assign Form */}
+          <AssignForm
+            onToggle={this.onToggleAssign}
+            onSubmit={this.onAssign}
+            status={this.state.toggleAssign}
+          />
           <DeleteAlert
             status={this.state.delete}
             selected={this.state.selected}
@@ -235,7 +262,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   get: companyActions.get,
   add: companyActions.add,
-  edit: companyActions.edit
+  edit: companyActions.edit,
+  assign: companyActions.assign
 };
 export default connect(
   mapStateToProps,

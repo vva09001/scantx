@@ -59,7 +59,7 @@ class User extends Component {
     };
   }
   componentDidMount() {
-    this.props.getUser(this.onSuccess, this.onSuccess);
+    this.props.getUser(this.props.profile.id, this.onSuccess, this.onSuccess);
     this.props.getCompanies(this.onSuccess, this.onSuccess);
   }
   onSuccess = () => {
@@ -188,7 +188,7 @@ class User extends Component {
     return (
       <LayoutWrapper>
         <FullColumn>
-          <Papersheet title="Users of company CSBG">
+          <Papersheet title={"Users of company " + this.props.profile.companyName}>
             <Table>
               <TableBody>{this.renderData()}</TableBody>
             </Table>
@@ -251,7 +251,8 @@ class User extends Component {
 const mapStateToProps = state => {
   return {
     users: state.User.list,
-    companies: state.Company.list
+    companies: state.Company.list,
+    profile: state.Auth.profile
   };
 };
 
