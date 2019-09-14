@@ -189,7 +189,13 @@ class Company extends Component {
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox">
-                    <Checkbox onChange={() => this.onSelectedAll()} />
+                    <Checkbox
+                      onChange={() => this.onSelectedAll()}
+                      checked={
+                        this.state.selected.length ===
+                        this.props.companies.length
+                      }
+                    />
                   </TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Address</TableCell>

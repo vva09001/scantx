@@ -216,7 +216,7 @@ class ScanData extends Component {
       this.onSuccess,
       this.onSuccess
     );
-  }
+  };
 
   render() {
     if (this.state.loading) {
@@ -240,7 +240,12 @@ class ScanData extends Component {
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox">
-                    <Checkbox onChange={() => this.onSelectedAll()} />
+                    <Checkbox
+                      onChange={() => this.onSelectedAll()}
+                      checked={
+                        this.state.multiId.length === this.props.datas.length
+                      }
+                    />
                   </TableCell>
                   <TableCell>Date</TableCell>
                   <TableCell>Time</TableCell>

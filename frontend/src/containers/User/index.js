@@ -19,13 +19,13 @@ import _ from "lodash";
 import "styles/style.css";
 
 const role = roleID => {
-  if (roleID == 1) {
+  if (roleID === 1) {
     return "superadmin";
-  } else if (roleID == 2) {
+  } else if (roleID === 2) {
     return "admin";
-  } else if (roleID == 3) {
+  } else if (roleID === 3) {
     return "user";
-  } else if (roleID == 4) {
+  } else if (roleID === 4) {
     return "reader";
   } else {
     return "No Role";
@@ -182,13 +182,15 @@ class User extends Component {
     });
   };
   render() {
+    const { profile } = this.props;
+
     if (this.state.loading) {
       return <CircularProgress />;
     }
     return (
       <LayoutWrapper>
         <FullColumn>
-          <Papersheet title={"Users of company " + this.props.profile.companyName}>
+          <Papersheet title={"Users of company " + profile.nameCompany}>
             <Table>
               <TableBody>{this.renderData()}</TableBody>
             </Table>
@@ -217,13 +219,15 @@ class User extends Component {
             </Grid>
           </Papersheet>
           {/* Add Form */}
-          <Form
-            onToggle={this.onToggleForm}
-            onSubmit={this.add}
-            status={this.state.toggle}
-            companies={this.props.companies}
-            password={this.state.password}
-          />
+          {profile.typeOfAccount === "Commercial" && (
+            <Form
+              onToggle={this.onToggleForm}
+              onSubmit={this.add}
+              status={this.state.toggle}
+              companies={this.props.companies}
+              password={this.state.password}
+            />
+          )}
           {/* Edit Form */}
           <EditForm
             onToggle={this.onToggleEditForm}
