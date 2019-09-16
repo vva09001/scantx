@@ -16,8 +16,9 @@ import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormLabel from "@material-ui/core/FormLabel";
 import InputLabel from "@material-ui/core/InputLabel";
-import { authActions, userActions, companyActions } from "redux/actions";
+import { authActions, userActions } from "redux/actions";
 import { CircularProgress } from "components/uielements/progress";
+import RegisterSuccess from "./RegisterSuccess";
 import _ from "lodash";
 
 const generatePassword = () => {
@@ -37,27 +38,35 @@ class SignUp extends Component {
     this.state = {
       redirectToReferrer: false,
       loading: false,
+      error: {
+        status: false,
+        message: ""
+      },
+      registerSuccess: false,
       readerRole: false,
       userRole: false,
       adminRole: false,
       superadminRole: false,
+      submitCompany: false,
       params: {
         userName: "",
         givenName: "",
         familyName: "",
         typeOfAccount: "",
-        roleId: "",
-        cid: "",
+        roleID: "",
         password: "",
         email: "",
         contactByEmail: false,
-        encryptionActive: false
+        encryptionActive: false,
+
+        companyName: "",
+        companyAddress: "",
+        companyStatus: ""
       }
     };
   }
 
   componentDidMount() {
-    this.props.getCompanies(this.onSuccess, this.onSuccess);
     this.setState({
       params: {
         ...this.state.params,
@@ -80,15 +89,61 @@ class SignUp extends Component {
     this.props.history.push("/dashboard");
   };
 
+  onSuccess = () => {
+    this.setState({
+      loading: false
+    });
+  };
+
+  onRegisterSuccess = () => {
+    this.setState({
+      loading: false,
+      registerSuccess: true
+    });
+  };
+
+  onFail = error => {
+    this.setState({
+      loading: false,
+      error: {
+        status: true,
+        message: error
+      }
+    });
+  };
+
   onSubmit = () => {
     this.setState(
       {
-        loading: true
+        loading: true,
+        params: {
+          ...this.state.params,
+          companyName: this.state.params.userName
+        }
       },
       () => {
-        this.props.addUser(this.state.params, this.onSuccess, this.onSuccess);
+        this.props.addUser(
+          this.state.params,
+          this.onRegisterSuccess,
+          this.onFail
+        );
       }
     );
+  };
+
+  onCloseCompany = () => {
+    this.setState({
+      params: {
+        ...this.state.params,
+        typeOfAccount: ""
+      }
+    });
+  };
+
+  submitCompany = () => {
+    this.setState({
+      submitCompany: true
+    });
   };
 
   onChange = e => {
@@ -125,7 +180,7 @@ class SignUp extends Component {
           userRole: true,
           adminRole: false,
           superadminRole: false,
-          params: { ...this.state.params, roleId: "" }
+          params: { ...this.state.params, roleID: "" }
         });
         return;
       case "Test":
@@ -134,7 +189,7 @@ class SignUp extends Component {
           userRole: true,
           adminRole: false,
           superadminRole: false,
-          params: { ...this.state.params, roleId: "" }
+          params: { ...this.state.params, roleID: "" }
         });
         return;
       case "Commercial":
@@ -143,7 +198,7 @@ class SignUp extends Component {
           userRole: true,
           adminRole: true,
           superadminRole: false,
-          params: { ...this.state.params, roleId: "" }
+          params: { ...this.state.params, roleID: "" }
         });
         return;
       case "CSBG":
@@ -152,7 +207,7 @@ class SignUp extends Component {
           userRole: true,
           adminRole: true,
           superadminRole: true,
-          params: { ...this.state.params, roleId: "" }
+          params: { ...this.state.params, roleID: "" }
         });
         return;
       default:
@@ -161,48 +216,25 @@ class SignUp extends Component {
           userRole: false,
           adminRole: false,
           superadminRole: false,
-          params: { ...this.state.params, roleId: "" }
+          params: { ...this.state.params, roleID: "" }
         });
-    }
-  };
-  renderCompanies = () => {
-    if (
-      this.state.params.typeOfAccount === "Test" ||
-      this.state.params.typeOfAccount === "Private"
-    ) {
-      return <option value={null}>{this.state.params.userName}</option>;
-    } else if (this.state.params.typeOfAccount === "Commercial") {
-      return _.map(
-        _.filter(this.props.companies, item => item.cid === this.props.cid),
-        item => {
-          return (
-            <option key={item.cid} value={item.cid}>
-              {item.name}
-            </option>
-          );
-        }
-      );
-    } else {
-      return _.map(this.props.companies, item => {
-        return (
-          <option key={item.cid} value={item.cid}>
-            {item.name}
-          </option>
-        );
-      });
     }
   };
 
   render() {
+    console.log(this.state.params);
+
     let enableSubmit =
       this.state.params.userName !== "" &&
       this.state.params.givenName !== "" &&
       this.state.params.familyName !== "" &&
       this.state.params.typeOfAccount !== "" &&
-      this.state.params.roleId !== "" &&
-      this.state.params.cid !== "" &&
+      this.state.params.roleID !== "" &&
       this.state.params.password !== "" &&
       this.state.params.email !== "";
+
+    let enableSubmitCompany = this.state.params.companyName !== "";
+
     return (
       <SignUpStyleWrapper className="mateSignUpPage">
         <div className="mateSignInPageImgPart">
@@ -213,8 +245,18 @@ class SignUp extends Component {
 
         <div className="mateSignInPageContent">
           <Scrollbars style={{ height: "100%" }}>
+            {/* User Form */}
             <Dialog open={true} fullWidth>
-              <DialogTitle>{"Add new user"}</DialogTitle>
+              <DialogTitle>
+                <h3>Add new user</h3>
+                <div>
+                  {this.state.error.status && (
+                    <p style={{ color: "#F44336" }}>
+                      {this.state.error.message}
+                    </p>
+                  )}
+                </div>
+              </DialogTitle>
               <DialogContent>
                 <div>
                   <TextField
@@ -270,8 +312,8 @@ class SignUp extends Component {
                   <FormControl margin="normal" fullWidth>
                     <InputLabel>Role</InputLabel>
                     <NativeSelect
-                      name="roleId"
-                      value={this.state.params.roleId}
+                      name="roleID"
+                      value={this.state.params.roleID}
                       onChange={e => this.onChange(e)}
                     >
                       <option value={""}></option>
@@ -287,19 +329,6 @@ class SignUp extends Component {
                       <option disabled={!this.state.superadminRole} value={1}>
                         Superadmin
                       </option>
-                    </NativeSelect>
-                  </FormControl>
-                </div>
-                <div>
-                  <FormControl margin="normal" fullWidth>
-                    <InputLabel>Company</InputLabel>
-                    <NativeSelect
-                      name="cid"
-                      value={this.state.params.cid}
-                      onChange={e => this.onChange(e)}
-                    >
-                      <option value={""}></option>
-                      {this.renderCompanies()}
                     </NativeSelect>
                   </FormControl>
                 </div>
@@ -375,6 +404,78 @@ class SignUp extends Component {
                 </DialogActions>
               )}
             </Dialog>
+
+            {/* Company Form */}
+            <Dialog
+              open={
+                this.state.params.typeOfAccount === "Commercial" &&
+                !this.state.submitCompany
+              }
+              onClose={this.onCloseCompany}
+            >
+              {this.state.loading ? (
+                <CircularProgress />
+              ) : (
+                <React.Fragment>
+                  <DialogTitle>{"Create your company"}</DialogTitle>
+                  <DialogContent>
+                    <div>
+                      <TextField
+                        required
+                        label="Name"
+                        margin="normal"
+                        fullWidth
+                        name="companyName"
+                        value={this.state.params.companyName}
+                        onChange={e => this.onChange(e)}
+                      />
+                    </div>
+                    <div>
+                      <TextField
+                        label="Address"
+                        margin="normal"
+                        fullWidth
+                        name="companyAddress"
+                        value={this.state.params.companyAddress}
+                        onChange={e => this.onChange(e)}
+                      />
+                    </div>
+                    <div>
+                      <TextField
+                        label="Status"
+                        margin="normal"
+                        fullWidth
+                        name="companyStatus"
+                        value={this.state.params.companyStatus}
+                        onChange={e => this.onChange(e)}
+                      />
+                    </div>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      onClick={() => this.onCloseCompany()}
+                      color="primary"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      disabled={!enableSubmitCompany}
+                      onClick={() => this.submitCompany()}
+                      color="primary"
+                      autoFocus
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </React.Fragment>
+              )}
+            </Dialog>
+
+            {/* Register Success */}
+            <RegisterSuccess
+              status={this.state.registerSuccess}
+              onSubmit={() => this.props.history.push("./")}
+            />
           </Scrollbars>
         </div>
       </SignUpStyleWrapper>
@@ -383,15 +484,13 @@ class SignUp extends Component {
 }
 const mapSateToProps = state => {
   return {
-    companies: state.Company.list,
     isLoggedIn: state.Auth.idToken !== null ? true : false
   };
 };
 
 const mapDispatchToProps = {
   register: authActions.register,
-  addUser: userActions.addUser,
-  getCompanies: companyActions.get
+  addUser: userActions.addUser
 };
 export default connect(
   mapSateToProps,

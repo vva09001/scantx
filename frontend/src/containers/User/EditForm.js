@@ -37,8 +37,7 @@ class Form extends React.Component {
       familyName,
       givenName,
       typeOfAccount,
-      roleId,
-      cid,
+      roleID,
       email,
       contactByEmail,
       encryptionActive
@@ -50,14 +49,13 @@ class Form extends React.Component {
         familyName,
         givenName,
         typeOfAccount,
-        roleId,
-        cid,
+        roleID,
         email,
         contactByEmail,
         encryptionActive,
         password: ""
       }
-    });
+    }, () => this.selectRole());
   }
   onSuccess = () => {
     this.setState({
@@ -111,7 +109,7 @@ class Form extends React.Component {
           userRole: true,
           adminRole: false,
           superadminRole: false,
-          params: { ...this.state.params, roleId: "" }
+          params: { ...this.state.params, roleID: "" }
         });
         return;
       case "Test":
@@ -120,7 +118,7 @@ class Form extends React.Component {
           userRole: true,
           adminRole: false,
           superadminRole: false,
-          params: { ...this.state.params, roleId: "" }
+          params: { ...this.state.params, roleID: "" }
         });
         return;
       case "Commercial":
@@ -129,7 +127,7 @@ class Form extends React.Component {
           userRole: true,
           adminRole: true,
           superadminRole: false,
-          params: { ...this.state.params, roleId: "" }
+          params: { ...this.state.params, roleID: "" }
         });
         return;
       case "CSBG":
@@ -138,7 +136,7 @@ class Form extends React.Component {
           userRole: true,
           adminRole: true,
           superadminRole: true,
-          params: { ...this.state.params, roleId: "" }
+          params: { ...this.state.params, roleID: "" }
         });
         return;
       default:
@@ -147,18 +145,9 @@ class Form extends React.Component {
           userRole: false,
           adminRole: false,
           superadminRole: false,
-          params: { ...this.state.params, roleId: "" }
+          params: { ...this.state.params, roleID: "" }
         });
     }
-  };
-  renderCompanies = () => {
-    return _.map(this.props.companies, item => {
-      return (
-        <option key={item.cid} value={item.cid}>
-          {item.name}
-        </option>
-      );
-    });
   };
   render() {
     const { status } = this.props;
@@ -166,9 +155,7 @@ class Form extends React.Component {
       this.state.params.userName !== "" &&
       this.state.params.givenName !== "" &&
       this.state.params.familyName !== "" &&
-      this.state.params.typeOfAccount !== "" &&
-      this.state.params.roleId !== "" &&
-      this.state.params.cid !== "" &&
+      this.state.params.roleID !== "" &&
       // this.state.params.password !== "" &&
       this.state.params.email !== "";
     return (
@@ -203,27 +190,10 @@ class Form extends React.Component {
               </div>
               <div>
                 <FormControl margin="normal" fullWidth>
-                  <InputLabel>Type of Account</InputLabel>
-                  <NativeSelect
-                    required
-                    name="typeOfAccount"
-                    value={this.state.params.typeOfAccount}
-                    onChange={e => this.onChange(e)}
-                  >
-                    <option value={""}></option>
-                    <option value={"Commercial"}>Commercial</option>
-                    <option value={"Test"}>Test</option>
-                    <option value={"Private"}>Private</option>
-                    <option value={"CSBG"}>CSBG</option>
-                  </NativeSelect>
-                </FormControl>
-              </div>
-              <div>
-                <FormControl margin="normal" fullWidth>
                   <InputLabel>Role</InputLabel>
                   <NativeSelect
-                    name="roleId"
-                    value={this.state.params.roleId}
+                    name="roleID"
+                    value={this.state.params.roleID}
                     onChange={e => this.onChange(e)}
                   >
                     <option value={""}></option>
@@ -239,19 +209,6 @@ class Form extends React.Component {
                     <option disabled={!this.state.superadminRole} value={1}>
                       Superadmin
                     </option>
-                  </NativeSelect>
-                </FormControl>
-              </div>
-              <div>
-                <FormControl margin="normal" fullWidth>
-                  <InputLabel>Company</InputLabel>
-                  <NativeSelect
-                    name="cid"
-                    value={this.state.params.cid}
-                    onChange={e => this.onChange(e)}
-                  >
-                    <option value={""}></option>
-                    {this.renderCompanies()}
                   </NativeSelect>
                 </FormControl>
               </div>

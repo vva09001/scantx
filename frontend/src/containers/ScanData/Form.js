@@ -57,7 +57,7 @@ class Form extends React.Component {
           <CircularProgress />
         ) : (
           <Dialog open={status} onClose={this.onClose}>
-            <DialogTitle>{"Edit scan data"}</DialogTitle>
+            <DialogTitle>{"Add new scan data"}</DialogTitle>
             <DialogContent>
               <div>
                 <TextField

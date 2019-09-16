@@ -1,9 +1,8 @@
 const actions = {
   GET_USER_REQUEST: 'GET_USER_REQUEST',
   GET_USER_SUCCESS: 'GET_USER_SUCCESS',
-  getUser: (id, success, fail) => ({
+  getUser: (success, fail) => ({
     type: actions.GET_USER_REQUEST,
-    id,
     success,
     fail
   }),

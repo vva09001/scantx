@@ -71,7 +71,6 @@ class Form extends React.Component {
               <div>
                 <TextField
                   required
-                  id="username-input"
                   label="Name"
                   margin="normal"
                   fullWidth
@@ -82,7 +81,6 @@ class Form extends React.Component {
               </div>
               <div>
                 <TextField
-                  id="given-name-input"
                   label="Address"
                   margin="normal"
                   fullWidth
@@ -93,7 +91,6 @@ class Form extends React.Component {
               </div>
               <div>
                 <TextField
-                  id="family-name-input"
                   label="Status"
                   margin="normal"
                   fullWidth

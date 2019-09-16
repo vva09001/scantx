@@ -35,10 +35,18 @@ class UserProfile extends React.Component {
           <CircularProgress />
         ) : (
           <Papersheet title="User" style={style.papersheet}>
-            <p>{profile.username}</p>
-            <p>Mail: {profile.mail}</p>
-            <p>Company: {profile.companyName}</p>
-            <p>Authorization: {profile.authorization}</p>
+            <p>
+              Username: <strong>{profile.username}</strong>
+            </p>
+            <p>
+              Mail: <strong>{profile.mail}</strong>
+            </p>
+            <p>
+              Company: <strong>{profile.nameCompany}</strong>
+            </p>
+            <p>
+              Type of Account: <strong>{profile.typeOfAccount}</strong>
+            </p>
           </Papersheet>
         )}
       </Grid>

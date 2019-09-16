@@ -10,10 +10,10 @@ import { getToken } from "redux/selectors";
 import actions from "./actions";
 
 export function* getUserSagas(data) {
-  const { id, success, fail } = data;
+  const { success, fail } = data;
   try {
     const token = yield select(getToken);
-    const res = yield getUsers(id, token);
+    const res = yield getUsers(token);
     if (res.status === 200) {
       yield success();
       yield put({ type: actions.GET_USER_SUCCESS, response: res.data });
