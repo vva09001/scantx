@@ -27,13 +27,14 @@ namespace Spec_Project.Controllers
         DataContext context = new DataContext();
         //private IMapper _mapper;
         //private readonly AppSettings _appSettings;
-        public ScanDataController(IScanDataService scandataService)
+        public ScanDataController(IScanDataService scandataService, IHttpContextAccessor httpContextAccessor)
         {
             _IScanDataService = scandataService;
+            _httpContextAccessor = httpContextAccessor;
             //_mapper = mapper;
             //_appSettings = appSettings.Value;
         }
-        [Authorize]
+        //[Authorize]
         [DisableCors]
         [HttpGet("convert-scandata-to-csv")]
         public IActionResult ConvertTblScanDataToCSV(int uid)
@@ -80,7 +81,7 @@ namespace Spec_Project.Controllers
             return Ok(_IScanDataService.EditScandata(tblscandata));
         }
 
-        //[Authorize]
+        [Authorize]
         [DisableCors]
         [HttpGet("getqr")]
         public ResponseModel CreateQR()

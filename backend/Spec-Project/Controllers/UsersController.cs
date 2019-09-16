@@ -87,6 +87,7 @@ namespace Spec_Project.Controllers
                 LastName = user.GivenName,
                 CompanyName = com.Name,
                 Mail = user.Email,
+                TypeOfAcc = user.TypeOfAccount,
                 Authorization = user.Authorization,
                 Token = tokenString
             });

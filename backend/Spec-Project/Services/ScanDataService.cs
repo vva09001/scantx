@@ -51,7 +51,7 @@ namespace Spec_Project.Services
                 Message = ""
             };
             string mypath = @"h:\root\tmp\";
-            string mypath1 = @"E:\Miracles\spec-project\scantx\backend\Spec-Project\";
+            string mypath1 = @"D:\Git\scantx\spec-project\scantx\backend\Spec-Project\";
             try
             {
 
