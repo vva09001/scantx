@@ -80,7 +80,8 @@ namespace Spec_Project.Services
             else {
                 if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.user)
                 {
-                    var user = _context.TblUsers.Where(p => p.Id == int.Parse(context.User.Identity.Name)).ToList();
+                    var ciduser = UsersConstant.GetCID(context.User.Identity.Name);
+                    var user = _context.TblUsers.Where(p => p.Cid == ciduser).ToList();
                     return user;
                 }
             }
@@ -392,6 +393,56 @@ namespace Spec_Project.Services
                 var user = _context.TblUsers.Where(o => o.Id == userParam.Id && o.DeletedOn == null).FirstOrDefault();
 
                 
+                try
+                {
+                    if (user == null)
+                    {
+                        res.Data = "";
+                        res.Status = "500";
+                        res.Message = "User not found";
+                        return res;
+                    }
+
+                    if (userParam.UserName != user.UserName)
+                    {
+                        // username has changed so check if the new username is already taken
+                        if (_context.TblUsers.Any(x => x.UserName == userParam.UserName))
+                        {
+                            res.Data = "";
+                            res.Status = "500";
+                            res.Message = ("Username " + userParam.UserName + " is already taken");
+                        }
+
+                    }
+                    // update user properties
+
+                    user.FamilyName = userParam.FamilyName;
+                    user.GivenName = userParam.GivenName;
+                    user.UserName = userParam.UserName;
+                    user.TypeOfAccount = userParam.TypeOfAccount;
+                    user.Email = userParam.Email;
+                    user.Cid = userParam.Cid;
+                    user.RoleId = userParam.RoleId;
+                    user.ContactByEmail = userParam.ContactByEmail;
+                    user.EncryptionActive = userParam.EncryptionActive;
+                    _context.TblUsers.Update(user);
+                    _context.SaveChanges();
+
+                }
+                catch (Exception ex)
+                {
+                    res.Data = "";
+                    res.Status = "500";
+                    res.Message = ("Username " + userParam.UserName + " is already taken");
+
+                }
+                return res;
+            }
+            if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.user)
+            {
+                var user = _context.TblUsers.Where(o => o.Id == int.Parse(context.User.Identity.Name) && o.DeletedOn == null).FirstOrDefault();
+
+
                 try
                 {
                     if (user == null)

@@ -33,6 +33,15 @@ namespace Spec_Project
                 return roleid;
             }
         }
+        public static string GetCID(string userID)
+        {
+            var strcid = int.Parse(userID);
+            using (DataContext db = new DataContext())
+            {
+                var cid = db.TblUsers.Where(o => o.Id == strcid).Select(o => o.Cid).FirstOrDefault();
+                return cid;
+            }
+        }
         public static string GetUserName(string userid)
         {
             var userID = int.Parse(userid);
