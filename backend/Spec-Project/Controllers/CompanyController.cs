@@ -14,7 +14,7 @@ using Spec_Project.Services;
 
 namespace Spec_Project.Controllers
 {
-    [Authorize]
+  
     [Route("api/Company")]
     [ApiController]
     public class CompanyController : ControllerBase
@@ -30,10 +30,10 @@ namespace Spec_Project.Controllers
             //_appSettings = appSettings.Value;
         }
 
-        [Authorize]
+ 
 
         [DisableCors]
-        [HttpGet("geta-company")]
+        [HttpGet("get-id-company")]
         public IActionResult getIDCompany(string cid)
         {
             return Ok(_ICompanyService.getIDCompany(cid));

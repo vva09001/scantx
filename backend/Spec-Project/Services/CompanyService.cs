@@ -15,7 +15,7 @@ namespace Spec_Project.Services
         ResponseModel DeleteArrCompany(List<string> deleteIds);
         ResponseModel DeleteCompany(string cid);
 
-        string getIDCompany(string cid);
+        TblCustomer getIDCompany(string cid);
 
         TblCustomer GetCompanyByCid(string Cid);
 
@@ -30,19 +30,15 @@ namespace Spec_Project.Services
         }
 
 
-        public string getIDCompany(string cid)
+        public TblCustomer getIDCompany(string cid)
         {
-            var a = db.TblCustomer.Where(p => p.Cid == cid).FirstOrDefault();
-            if (a != null)
-            {
-                return a.Address;
-            }
-            return null;
+            var companybycid = db.TblCustomer.Where(p => p.Cid == cid && p.DeletedOn == null).FirstOrDefault();
+            return companybycid;
         }
         public List<TblCustomer> getCompany()
         {
             var context = _httpContextAccessor.HttpContext;
-            if (UsersConstant.GetRole(context.User.Identity.Name) == "admin")
+            if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
             {
                 var company = db.TblCustomer.Where(p => p.DeletedOn == null).ToList();
                 return company;
@@ -59,15 +55,16 @@ namespace Spec_Project.Services
         public ResponseModel addCompany(CustomerModel tblcustomer)
         {
             var context = _httpContextAccessor.HttpContext;
-            //if (UsersConstant.GetRole(context.User.Identity.Name) == "admin")
+            Guid g;
+            var res = new ResponseModel()
+            {
+                Status = "200",
+                Message = "",
+            };
+            if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
             //{
-                {
-                    Guid g;
-                    var res = new ResponseModel()
-                    {
-                        Status = "200",
-                        Message = "",
-                    };
+            {
+                    
                     try
                     {
                         var listcustomer = db.TblCustomer.FirstOrDefault(p => p.Cid != tblcustomer.Cid);
@@ -105,18 +102,19 @@ namespace Spec_Project.Services
                     return res;
                // }
             }
-            return null;
+            return res;
         }
         public ResponseModel DeleteCompany(string cid)
         {
             var cont = _httpContextAccessor.HttpContext;
-            if (UsersConstant.GetRole(cont.User.Identity.Name) == "admin")
+            var res = new ResponseModel()
             {
-                var res = new ResponseModel()
-                {
-                    Status = "200",
-                    Message = "",
-                };
+                Status = "200",
+                Message = "",
+            };
+            if (UsersConstant.GetRole(int.Parse(cont.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(cont.User.Identity.Name)) == UsersConstant.superadmin)
+            {
+                
                 try
                 {
                     using (DataContext context = new DataContext())
@@ -137,19 +135,20 @@ namespace Spec_Project.Services
                 }
                 return res;
             }
-            return null;
+            return res;
         }
 
         public ResponseModel DeleteArrCompany(List<string> deleteIds)
         {
             var cont = _httpContextAccessor.HttpContext;
-            if (UsersConstant.GetRole(cont.User.Identity.Name) == "admin")
+            var res = new ResponseModel()
             {
-                var res = new ResponseModel()
-                {
-                    Status = "200",
-                    Message = "",
-                };
+                Status = "200",
+                Message = "",
+            };
+            if (UsersConstant.GetRole(int.Parse(cont.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(cont.User.Identity.Name)) == UsersConstant.superadmin)
+            {
+                
                 try
                 {
                     using (DataContext context = new DataContext())
@@ -173,18 +172,19 @@ namespace Spec_Project.Services
                 }
                 return res;
             }
-            return null;
+            return res;
         }
         public ResponseModel EditCompany(CustomerModel customer)
         {
             var cont = _httpContextAccessor.HttpContext;
-            if (UsersConstant.GetRole(cont.User.Identity.Name) == "admin")
+            var res = new ResponseModel()
             {
-                var res = new ResponseModel()
-                {
-                    Status = "200",
-                    Message = "",
-                };
+                Status = "200",
+                Message = "",
+            };
+            if (UsersConstant.GetRole(int.Parse(cont.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(cont.User.Identity.Name)) == UsersConstant.superadmin)
+            {
+               
                 try
                 {
                     var oldCusomer = (from u in db.TblCustomer where u.Cid == customer.Cid select u).FirstOrDefault();
@@ -204,7 +204,7 @@ namespace Spec_Project.Services
                 }
                 return res;
             }
-            return null;
+            return res;
         }
     }
 }

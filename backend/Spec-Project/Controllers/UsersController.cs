@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Spec_Project.Controllers
 {
+    [Authorize]
     [AllowAnonymous]
     [ApiController]
     [Route("api/user")]
@@ -34,12 +35,14 @@ namespace Spec_Project.Controllers
 
         DataContext _context;
 
-        IHttpContextAccessor _httpContextAccessor;
+        private IHttpContextAccessor _httpContextAccessor;
         public UsersController(
             IUserService userService,
             IMapper mapper,
+            IHttpContextAccessor httpContextAccessor,
             IOptions<Helpers.AppSettings> appSettings)
         {
+            _httpContextAccessor = httpContextAccessor;
             _userService = userService;
             _mapper = mapper;
             _appSettings = appSettings.Value;
@@ -132,11 +135,11 @@ namespace Spec_Project.Controllers
         [DisableCors]
 
         [HttpGet("get-user-by-id")]
-        public List<TblUsers> GetById(int id)
+        public ResponseModel GetById(int id)
         {
-            var user = _userService.GetById(id);
+            var res = _userService.GetById(id);
             
-            return user;
+            return res;
         }
 
 

@@ -29,7 +29,7 @@ namespace Spec_Project.Services
         ResponseModel EditScandata(ScanDataModel tblscandata);
         ResponseModel CreateQR();
 
-        ResponseModel ConvertTblScanDataToCSV(string Uid);
+        ResponseModel ConvertTblScanDataToCSV(int Uid);
 
     }
     public class ScanDataService : IScanDataService
@@ -41,7 +41,7 @@ namespace Spec_Project.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public ResponseModel ConvertTblScanDataToCSV(string Uid)
+        public ResponseModel ConvertTblScanDataToCSV(int Uid)
         {
 
             var res = new ResponseModel
@@ -57,11 +57,11 @@ namespace Spec_Project.Services
 
                 DataContext db = new DataContext();
 
-                int role = int.Parse(UsersConstant.GetRole(Uid));
+                int role = UsersConstant.GetRole(Uid);
 
                 List<TblScanData> datascan = new List<TblScanData>();
 
-                if (role == RoleConstant.superadmin)
+                if (role == UsersConstant.superadmin)
                 {
                     datascan.Clear();
                     datascan = db.TblScanData.Select(o => new TblScanData
@@ -78,7 +78,7 @@ namespace Spec_Project.Services
 
                 }
                 else
-                if (role == RoleConstant.reader)
+                if (role == UsersConstant.reader)
                 {
 
                     //datascan.Clear();
@@ -103,11 +103,11 @@ namespace Spec_Project.Services
 
                 }
                 else
-                if (role == RoleConstant.adminint)
+                if (role == UsersConstant.admin)
                 {
 
                     datascan.Clear();
-                    datascan = db.TblScanData.Include(o => o.U).Where(o => o.Uid == int.Parse(Uid) && (o.U.RoleId == RoleConstant.user.ToString() || o.U.RoleId == RoleConstant.admin || o.U.RoleId == RoleConstant.reader.ToString())).Select(o => new TblScanData
+                    datascan = db.TblScanData.Include(o => o.U).Where(o => o.Uid == (Uid) && (o.U.RoleId == UsersConstant.user || o.U.RoleId == UsersConstant.admin || o.U.RoleId == UsersConstant.reader)).Select(o => new TblScanData
                     {
                         Uid = o.Uid,
                         CreatedOn = o.CreatedOn,
@@ -121,10 +121,10 @@ namespace Spec_Project.Services
 
                 }
                 else
-                if (role == RoleConstant.userint)
+                if (role == UsersConstant.user)
                 {
                     datascan.Clear();
-                    datascan = db.TblScanData.Include(o => o.U).Where(o => o.Uid == int.Parse(Uid) && (o.U.RoleId == RoleConstant.user.ToString() || o.U.RoleId == RoleConstant.reader.ToString())).Select(o => new TblScanData
+                    datascan = db.TblScanData.Include(o => o.U).Where(o => o.Uid == (Uid) && (o.U.RoleId == UsersConstant.user || o.U.RoleId == UsersConstant.reader)).Select(o => new TblScanData
                     {
                         Uid = o.Uid,
                         CreatedOn = o.CreatedOn,
@@ -177,13 +177,14 @@ namespace Spec_Project.Services
         public ResponseModel addScanData(ScanDataModel tblscandata)
         {
             var contex = _httpContextAccessor.HttpContext;
-            if (UsersConstant.GetRole(contex.User.Identity.Name) == "admin")
+            var res = new ResponseModel()
             {
-                var res = new ResponseModel()
-                {
-                    Status = "200",
-                    Message = "",
-                };
+                Status = "200",
+                Message = "",
+            };
+            if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin)
+            {
+                
                 try
                 {
                     using (DataContext context = new DataContext())
@@ -229,18 +230,19 @@ namespace Spec_Project.Services
 
                 return res;
             }
-            return null;
+            return res;
         }
         public ResponseModel DeleteScanData(string scanid)
         {
             var contex = _httpContextAccessor.HttpContext;
-            if (UsersConstant.GetRole(contex.User.Identity.Name) == "admin")
+
+            var res = new ResponseModel()
             {
-                var res = new ResponseModel()
-                {
-                    Status = "200",
-                    Message = "",
-                };
+                Status = "200",
+                Message = "",
+            };
+            if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin)
+            {
                 try
                 {
                     using (DataContext context = new DataContext())
@@ -262,19 +264,20 @@ namespace Spec_Project.Services
                 }
                 return res;
             }
-            return null;
+            return res;
         }
 
         public ResponseModel DeleteArrScanData(List<string> deleteIds)
         {
             var contex = _httpContextAccessor.HttpContext;
-            if (UsersConstant.GetRole(contex.User.Identity.Name) == "admin")
+            var res = new ResponseModel()
             {
-                var res = new ResponseModel()
-                {
-                    Status = "200",
-                    Message = "",
-                };
+                Status = "200",
+                Message = "",
+            };
+            if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin)
+            {
+                
                 try
                 {
                     using (DataContext context = new DataContext())
@@ -299,18 +302,19 @@ namespace Spec_Project.Services
                 }
                 return res;
             }
-            return null;
+            return res;
         }
         public ResponseModel EditScandata(ScanDataModel tblscandata)
         {
             var contex = _httpContextAccessor.HttpContext;
-            if (UsersConstant.GetRole(contex.User.Identity.Name) == "admin")
+            var res = new ResponseModel()
             {
-                var res = new ResponseModel()
-                {
-                    Status = "200",
-                    Message = "",
-                };
+                Status = "200",
+                Message = "",
+            };
+            if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin)
+            {
+                
                 try
                 {
                     using (DataContext context = new DataContext())
@@ -336,7 +340,7 @@ namespace Spec_Project.Services
                 }
                 return res;
             }
-            return null;
+            return res;
         }
         public ResponseModel CreateQR()
         {
