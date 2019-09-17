@@ -23,7 +23,7 @@ namespace Spec_Project.Models
         public bool? EncryptionActive { get; set; }
         public string Cid { get; set; }
         public DateTime? DeletedOn { get; set; }
-        public string RoleId { get; set; }
+        public int RoleId { get; set; }
 
         public virtual TblCustomer C { get; set; }
         public virtual ICollection<TblScanData> TblScanData { get; set; }

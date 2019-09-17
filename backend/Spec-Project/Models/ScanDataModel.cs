@@ -8,7 +8,7 @@ namespace Spec_Project.Models
     public class ScanDataModel
     {
         public string ScanId { get; set; }
-        public string Uid { get; set; }
+        public int Uid { get; set; }
         public string CreatedOn { get; set; }
         public string Payload { get; set; }
         public string DataType { get; set; }

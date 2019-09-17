@@ -17,21 +17,29 @@ namespace Spec_Project
         public const int admin = 2;
         public const int user = 3;
         public const int reader = 4;
-        public static string GetRole(string pUserID)
+        public static int GetRole(int pUserID)
         {
-            var userID = int.Parse(pUserID);
+            using (DataContext db = new DataContext())
+            {
+                var roleid = db.TblUsers.Where(o => o.Id == pUserID).Select(o => o.RoleId).FirstOrDefault();
+                return roleid;
+            }
+        }
+        public static int GetID(int userID)
+        {
             using (DataContext db = new DataContext())
             {
                 var roleid = db.TblUsers.Where(o => o.Id == userID).Select(o => o.RoleId).FirstOrDefault();
                 return roleid;
             }
         }
-        public static string GetID(int userID)
+        public static string GetCID(string userID)
         {
+            var strcid = int.Parse(userID);
             using (DataContext db = new DataContext())
             {
-                var roleid = db.TblUsers.Where(o => o.Id == userID).Select(o => o.RoleId).FirstOrDefault();
-                return roleid;
+                var cid = db.TblUsers.Where(o => o.Id == strcid).Select(o => o.Cid).FirstOrDefault();
+                return cid;
             }
         }
         public static string GetUserName(string userid)
@@ -50,15 +58,6 @@ namespace Spec_Project
         public const int Private = 1;
         public const int Test = 2;
         public const int Commercial = 3;
-
-    public static class RoleConstant
-    {
-        public const int superadmin = 1;
-        public const string admin = "admin";
-        public const string user = "user";
-        public const int adminint = 2;
-        public const int userint = 3;
-        public const int reader = 4;
 
     }
 }

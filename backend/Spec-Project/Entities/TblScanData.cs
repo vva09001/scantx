@@ -6,7 +6,7 @@ namespace Spec_Project.Models
     public partial class TblScanData
     {
         public string ScanId { get; set; }
-        public int? Uid { get; set; }
+        public int Uid { get; set; }
         public DateTime? CreatedOn { get; set; }
         public string Payload { get; set; }
         public string DataType { get; set; }
