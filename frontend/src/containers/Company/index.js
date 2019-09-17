@@ -108,7 +108,7 @@ class Company extends Component {
         </TableCell>
         <TableCell>{item.name}</TableCell>
         <TableCell>{item.address}</TableCell>
-        <TableCell>{item.remark}</TableCell>
+        <TableCell>{item.status}</TableCell>
         <TableCell>
           <Link
             component="button"
@@ -192,8 +192,9 @@ class Company extends Component {
                     <Checkbox
                       onChange={() => this.onSelectedAll()}
                       checked={
+                        this.state.selected.length &&
                         this.state.selected.length ===
-                        this.props.companies.length
+                          this.props.companies.length
                       }
                     />
                   </TableCell>
@@ -215,6 +216,7 @@ class Company extends Component {
                 className="buttonStyles"
                 variant="contained"
                 color="primary"
+                size="small"
                 onClick={() => this.onToggleForm(true)}
               >
                 Add new company
@@ -223,6 +225,7 @@ class Company extends Component {
                 className="buttonStyles"
                 variant="contained"
                 color="primary"
+                size="small"
                 onClick={() => this.onToggleDelete(true)}
               >
                 Delete selected

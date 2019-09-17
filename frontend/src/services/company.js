@@ -43,13 +43,10 @@ const remove = (data, token) => {
     })
 }
 
-const assign = (id, data, token) => {
+const assign = (data, token) => {
     return request({
-        url: '/company/assign/',
+        url: '/company/assign-user-to-company/',
         method: 'post',
-        params: {
-            cid: id
-        },
         data: data,
         headers: {
             Authorization: `Bearer ${token}`

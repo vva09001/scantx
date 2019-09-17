@@ -243,6 +243,7 @@ class ScanData extends Component {
                     <Checkbox
                       onChange={() => this.onSelectedAll()}
                       checked={
+                        this.state.multiId.length &&
                         this.state.multiId.length === this.props.datas.length
                       }
                     />
@@ -266,6 +267,7 @@ class ScanData extends Component {
                 className="buttonStyles"
                 variant="contained"
                 color="primary"
+                size="small"
                 onClick={() => this.onToggleForm(true)}
               >
                 Add new scan data
@@ -276,6 +278,7 @@ class ScanData extends Component {
                     className="buttonStyles"
                     variant="contained"
                     color="primary"
+                    size="small"
                     onClick={() => copy(this.copyScanData())}
                   >
                     Copy selected
@@ -286,6 +289,7 @@ class ScanData extends Component {
                 className="buttonStyles"
                 variant="contained"
                 color="primary"
+                size="small"
                 onClick={() => this.downloadScanData()}
               >
                 Download
@@ -294,6 +298,7 @@ class ScanData extends Component {
                 className="buttonStyles"
                 variant="contained"
                 color="primary"
+                size="small"
                 onClick={() => this.onToggleDeleteMulti(true)}
               >
                 Delete selected

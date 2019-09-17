@@ -19,18 +19,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import { authActions, userActions } from "redux/actions";
 import { CircularProgress } from "components/uielements/progress";
 import RegisterSuccess from "./RegisterSuccess";
+import { generatePassword } from "helpers/user";
 import _ from "lodash";
-
-const generatePassword = () => {
-  const length = 8;
-  const charset = "23456789abcdefghmnpqrstuvwxyzABCDEFGHLMNPQRSTUVWXYZ";
-  const n = charset.length;
-  let password = "";
-  for (let i = 0; i < length; ++i) {
-    password += charset.charAt(Math.floor(Math.random() * n));
-  }
-  return password;
-};
 
 class SignUp extends Component {
   constructor(props) {
@@ -122,7 +112,7 @@ class SignUp extends Component {
         }
       },
       () => {
-        this.props.addUser(
+        this.props.registerUser(
           this.state.params,
           this.onRegisterSuccess,
           this.onFail
@@ -180,7 +170,14 @@ class SignUp extends Component {
           userRole: true,
           adminRole: false,
           superadminRole: false,
-          params: { ...this.state.params, roleID: "" }
+          submitCompany: false,
+          params: {
+            ...this.state.params,
+            roleID: "",
+            companyName: "",
+            companyAddress: "",
+            companyStatus: ""
+          }
         });
         return;
       case "Test":
@@ -189,7 +186,14 @@ class SignUp extends Component {
           userRole: true,
           adminRole: false,
           superadminRole: false,
-          params: { ...this.state.params, roleID: "" }
+          submitCompany: false,
+          params: {
+            ...this.state.params,
+            roleID: "",
+            companyName: "",
+            companyAddress: "",
+            companyStatus: ""
+          }
         });
         return;
       case "Commercial":
@@ -304,7 +308,6 @@ class SignUp extends Component {
                       <option value={"Commercial"}>Commercial</option>
                       <option value={"Test"}>Test</option>
                       <option value={"Private"}>Private</option>
-                      <option value={"CSBG"}>CSBG</option>
                     </NativeSelect>
                   </FormControl>
                 </div>
@@ -490,7 +493,7 @@ const mapSateToProps = state => {
 
 const mapDispatchToProps = {
   register: authActions.register,
-  addUser: userActions.addUser
+  registerUser: userActions.registerUser
 };
 export default connect(
   mapSateToProps,

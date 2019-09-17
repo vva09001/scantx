@@ -1,5 +1,5 @@
 import { all, takeLatest, put, select } from "redux-saga/effects";
-import { get, add, edit, remove } from "services/company";
+import { get, add, edit, remove, assign } from "services/company";
 import { getToken } from "redux/selectors";
 import actions from "./actions";
 
@@ -77,11 +77,31 @@ export function* deleteCompanySagas(data) {
   }
 }
 
+export function* assignUserToCompanySagas(data) {
+  const { id, params, success, fail } = data;
+  try {
+    const token = yield select(getToken);
+    const res = yield assign({ cid: id, ...params }, token);
+    if (res.status === 200) {
+      yield put({ type: actions.ASSIGN_USER_TO_COMPANY_SUCCESS });
+      yield success();
+    } else {
+      yield fail(res.data.message);
+    }
+  } catch (error) {
+    yield fail("Cannot connect to Server");
+  }
+}
+
 export default function* rootSaga() {
   yield all([
     yield takeLatest(actions.GET_COMPANY_REQUEST, getCompanySagas),
     yield takeLatest(actions.ADD_COMPANY_REQUEST, addCompanySagas),
     yield takeLatest(actions.EDIT_COMPANY_REQUEST, editCompanySagas),
-    yield takeLatest(actions.DELETE_COMPANY_REQUEST, deleteCompanySagas)
+    yield takeLatest(actions.DELETE_COMPANY_REQUEST, deleteCompanySagas),
+    yield takeLatest(
+      actions.ASSIGN_USER_TO_COMPANY_REQUEST,
+      assignUserToCompanySagas
+    )
   ]);
 }

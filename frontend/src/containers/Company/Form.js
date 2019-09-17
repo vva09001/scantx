@@ -48,17 +48,22 @@ class Form extends React.Component {
   onChange = e => {
     const key = e.target.name;
     const value = e.target.value;
-    this.setState({
-      params: {
-        ...this.props.params,
-        [key]: value
+    this.setState(
+      {
+        params: {
+          ...this.props.params,
+          [key]: value
+        }
+      },
+      () => {
+        this.props.onChange(this.state.params);
       }
-    }, () => {
-      this.props.onChange(this.state.params)
-    });
+    );
   };
 
   render() {
+    let enableSubmit = !!this.state.params.name;
+
     const { status } = this.props;
     return (
       <Dialog open={status} onClose={this.onClose}>
@@ -104,7 +109,12 @@ class Form extends React.Component {
               <Button onClick={() => this.onClose()} color="primary">
                 Cancel
               </Button>
-              <Button onClick={() => this.onSubmit()} color="primary" autoFocus>
+              <Button
+                disabled={!enableSubmit}
+                onClick={() => this.onSubmit()}
+                color="primary"
+                autoFocus
+              >
                 Submit
               </Button>
             </DialogActions>

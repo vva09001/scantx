@@ -42,20 +42,23 @@ class Form extends React.Component {
       contactByEmail,
       encryptionActive
     } = nextProps.params;
-    this.setState({
-      params: {
-        id,
-        userName,
-        familyName,
-        givenName,
-        typeOfAccount,
-        roleID,
-        email,
-        contactByEmail,
-        encryptionActive,
-        password: ""
-      }
-    }, () => this.selectRole());
+    this.setState(
+      {
+        params: {
+          id,
+          userName,
+          familyName,
+          givenName,
+          typeOfAccount,
+          roleID,
+          email,
+          contactByEmail,
+          encryptionActive,
+          password: ""
+        }
+      },
+      () => this.selectRole()
+    );
   }
   onSuccess = () => {
     this.setState({
@@ -78,19 +81,12 @@ class Form extends React.Component {
   onChange = e => {
     const key = e.target.name;
     const value = e.target.value;
-    this.setState(
-      {
-        params: {
-          ...this.state.params,
-          [key]: value
-        }
-      },
-      () => {
-        if (key === "typeOfAccount") {
-          this.selectRole();
-        }
+    this.setState({
+      params: {
+        ...this.state.params,
+        [key]: value
       }
-    );
+    });
   };
   onCheck = e => {
     const key = e.target.name;

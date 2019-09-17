@@ -16,6 +16,15 @@ const actions = {
     fail
   }),
 
+  REGISTER_USER_REQUEST: 'REGISTER_USER_REQUEST',
+  REGISTER_USER_SUCCESS: 'REGISTER_USER_SUCCESS',
+  registerUser: (params, success, fail) => ({
+    type: actions.REGISTER_USER_REQUEST,
+    params,
+    success,
+    fail
+  }),
+
   EDIT_USER_REQUEST: 'EDIT_USER_REQUEST',
   EDIT_USER_SUCCESS: 'EDIT_USER_SUCCESS',
   editUser: (params, success, fail) => ({

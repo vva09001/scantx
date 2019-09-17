@@ -21,6 +21,10 @@ class Form extends React.Component {
     super(props);
     this.state = {
       loading: false,
+      error: {
+        status: false,
+        message: ""
+      },
       readerRole: false,
       userRole: false,
       adminRole: false,
@@ -29,9 +33,8 @@ class Form extends React.Component {
         userName: "",
         givenName: "",
         familyName: "",
-        typeOfAccount: "",
+        typeOfAccount: "Commercial",
         roleID: "",
-        cid: "",
         password: "",
         email: "",
         contactByEmail: false,
@@ -41,17 +44,28 @@ class Form extends React.Component {
   }
   componentDidMount() {}
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      params: {
-        ...this.state.params,
-        password: nextProps.password,
-        cid: nextProps.cid
-      }
-    });
+    this.setState(
+      {
+        params: {
+          ...this.state.params,
+          password: nextProps.password
+        }
+      },
+      () => this.selectRole()
+    );
   }
   onSuccess = () => {
     this.setState({
       loading: false
+    });
+  };
+  onFail = error => {
+    this.setState({
+      loading: false,
+      error: {
+        status: true,
+        message: error
+      }
     });
   };
   onClose = () => {
@@ -63,26 +77,19 @@ class Form extends React.Component {
         loading: true
       },
       () => {
-        this.props.onSubmit(this.state.params, this.onSuccess, this.onSuccess);
+        this.props.onSubmit(this.state.params, this.onSuccess, this.onFail);
       }
     );
   };
   onChange = e => {
     const key = e.target.name;
     const value = e.target.value;
-    this.setState(
-      {
-        params: {
-          ...this.state.params,
-          [key]: value
-        }
-      },
-      () => {
-        if (key === "typeOfAccount") {
-          this.selectRole();
-        }
+    this.setState({
+      params: {
+        ...this.state.params,
+        [key]: value
       }
-    );
+    });
   };
   onCheck = e => {
     const key = e.target.name;
@@ -141,10 +148,8 @@ class Form extends React.Component {
         });
     }
   };
-  
-  render() {
-    console.log(this.state.params);
 
+  render() {
     const { status } = this.props;
     let enableSubmit =
       this.state.params.userName !== "" &&
@@ -160,7 +165,14 @@ class Form extends React.Component {
           <CircularProgress />
         ) : (
           <Dialog open={status} onClose={this.onClose} fullWidth>
-            <DialogTitle>{"Add new user"}</DialogTitle>
+            <DialogTitle>
+              <h3>Add new user</h3>
+              <div>
+                {this.state.error.status && (
+                  <p style={{ color: "#F44336" }}>{this.state.error.message}</p>
+                )}
+              </div>
+            </DialogTitle>
             <DialogContent>
               <div>
                 <TextField
@@ -194,23 +206,6 @@ class Form extends React.Component {
                   value={this.state.params.familyName}
                   onChange={e => this.onChange(e)}
                 />
-              </div>
-              <div>
-                <FormControl margin="normal" fullWidth>
-                  <InputLabel>Type of Account</InputLabel>
-                  <NativeSelect
-                    required
-                    name="typeOfAccount"
-                    value={this.state.params.typeOfAccount}
-                    onChange={e => this.onChange(e)}
-                  >
-                    <option value={""}></option>
-                    <option value={"Commercial"}>Commercial</option>
-                    <option value={"Test"}>Test</option>
-                    <option value={"Private"}>Private</option>
-                    <option value={"CSBG"}>CSBG</option>
-                  </NativeSelect>
-                </FormControl>
               </div>
               <div>
                 <FormControl margin="normal" fullWidth>
@@ -309,10 +304,7 @@ class Form extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return {
-    currentId: state.Auth.profile.id,
-    cid: state.Auth.profile.cid
-  };
+  return {};
 };
 
 const mapDispatchToProps = {};

@@ -3,6 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import Papersheet from "components/utility/papersheet";
 import { CircularProgress } from "components/uielements/progress";
 import { connect } from "react-redux";
+import { role } from "helpers/user"
 
 const style = {
   gridItem: {
@@ -42,10 +43,13 @@ class UserProfile extends React.Component {
               Mail: <strong>{profile.mail}</strong>
             </p>
             <p>
-              Company: <strong>{profile.nameCompany}</strong>
+              Company: <strong>{profile.companyName}</strong>
             </p>
             <p>
               Type of Account: <strong>{profile.typeOfAccount}</strong>
+            </p>
+            <p>
+              Role: <strong>{role(profile.roleID)}</strong>
             </p>
           </Papersheet>
         )}

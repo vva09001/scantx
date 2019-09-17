@@ -12,12 +12,20 @@ const getUsers = token => {
 
 const addUser = (params, token) => {
   return request({
-    url: "/user/register",
+    url: "/user/adduser",
     method: "post",
     data: params,
     headers: {
       Authorization: `Bearer ${token}`
     }
+  });
+};
+
+const registerUser = params => {
+  return request({
+    url: "/user/register",
+    method: "post",
+    data: params
   });
 };
 
@@ -54,4 +62,11 @@ const deleteMultiUser = (params, token) => {
   });
 };
 
-export { getUsers, addUser, editUser, deleteUserById, deleteMultiUser };
+export {
+  getUsers,
+  addUser,
+  registerUser,
+  editUser,
+  deleteUserById,
+  deleteMultiUser
+};
