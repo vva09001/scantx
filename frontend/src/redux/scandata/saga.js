@@ -18,7 +18,7 @@ export function* getScanDataSagas(data) {
     const res = yield getScanData(token);
     if (res.status === 200) {
       yield success();
-      yield put({ type: actions.GET_SCAN_DATA_SUCCESS, response: res.data });
+      yield put({ type: actions.GET_SCAN_DATA_SUCCESS, response: res.data.data });
     } else {
       yield fail(res.data.message);
     }

@@ -33,6 +33,7 @@ class AssignForm extends React.Component {
       },
       () => {
         this.props.onSubmit(this.state.params, this.onSuccess, this.onSuccess);
+        this.props.onToggle(false);
       }
     );
   };

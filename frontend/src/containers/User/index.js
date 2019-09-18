@@ -14,34 +14,10 @@ import Table from "components/uielements/table";
 import Checkbox from "components/uielements/checkbox";
 import Link from "@material-ui/core/Link";
 import { TableBody, TableCell, TableRow } from "components/uielements/table";
-import { userActions, companyActions } from "redux/actions";
+import { userActions } from "redux/actions";
+import { permission, role, generatePassword } from "helpers/user";
 import _ from "lodash";
 import "styles/style.css";
-
-const role = roleID => {
-  if (roleID === 1) {
-    return "superadmin";
-  } else if (roleID === 2) {
-    return "admin";
-  } else if (roleID === 3) {
-    return "user";
-  } else if (roleID === 4) {
-    return "reader";
-  } else {
-    return "No Role";
-  }
-};
-
-const generatePassword = () => {
-  const length = 8;
-  const charset = "23456789abcdefghmnpqrstuvwxyzABCDEFGHLMNPQRSTUVWXYZ";
-  const n = charset.length;
-  let password = "";
-  for (let i = 0; i < length; ++i) {
-    password += charset.charAt(Math.floor(Math.random() * n));
-  }
-  return password;
-};
 
 class User extends Component {
   constructor(props) {
@@ -60,7 +36,6 @@ class User extends Component {
   }
   componentDidMount() {
     this.props.getUser(this.onSuccess, this.onSuccess);
-    this.props.getCompanies(this.onSuccess, this.onSuccess);
   }
   onSuccess = () => {
     this.setState({
@@ -190,7 +165,13 @@ class User extends Component {
     return (
       <LayoutWrapper>
         <FullColumn>
-          <Papersheet title={"Users of company " + profile.nameCompany}>
+          <Papersheet
+            title={
+              _.indexOf(permission.user.getAll, profile.roleID) !== -1
+                ? "Users of all companies"
+                : "Users of company " + profile.companyName
+            }
+          >
             <Table>
               <TableBody>{this.renderData()}</TableBody>
             </Table>
@@ -200,18 +181,22 @@ class User extends Component {
               justify="center"
               alignItems="center"
             >
+              {_.indexOf(permission.user.add, profile.roleID) !== -1 && (
+                <Button
+                  className="buttonStyles"
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => this.onToggleForm(true)}
+                >
+                  Add new user
+                </Button>
+              )}
               <Button
                 className="buttonStyles"
                 variant="contained"
                 color="primary"
-                onClick={() => this.onToggleForm(true)}
-              >
-                Add new user
-              </Button>
-              <Button
-                className="buttonStyles"
-                variant="contained"
-                color="primary"
+                size="small"
                 onClick={() => this.onToggleDeleteMulti(true)}
               >
                 Delete selected
@@ -219,15 +204,12 @@ class User extends Component {
             </Grid>
           </Papersheet>
           {/* Add Form */}
-          {profile.typeOfAccount === "Commercial" && (
-            <Form
-              onToggle={this.onToggleForm}
-              onSubmit={this.add}
-              status={this.state.toggle}
-              companies={this.props.companies}
-              password={this.state.password}
-            />
-          )}
+          <Form
+            onToggle={this.onToggleForm}
+            onSubmit={this.add}
+            status={this.state.toggle}
+            password={this.state.password}
+          />
           {/* Edit Form */}
           <EditForm
             onToggle={this.onToggleEditForm}
@@ -254,7 +236,6 @@ class User extends Component {
 const mapStateToProps = state => {
   return {
     users: state.User.list,
-    companies: state.Company.list,
     profile: state.Auth.profile
   };
 };
@@ -263,8 +244,7 @@ const mapDispatchToProps = {
   getUser: userActions.getUser,
   addUser: userActions.addUser,
   editUser: userActions.editUser,
-  deleteMultiUser: userActions.deleteMultiUser,
-  getCompanies: companyActions.get
+  deleteMultiUser: userActions.deleteMultiUser
 };
 export default connect(
   mapStateToProps,

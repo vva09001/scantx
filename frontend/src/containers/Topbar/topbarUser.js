@@ -1,20 +1,21 @@
-import React, { Component } from 'react';
-import { findDOMNode } from 'react-dom';
-import { connect } from 'react-redux';
-import { createMuiTheme } from '@material-ui/core/styles';
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
-import { Link } from 'react-router-dom';
-import IntlMessages from '../../components/utility/intlMessages';
-import TopbarDropdownWrapper from './topbarDropdown.style';
+import React, { Component } from "react";
+import { findDOMNode } from "react-dom";
+import { connect } from "react-redux";
+import { createMuiTheme } from "@material-ui/core/styles";
+import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import { Link } from "react-router-dom";
+import IntlMessages from "../../components/utility/intlMessages";
+import TopbarDropdownWrapper from "./topbarDropdown.style";
 import {
   IconButtons,
   TopbarDropdown,
   UserInformation,
   SettingsList,
-  Icon,
-} from './topbarDropdown.style';
-import authAction from '../../redux/auth/actions';
-import Image from '../../images/user.jpg';
+  Icon
+} from "./topbarDropdown.style";
+import authAction from "../../redux/auth/actions";
+import Image from "../../images/user.jpg";
+import { role } from "helpers/user";
 
 const { logout } = authAction;
 
@@ -22,21 +23,21 @@ const theme = createMuiTheme({
   overrides: {
     MuiModal: {
       root: {
-        zIndex: 1800,
-      },
+        zIndex: 1800
+      }
     },
     MuiPopover: {
       paper: {
-        maxWidth: 290,
-      },
-    },
-  },
+        maxWidth: 290
+      }
+    }
+  }
 });
 
 class TopbarUser extends Component {
   state = {
     visible: false,
-    anchorEl: null,
+    anchorEl: null
   };
   hide = () => {
     this.setState({ visible: false });
@@ -44,10 +45,11 @@ class TopbarUser extends Component {
   handleVisibleChange = () => {
     this.setState({
       visible: !this.state.visible,
-      anchorEl: findDOMNode(this.button),
+      anchorEl: findDOMNode(this.button)
     });
   };
   render() {
+    const { profile } = this.props;
     const content = (
       <TopbarDropdown>
         <UserInformation>
@@ -56,8 +58,10 @@ class TopbarUser extends Component {
           </div>
 
           <div className="userDetails">
-            <h3>John Doe</h3>
-            <p>Sr. Marketing Officer</p>
+            <h3>
+              {profile.givenName} {profile.familyName}
+            </h3>
+            <p>{role(profile.roleID)}</p>
           </div>
         </UserInformation>
 
@@ -102,12 +106,12 @@ class TopbarUser extends Component {
             // marginThreshold={66}
             className="userPopover"
             anchorOrigin={{
-              horizontal: 'right',
-              vertical: 'top',
+              horizontal: "right",
+              vertical: "top"
             }}
             transformOrigin={{
-              horizontal: 'right',
-              vertical: 'bottom',
+              horizontal: "right",
+              vertical: "bottom"
             }}
           >
             {content}
@@ -122,6 +126,7 @@ export default connect(
   state => ({
     ...state.App,
     customizedTheme: state.ThemeSwitcher.topbarTheme,
+    profile: state.Auth.profile
   }),
   { logout }
 )(TopbarUser);

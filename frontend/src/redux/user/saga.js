@@ -2,6 +2,7 @@ import { all, takeLatest, put, select } from "redux-saga/effects";
 import {
   getUsers,
   addUser,
+  registerUser,
   editUser,
   deleteUserById,
   deleteMultiUser
@@ -16,7 +17,7 @@ export function* getUserSagas(data) {
     const res = yield getUsers(token);
     if (res.status === 200) {
       yield success();
-      yield put({ type: actions.GET_USER_SUCCESS, response: res.data });
+      yield put({ type: actions.GET_USER_SUCCESS, response: res.data.data });
     } else {
       yield fail(res.data.message);
     }
@@ -35,6 +36,23 @@ export function* addUserSagas(data) {
       yield put({
         type: actions.ADD_USER_SUCCESS,
         response: res.data.data
+      });
+    } else {
+      yield fail(res.data.message);
+    }
+  } catch (error) {
+    yield fail("Cannot connect to Server");
+  }
+}
+
+export function* registerUserSagas(data) {
+  const { params, success, fail } = data;
+  try {
+    const res = yield registerUser(params);
+    if (res.status === 200) {
+      yield success();
+      yield put({
+        type: actions.REGISTER_USER_SUCCESS
       });
     } else {
       yield fail(res.data.message);
@@ -105,6 +123,7 @@ export default function* rootSaga() {
   yield all([
     yield takeLatest(actions.GET_USER_REQUEST, getUserSagas),
     yield takeLatest(actions.ADD_USER_REQUEST, addUserSagas),
+    yield takeLatest(actions.REGISTER_USER_REQUEST, registerUserSagas),
     yield takeLatest(actions.EDIT_USER_REQUEST, editUserSagas),
     yield takeLatest(actions.DELETE_USER_REQUEST, deleteUserSagas),
     yield takeLatest(actions.DELETE_MULTI_USER_REQUEST, deleteMultiUserSagas)

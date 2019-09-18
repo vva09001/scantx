@@ -25,6 +25,7 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import Link from "@material-ui/core/Link";
 import { scanDataActions } from "redux/actions";
 import { Date, Time } from "helpers/moment";
+import { permission } from "helpers/user";
 import _ from "lodash";
 import "styles/style.css";
 
@@ -219,6 +220,7 @@ class ScanData extends Component {
   };
 
   render() {
+    const { profile } = this.props;
     if (this.state.loading) {
       return <CircularProgress />;
     }
@@ -243,6 +245,7 @@ class ScanData extends Component {
                     <Checkbox
                       onChange={() => this.onSelectedAll()}
                       checked={
+                        this.state.multiId.length &&
                         this.state.multiId.length === this.props.datas.length
                       }
                     />
@@ -262,20 +265,24 @@ class ScanData extends Component {
               justify="center"
               alignItems="center"
             >
-              <Button
-                className="buttonStyles"
-                variant="contained"
-                color="primary"
-                onClick={() => this.onToggleForm(true)}
-              >
-                Add new scan data
-              </Button>
+              {_.indexOf(permission.scanData.add, profile.roleID) !== -1 && (
+                <Button
+                  className="buttonStyles"
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => this.onToggleForm(true)}
+                >
+                  Add new scan data
+                </Button>
+              )}
               <CopyToClipboard>
                 {({ copy }) => (
                   <Button
                     className="buttonStyles"
                     variant="contained"
                     color="primary"
+                    size="small"
                     onClick={() => copy(this.copyScanData())}
                   >
                     Copy selected
@@ -286,6 +293,7 @@ class ScanData extends Component {
                 className="buttonStyles"
                 variant="contained"
                 color="primary"
+                size="small"
                 onClick={() => this.downloadScanData()}
               >
                 Download
@@ -294,6 +302,7 @@ class ScanData extends Component {
                 className="buttonStyles"
                 variant="contained"
                 color="primary"
+                size="small"
                 onClick={() => this.onToggleDeleteMulti(true)}
               >
                 Delete selected
