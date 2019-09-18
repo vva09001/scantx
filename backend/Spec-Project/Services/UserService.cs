@@ -72,7 +72,7 @@ namespace Spec_Project.Services
             var context = _httpContextAccessor.HttpContext;
             using (DataContext _context = new DataContext())
             {
-                if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
+                if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
                 {
                     var userss = _context.TblUsers.Where(p => p.DeletedOn == null).Select(p=> new UsersModel
                     {
@@ -91,7 +91,7 @@ namespace Spec_Project.Services
                 }
                 else
                 {
-                    if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.user)
+                    if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.user)
                     {
                         var ciduser = UsersConstant.GetCID(context.User.Identity.Name);
                         var user = _context.TblUsers.Where(p => p.DeletedOn == null && p.Cid == ciduser).Select(p => new UsersModel
