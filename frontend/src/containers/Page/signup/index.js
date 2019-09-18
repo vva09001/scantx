@@ -108,7 +108,11 @@ class SignUp extends Component {
         loading: true,
         params: {
           ...this.state.params,
-          companyName: this.state.params.userName
+          companyName:
+            this.state.params.typeOfAccount === "Test" ||
+            this.state.params.typeOfAccount === "Private"
+              ? this.state.params.userName
+              : this.state.params.companyName
         }
       },
       () => {
