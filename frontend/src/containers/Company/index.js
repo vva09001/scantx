@@ -20,6 +20,7 @@ import {
   TableRow
 } from "components/uielements/table";
 import { companyActions } from "redux/actions";
+import { permission } from "helpers/user";
 import _ from "lodash";
 import "styles/style.css";
 
@@ -110,13 +111,13 @@ class Company extends Component {
         <TableCell>{item.address}</TableCell>
         <TableCell>{item.status}</TableCell>
         <TableCell>
-          <Link
+          {/* <Link
             component="button"
             variant="body2"
             onClick={() => this.onToggleAssign(true, item.cid)}
           >
             Assign|
-          </Link>
+          </Link> */}
           <Link
             component="button"
             variant="body2"
@@ -178,6 +179,7 @@ class Company extends Component {
   };
 
   render() {
+    const { profile } = this.props;
     if (this.state.loading) {
       return <CircularProgress />;
     }
@@ -212,24 +214,28 @@ class Company extends Component {
               justify="center"
               alignItems="center"
             >
-              <Button
-                className="buttonStyles"
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={() => this.onToggleForm(true)}
-              >
-                Add new company
-              </Button>
-              <Button
-                className="buttonStyles"
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={() => this.onToggleDelete(true)}
-              >
-                Delete selected
-              </Button>
+              {_.indexOf(permission.company.add, profile.roleID) !== -1 && (
+                <Button
+                  className="buttonStyles"
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => this.onToggleForm(true)}
+                >
+                  Add new company
+                </Button>
+              )}
+              {_.indexOf(permission.company.delete, profile.roleID) !== -1 && (
+                <Button
+                  className="buttonStyles"
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => this.onToggleDelete(true)}
+                >
+                  Delete selected
+                </Button>
+              )}
             </Grid>
           </Papersheet>
           <Form
@@ -241,11 +247,11 @@ class Company extends Component {
             remove={this.onSelectedAll}
           />
           {/* Assign Form */}
-          <AssignForm
+          {/* <AssignForm
             onToggle={this.onToggleAssign}
             onSubmit={this.onAssign}
             status={this.state.toggleAssign}
-          />
+          /> */}
           <DeleteAlert
             status={this.state.delete}
             selected={this.state.selected}
@@ -264,7 +270,8 @@ class Company extends Component {
 }
 const mapStateToProps = state => {
   return {
-    companies: state.Company.list
+    companies: state.Company.list,
+    profile: state.Auth.profile
   };
 };
 

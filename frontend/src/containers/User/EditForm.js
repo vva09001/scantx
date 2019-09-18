@@ -14,6 +14,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 import InputLabel from "@material-ui/core/InputLabel";
 import Checkbox from "components/uielements/checkbox";
 import { CircularProgress } from "components/uielements/progress";
+import { permission } from "helpers/user";
 import _ from "lodash";
 
 class Form extends React.Component {
@@ -98,6 +99,7 @@ class Form extends React.Component {
     });
   };
   selectRole = () => {
+    const { profile } = this.props;
     switch (this.state.params.typeOfAccount) {
       case "Private":
         this.setState({
@@ -121,7 +123,7 @@ class Form extends React.Component {
         this.setState({
           readerRole: true,
           userRole: true,
-          adminRole: true,
+          adminRole: _.indexOf(permission.user.addAdmin, profile.roleID) !== -1,
           superadminRole: false,
           params: { ...this.state.params, roleID: "" }
         });
@@ -130,7 +132,7 @@ class Form extends React.Component {
         this.setState({
           readerRole: true,
           userRole: true,
-          adminRole: true,
+          adminRole: _.indexOf(permission.user.addAdmin, profile.roleID) !== -1,
           superadminRole: true,
           params: { ...this.state.params, roleID: "" }
         });
@@ -285,7 +287,9 @@ class Form extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return {};
+  return {
+    profile: state.Auth.profile
+  };
 };
 
 const mapDispatchToProps = {};

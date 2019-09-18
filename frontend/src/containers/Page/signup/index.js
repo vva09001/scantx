@@ -226,8 +226,6 @@ class SignUp extends Component {
   };
 
   render() {
-    console.log(this.state.params);
-
     let enableSubmit =
       this.state.params.userName !== "" &&
       this.state.params.givenName !== "" &&

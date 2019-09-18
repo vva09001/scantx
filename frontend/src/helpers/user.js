@@ -1,6 +1,15 @@
 const permission = {
   user: {
-    add: ["Commercial"]
+    getAll: [1],
+    add: [1, 2],
+    addAdmin: [1]
+  },
+  company: {
+    add: [1],
+    delete: [1]
+  },
+  scanData: {
+    add: [1, 2, 3]
   }
 };
 

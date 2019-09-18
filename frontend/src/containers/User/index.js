@@ -165,7 +165,13 @@ class User extends Component {
     return (
       <LayoutWrapper>
         <FullColumn>
-          <Papersheet title={"Users of company " + profile.companyName}>
+          <Papersheet
+            title={
+              _.indexOf(permission.user.getAll, profile.roleID) !== -1
+                ? "Users of all companies"
+                : "Users of company " + profile.companyName
+            }
+          >
             <Table>
               <TableBody>{this.renderData()}</TableBody>
             </Table>
@@ -175,7 +181,7 @@ class User extends Component {
               justify="center"
               alignItems="center"
             >
-              {_.indexOf(permission.user.add, profile.typeOfAccount) !== -1 && (
+              {_.indexOf(permission.user.add, profile.roleID) !== -1 && (
                 <Button
                   className="buttonStyles"
                   variant="contained"
