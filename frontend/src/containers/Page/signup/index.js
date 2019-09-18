@@ -49,9 +49,9 @@ class SignUp extends Component {
         contactByEmail: false,
         encryptionActive: false,
 
-        companyName: "",
-        companyAddress: "",
-        companyStatus: ""
+        name: "",
+        address: "",
+        status: ""
       }
     };
   }
@@ -108,11 +108,11 @@ class SignUp extends Component {
         loading: true,
         params: {
           ...this.state.params,
-          companyName:
+          name:
             this.state.params.typeOfAccount === "Test" ||
             this.state.params.typeOfAccount === "Private"
               ? this.state.params.userName
-              : this.state.params.companyName
+              : this.state.params.name
         }
       },
       () => {
@@ -178,9 +178,9 @@ class SignUp extends Component {
           params: {
             ...this.state.params,
             roleID: "",
-            companyName: "",
-            companyAddress: "",
-            companyStatus: ""
+            name: "",
+            address: "",
+            status: ""
           }
         });
         return;
@@ -194,9 +194,9 @@ class SignUp extends Component {
           params: {
             ...this.state.params,
             roleID: "",
-            companyName: "",
-            companyAddress: "",
-            companyStatus: ""
+            name: "",
+            address: "",
+            status: ""
           }
         });
         return;
@@ -239,7 +239,7 @@ class SignUp extends Component {
       this.state.params.password !== "" &&
       this.state.params.email !== "";
 
-    let enableSubmitCompany = this.state.params.companyName !== "";
+    let enableSubmitCompany = this.state.params.name !== "";
 
     return (
       <SignUpStyleWrapper className="mateSignUpPage">
@@ -254,7 +254,7 @@ class SignUp extends Component {
             {/* User Form */}
             <Dialog open={true} fullWidth>
               <DialogTitle>
-                <h3>Add new user</h3>
+                <h3>Register</h3>
                 <div>
                   {this.state.error.status && (
                     <p style={{ color: "#F44336" }}>
@@ -430,8 +430,8 @@ class SignUp extends Component {
                         label="Name"
                         margin="normal"
                         fullWidth
-                        name="companyName"
-                        value={this.state.params.companyName}
+                        name="name"
+                        value={this.state.params.name}
                         onChange={e => this.onChange(e)}
                       />
                     </div>
@@ -440,8 +440,8 @@ class SignUp extends Component {
                         label="Address"
                         margin="normal"
                         fullWidth
-                        name="companyAddress"
-                        value={this.state.params.companyAddress}
+                        name="address"
+                        value={this.state.params.address}
                         onChange={e => this.onChange(e)}
                       />
                     </div>
@@ -450,8 +450,8 @@ class SignUp extends Component {
                         label="Status"
                         margin="normal"
                         fullWidth
-                        name="companyStatus"
-                        value={this.state.params.companyStatus}
+                        name="status"
+                        value={this.state.params.status}
                         onChange={e => this.onChange(e)}
                       />
                     </div>
