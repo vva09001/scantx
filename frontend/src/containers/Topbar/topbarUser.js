@@ -59,7 +59,7 @@ class TopbarUser extends Component {
 
           <div className="userDetails">
             <h3>
-              {profile.firstName} {profile.lastName}
+              {profile.givenName} {profile.familyName}
             </h3>
             <p>{role(profile.roleID)}</p>
           </div>
