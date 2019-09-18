@@ -5,42 +5,29 @@ using Spec_Project.Controllers;
 using Spec_Project.Services;
 using Microsoft.AspNetCore.Mvc;
 using Spec_Project.Models;
+using FluentAssertions;
+using System.Collections.Generic;
+using AutoMapper;
+using Microsoft.Extensions.Options;
 
 namespace TestProject
 {
     //[TestClass]
     public class UnitTest1
     {
-        //[TestMethod]
         [Fact]
-        public void TestGetIDCompany()
+        public void TestgetCompany()
         {
             var mock = new Mock<ICompanyService>();
-            mock.Setup(p => p.getIDCompany("6")).Returns("Jignesh");
+            mock.Setup(p => p.getCompany()).Returns(new Spec_Project.Models.ResponseModel
+            {
+                Data = "done"
+            });
             CompanyController home = new CompanyController(mock.Object);
-            var result = (OkObjectResult)home.getIDCompany("6");
-            var x = (OkObjectResult)home.getIDCompany("6");
-            Assert.Equal(result.Value, x.Value);
+            var result = (OkObjectResult)home.getCompany();
+            var actualResponse = Assert.IsType<ResponseModel>(result.Value);
+            Assert.Equal("done", actualResponse.Data);
         }
-
-        //[Fact]
-        //public void TestCompany()
-        //{
-        //    // Arrange
-        //    var mockRepo = new Mock<ICompanyService>();
-        //    mockRepo.Setup(repo => repo.getCompany())
-        //        .Returns(GetAllItems());
-        //    var controller = new CompanyController(mockRepo.Object);
-
-        //    // Act
-        //    var result = controller.GetAllItems();
-
-        //    // Assert
-        //    var viewResult = Assert.IsType<ViewResult>(result);
-        //    var model = Assert.IsAssignableFrom<List<TblCustomer>>(
-        //        viewResult.ViewData.Model);
-        //    Assert.Equal(2, model.Count());
-        //}
 
 
         [Fact]
@@ -79,13 +66,14 @@ namespace TestProject
         [Fact]
         public void TestDeleteCompany()
         {
+            List<string> x = new List<string>() { "5", "6", "7" };
             var mock = new Mock<ICompanyService>();
-            mock.Setup(p => p.DeleteCompany("6")).Returns(new Spec_Project.Models.ResponseModel
+            mock.Setup(p => p.DeleteArrCompany(x)).Returns(new Spec_Project.Models.ResponseModel
             {
                 Data = "done"
             });
             CompanyController home = new CompanyController(mock.Object);
-            var result = (OkObjectResult)home.DeleteCompany("6");
+            var result = (OkObjectResult)home.DeleteArrCompany(x);
             //result.Value
             // Assert
             var actualResponse = Assert.IsType<ResponseModel>(result.Value);
@@ -131,16 +119,19 @@ namespace TestProject
             return x;
         }
 
-        //[Fact]
-        //public void TestgetScanData()
-        //{
-        //    var mock = new Mock<IScanDataService>();
-        //    mock.Setup(p => p.getScanData()).Returns(getScanData());
-        //    CompanyController home = new CompanyController(mock.Object);
-        //    var result = (OkObjectResult)home.getScanData("6");
-        //    var x = (OkObjectResult)home.getScanData("6");
-        //    result.Should().BeEquivalentTo(x);
-        //}
+        [Fact]
+        public void TestgetScanData()
+        {
+            var mock = new Mock<IScanDataService>();
+            mock.Setup(p => p.getScanData()).Returns(new Spec_Project.Models.ResponseModel
+            {
+                Data = "done"
+            });
+            ScanDataController home = new ScanDataController(mock.Object);
+            var result = (OkObjectResult)home.getScanData();
+            var actualResponse = Assert.IsType<ResponseModel>(result.Value);
+            Assert.Equal("done", actualResponse.Data);
+        }
 
 
 
@@ -171,13 +162,14 @@ namespace TestProject
         [Fact]
         public void TestDeleteScanData()
         {
+            List<string> x = new List<string>() { "5", "6", "7" };
             var mock = new Mock<IScanDataService>();
-            mock.Setup(p => p.DeleteScanData("6")).Returns(new Spec_Project.Models.ResponseModel
+            mock.Setup(p => p.DeleteArrScanData(x)).Returns(new Spec_Project.Models.ResponseModel
             {
                 Data = "done"
             });
             ScanDataController home = new ScanDataController(mock.Object);
-            var result = (OkObjectResult)home.DeleteScanData("6");
+            var result = (OkObjectResult)home.DeleteArrScanData(x);
             //result.Value
             // Assert
             var actualResponse = Assert.IsType<ResponseModel>(result.Value);
@@ -204,6 +196,142 @@ namespace TestProject
             var actualResponse = Assert.IsType<ResponseModel>(result.Value);
             Assert.Equal("done", actualResponse.Data);
             mockRepo.Verify();
+        }
+
+        // Test user
+        private UserDto GetUser()
+        {
+            var tbluser = new UserDto
+            {
+
+                UserName = "abc",
+                FamilyName = "acb",
+                GivenName = "ascc",
+                TypeOfAccount = "ascascasc",
+                Email = "acasc",
+                ContactByEmail = true,
+                EncryptionActive = true,
+                Cid = "asdasdasd",
+                RoleID = 4
+            };
+            return tbluser;
+        }
+
+        [Fact]
+        public void TestgetUser()
+        {
+            var mock = new Mock<IUserService>();
+            var mock1 = new Mock<IMapper>();
+            var mock2 = new Mock<IOptions<Spec_Project.Helpers.AppSettings>>();
+            mock.Setup(p => p.getUser()).Returns(new Spec_Project.Models.ResponseModel
+            {
+                Data = "done"
+            });
+            UsersController home = new UsersController(mock.Object, mock1.Object, mock2.Object);
+            var result = (OkObjectResult)home.GetUser();
+            var actualResponse = Assert.IsType<ResponseModel>(result.Value);
+            Assert.Equal("done", actualResponse.Data);
+        }
+
+        [Fact]
+        public void TestDeleteUser()
+        {
+            List<int> x = new List<int>() { 5, 6, 7 };
+            var mock = new Mock<IUserService>();
+            var mock1 = new Mock<IMapper>();
+            var mock2 = new Mock<IOptions<Spec_Project.Helpers.AppSettings>>();
+            mock.Setup(p => p.DeleteArrUser(x)).Returns(new Spec_Project.Models.ResponseModel
+            {
+                Data = "done"
+            });
+            UsersController home = new UsersController(mock.Object, mock1.Object, mock2.Object);
+            var result = (OkObjectResult)home.DeleteArrUser(x);
+            //result.Value
+            // Assert
+            var actualResponse = Assert.IsType<ResponseModel>(result.Value);
+            Assert.Equal("done", actualResponse.Data);
+        }
+
+        [Fact]
+        public void TestAddUser()
+        {
+            var tbluser = new UserDto
+            {
+
+                UserName = "abc",
+                FamilyName = "acb",
+                GivenName = "ascc",
+                TypeOfAccount = "ascascasc",
+                Email = "acasc",
+                ContactByEmail = true,
+                EncryptionActive = true,
+                Cid = "asdasdasd",
+                RoleID = 4
+            };
+            var password = "123";
+            var UserIDLogin = "saa";
+            // Arrange
+            var mock = new Mock<IUserService>();
+            var mock1 = new Mock<IMapper>();
+            var mock2 = new Mock<IOptions<Spec_Project.Helpers.AppSettings>>();
+            mock.Setup(p => p.AddUser(tbluser, password, UserIDLogin)).Returns(new Spec_Project.Models.ResponseModel
+            {
+                Data = null
+
+            });
+            var controller = new UsersController(mock.Object, mock1.Object, mock2.Object);
+
+            // Act
+            var result = controller.AddUser(tbluser, password, UserIDLogin);
+            //result.Value
+            // Assert
+            var actualResponse = Assert.IsType<ResponseModel>(result);
+            Assert.Equal(null, actualResponse.Data);
+            mock.Verify();
+        }
+
+        [Fact]
+        public void TestEditUser()
+        {
+            var tbluser = new UsersModel
+            {
+
+                Id = 4,
+                Cid = "userDto.Cid",
+                ContactByEmail = true,
+                Email = "userDto.Email",
+                EncryptionActive = true,
+                FamilyName = "userDto.FamilyName",
+                GivenName = "userDto.GivenName",
+                TypeOfAccount = "userDto.TypeOfAccount",
+                UserName = "userDto.UserName",
+                PasswordHash = { },
+                PasswordSalt = { },
+                RoleID = 2
+
+
+            };
+            var password = "123";
+            var UserIDLogin = "saa";
+            // Arrange
+            var mock = new Mock<IUserService>();
+            var mock1 = new Mock<IMapper>();
+            var mock2 = new Mock<IOptions<Spec_Project.Helpers.AppSettings>>();
+            mock.Setup(p => p.Update(tbluser, password)).Returns(new Spec_Project.Models.ResponseModel
+            {
+                Data = null
+
+            });
+            var controller = new UsersController(mock.Object, mock1.Object, mock2.Object);
+
+            // Act
+            var result = controller.Update(tbluser);
+            //result.Value
+            // Assert
+            var actualResponse = Assert.IsType<ResponseModel>(result);
+            result.Data.Should().BeEquivalentTo(actualResponse.Data);
+
+            mock.Verify();
         }
     }
 }

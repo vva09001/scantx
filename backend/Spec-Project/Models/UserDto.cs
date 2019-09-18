@@ -18,6 +18,12 @@ namespace Spec_Project.Models
         public bool? EncryptionActive { get; set; }
         public string Cid { get; set; }
         public int RoleID { get; set; }
+        public DateTime? DeletedOn { get; set; }
+
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public string Status { get; set; } //role
+        public string CreateOn { get; set; }
 
     }
 }

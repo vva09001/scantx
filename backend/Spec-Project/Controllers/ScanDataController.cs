@@ -25,15 +25,21 @@ namespace Spec_Project.Controllers
         IHttpContextAccessor _httpContextAccessor;
         private IScanDataService _IScanDataService;
         DataContext context = new DataContext();
+        IScanDataService _object;
+        private IScanDataService @object;
+
         //private IMapper _mapper;
         //private readonly AppSettings _appSettings;
-        public ScanDataController(IScanDataService scandataService, IHttpContextAccessor httpContextAccessor)
+        public ScanDataController(IScanDataService scandataService)
         {
             _IScanDataService = scandataService;
-            _httpContextAccessor = httpContextAccessor;
             //_mapper = mapper;
             //_appSettings = appSettings.Value;
         }
+
+       
+
+
         //[Authorize]
         [DisableCors]
         [HttpGet("convert-scandata-to-csv")]
@@ -84,92 +90,11 @@ namespace Spec_Project.Controllers
         [Authorize]
         [DisableCors]
         [HttpGet("getqr")]
-        public ResponseModel CreateQR()
-
+        public IActionResult GetQr()
         {
-            var context = _httpContextAccessor.HttpContext;
-            CreateQR createqr = new CreateQR();
-            var res = new ResponseModel()
-            {
-                Status = "200",
-                Message = "",
-            };
-            try
-            {
-                createqr.Command = "CONNECTTOTRX";
-                createqr.ServerAddress = "h2673771.stratoserver.net";
-                createqr.Port = 80;
-                createqr.URLPart = "webservicestx";
-                var x = UsersConstant.GetUserName(context.User.Identity.Name);
-                createqr.User = x;
-                createqr.EncryptionKey = "kJDJzwrVS6RTFgdafgc3d ";
-                var textboxQR = (createqr.Command + ":" + createqr.ServerAddress + ":" + createqr.Port + "/" + createqr.URLPart + "|" + createqr.EncryptionKey + "|" + createqr.User);
-                QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(textboxQR.ToString(), QRCodeGenerator.ECCLevel.Q);
-                QRCode qrCode = new QRCode(qrCodeData);
-                Bitmap qrCodeImage = qrCode.GetGraphic(20);
-                var bitmapBytes = BitmapToBytes(qrCodeImage); //Convert bitmap into a byte array
-                string base64String = Convert.ToBase64String(bitmapBytes);
-                res.Data = base64String; //tra data kieu responsemodel
-                return res;
-            }
-            catch (Exception ex)
-            {
-                res.Status = "500";
-                res.Message = ex.Message;
-            }
-
-            return res;
-        }
-        private static byte[] BitmapToBytes(Bitmap img)
-        {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                return stream.ToArray();
-            }
+            return Ok(_IScanDataService.CreateQR());
         }
 
-        [DisableCors]
-        [HttpGet("getfile")]
-        public IActionResult MyExportAction()
-        {
-
-
-            var progresses = context.TblScanData.Where(p => p.DeletedOn == null).ToList().Select(progress =>
-                    new TblScanData()
-                    {
-                        ScanId = progress.ScanId,
-                        Uid = progress.Uid,
-                        Status = progress.Status,
-                        DataType = progress.DataType,
-                        CreatedOn = progress.CreatedOn,
-                        FileName = progress.FileName,
-                        Payload = progress.Payload
-                    }
-                );
-
-            List<TblScanData> reportCSVModels = progresses.ToList();
-            using (var writer = new StreamWriter("Tmp/file.csv"))
-            using (var csv = new CsvWriter(writer))
-            {
-                csv.WriteRecords(reportCSVModels);
-            }
-            //var stream = new MemoryStream();
-            //var writeFile = new StreamWriter(stream);
-            //var csv = new CsvWriter(writeFile);
-            ////csv.Configuration.RegisterClassMap<GroupReportCSVMap>();
-            //csv.WriteRecords(reportCSVModels);
-            //stream.Position = 0; //reset stream
-            //return File(stream, "application/octet-stream", "Reports.csv");
-            return null;
-        }
-        public class GroupReportCSVMap : ClassMap<ScanDataModel>
-        {
-            public GroupReportCSVMap()
-            {
-                Map(m => m.DeletedOn).TypeConverterOption.Format("yyyy-MM-dd HH:mm:ss.fff");
-            }
-        }
+        
     }
 }

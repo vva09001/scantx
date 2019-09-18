@@ -23,7 +23,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Spec_Project.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [AllowAnonymous]
     [ApiController]
     [Route("api/user")]
@@ -35,14 +35,12 @@ namespace Spec_Project.Controllers
 
         DataContext _context;
 
-        private IHttpContextAccessor _httpContextAccessor;
         public UsersController(
             IUserService userService,
             IMapper mapper,
-            IHttpContextAccessor httpContextAccessor,
-            IOptions<Helpers.AppSettings> appSettings)
+            IOptions<Helpers.AppSettings> appSettings
+            )
         {
-            _httpContextAccessor = httpContextAccessor;
             _userService = userService;
             _mapper = mapper;
             _appSettings = appSettings.Value;
@@ -75,19 +73,19 @@ namespace Spec_Project.Controllers
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
-
-            CompanyService cpn = new CompanyService(_httpContextAccessor);
-            var com = cpn.GetCompanyByCid(user.Cid);
+            DataContext db = new DataContext();
+            var x = db.TblCustomer.FirstOrDefault(p=>p.Cid == user.Cid);
             // return basic user info (without password) and token to store client side
             return Ok(new
             {
                 Id = user.Id,
                 Username = user.UserName,
-                FirstName = user.FamilyName,
-                LastName = user.GivenName,
-                CompanyName = com.Name,
+                FamilyName = user.FamilyName,
+                GivenName = user.GivenName,
+                CompanyName = x.Name,
                 Mail = user.Email,
-                TypeOfAcc = user.TypeOfAccount,
+                TypeOfAccount = user.TypeOfAccount,
+                RoleID= user.RoleID,
                 Authorization = user.Authorization,
                 Token = tokenString
             });
@@ -111,6 +109,35 @@ namespace Spec_Project.Controllers
                 // return error message if there was an exception
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        [AllowAnonymous]
+        [DisableCors]
+        [HttpPost("adduser")]
+        public ResponseModel AddUser([FromBody]UserDto userDto, string password, string UserIDLogin)
+        {
+            // map dto to entity
+            //var user = _mapper.Map<TblUsers>(userDto);
+            ResponseModel res = (new ResponseModel
+            {
+                Data = "",
+                Status = "200",
+                Message = ""
+            });
+            try
+            {
+                var x = _userService.AddUser(userDto, userDto.Password, UserIDLogin);
+                // save 
+                //return Ok(_userService.AddUser(userDto, userDto.Password, UserIDLogin));
+                res.Data = x;
+            }
+            catch (Exception ex)
+            {
+                // return error message if there was an exception
+                //return BadRequest(new { message = ex.Message });
+                res.Message = "false";
+               
+            } return res;
         }
 
         [Authorize]
@@ -148,7 +175,7 @@ namespace Spec_Project.Controllers
         [Authorize]
         [DisableCors]
         [HttpPut("update")]
-        public IActionResult Update([FromBody]UserDto userDto)
+        public ResponseModel Update([FromBody]UsersModel userDto)
         {
             // map dto to entity and set id
             //var user = _mapper.Map<TblUsers>(userDto);
@@ -169,7 +196,7 @@ namespace Spec_Project.Controllers
                     passwordSa = hmac.Key;
                     passwordHa = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
                 }
-                var user = new TblUsers
+                var user = new UsersModel
                 {
                     Id = userDto.Id,
                     Cid = userDto.Cid,
@@ -182,7 +209,7 @@ namespace Spec_Project.Controllers
                     UserName = userDto.UserName,
                     PasswordHash = passwordHa,
                     PasswordSalt = passwordSa,
-                    RoleId = userDto.RoleID
+                    RoleID = userDto.RoleID
                 };
                 //user.Id = id;
 
@@ -194,13 +221,14 @@ namespace Spec_Project.Controllers
                 catch (Exception ex)
                 {
                     // return error message if there was an exception
-                    return BadRequest(new { message = ex.Message });
+                    //return BadRequest(new { message = ex.Message });
+                    res.Message = "false";
 
                 }
             }
             else
             {
-                var user = new TblUsers
+                var user = new UsersModel
                 {
                     Id = userDto.Id,
                     Cid = userDto.Cid,
@@ -211,7 +239,7 @@ namespace Spec_Project.Controllers
                     GivenName = userDto.GivenName,
                     TypeOfAccount = userDto.TypeOfAccount,
                     UserName = userDto.UserName,
-                    RoleId = userDto.RoleID
+                    RoleID = userDto.RoleID
                 };
                 
                 //user.Id = id;
@@ -224,11 +252,12 @@ namespace Spec_Project.Controllers
                 catch (Exception ex)
                 {
                     // return error message if there was an exception
-                    return BadRequest(new { message = ex.Message });
+                    //return BadRequest(new { message = ex.Message });
+                    res.Message = "false";
 
                 }
             }
-            return Ok(res);
+            return res;
         }
 
         [Authorize]
