@@ -186,6 +186,7 @@ namespace Spec_Project.Services
                 {
                     Cid = tbluser.Cid,
                     Name = tbluser.UserName,
+                    CreateOn = DateTime.UtcNow
                 };
                 try
                 {

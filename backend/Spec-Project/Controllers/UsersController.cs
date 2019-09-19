@@ -188,7 +188,7 @@ namespace Spec_Project.Controllers
             });
             
             var password = userDto.Password;
-            if (password != null)
+            if (password != null && password != "")
             {
                 byte[] passwordHa, passwordSa;
                 using (var hmac = new System.Security.Cryptography.HMACSHA512())

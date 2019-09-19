@@ -58,6 +58,14 @@ namespace Spec_Project.Controllers
 
         [Authorize]
         [DisableCors]
+        [HttpGet("check-scandata")]
+        public IActionResult CheckUserScanData(string scandataID)
+        {
+            return Ok(_IScanDataService.CheckUserScanData(scandataID));
+        }
+
+        [Authorize]
+        [DisableCors]
         [HttpPost("add-scandata")]
         public IActionResult addScanData(ScanDataModel tblscandata)
         {

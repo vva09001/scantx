@@ -198,6 +198,21 @@ namespace TestProject
             mockRepo.Verify();
         }
 
+        [Fact]
+        public void TestCheckUID()
+        {
+            var mock = new Mock<IScanDataService>();
+
+            mock.Setup(p => p.CheckUserScanData("5")).Returns(new Spec_Project.Models.ResponseModel
+            {
+                Data = "done"
+            });
+            ScanDataController home = new ScanDataController(mock.Object);
+            var result = (OkObjectResult)home.CheckUserScanData("5");
+            var actualResponse = Assert.IsType<ResponseModel>(result.Value);
+            Assert.Equal("done", actualResponse.Data);
+        }
+
         // Test user
         private UserDto GetUser()
         {
