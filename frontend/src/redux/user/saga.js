@@ -35,7 +35,7 @@ export function* addUserSagas(data) {
       yield success();
       yield put({
         type: actions.ADD_USER_SUCCESS,
-        response: res.data.data
+        response: res.data.data.data
       });
     } else {
       yield fail(res.data.message);
