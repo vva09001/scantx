@@ -132,6 +132,7 @@ class User extends Component {
   };
 
   renderData = () => {
+    const { profile } = this.props;
     return _.map(this.props.users, item => {
       return (
         <TableRow key={item.id}>
@@ -144,13 +145,15 @@ class User extends Component {
           <TableCell>{item.email}</TableCell>
           <TableCell>{role(item.roleID)}</TableCell>
           <TableCell>
-            <Link
-              component="button"
-              variant="body2"
-              onClick={() => this.onToggleEditForm(true, item)}
-            >
-              Edit
-            </Link>
+            {_.indexOf(permission.user.edit, profile.roleID) !== -1 && (
+              <Link
+                component="button"
+                variant="body2"
+                onClick={() => this.onToggleEditForm(true, item)}
+              >
+                Edit
+              </Link>
+            )}
           </TableCell>
         </TableRow>
       );
@@ -192,15 +195,17 @@ class User extends Component {
                   Add new user
                 </Button>
               )}
-              <Button
-                className="buttonStyles"
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={() => this.onToggleDeleteMulti(true)}
-              >
-                Delete selected
-              </Button>
+              {_.indexOf(permission.user.delete, profile.roleID) !== -1 && (
+                <Button
+                  className="buttonStyles"
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => this.onToggleDeleteMulti(true)}
+                >
+                  Delete selected
+                </Button>
+              )}
             </Grid>
           </Papersheet>
           {/* Add Form */}

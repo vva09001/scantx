@@ -99,6 +99,7 @@ class Company extends Component {
   };
 
   renderData = () => {
+    const { profile } = this.props;
     return _.map(this.props.companies, item => (
       <TableRow key={item.cid}>
         <TableCell padding="checkbox">
@@ -118,13 +119,15 @@ class Company extends Component {
           >
             Assign|
           </Link> */}
-          <Link
-            component="button"
-            variant="body2"
-            onClick={() => this.onToggleEditForm(true, item)}
-          >
-            Edit
-          </Link>
+          {_.indexOf(permission.user.edit, profile.roleID) !== -1 && (
+            <Link
+              component="button"
+              variant="body2"
+              onClick={() => this.onToggleEditForm(true, item)}
+            >
+              Edit
+            </Link>
+          )}
         </TableCell>
       </TableRow>
     ));
