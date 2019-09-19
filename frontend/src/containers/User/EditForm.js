@@ -179,6 +179,17 @@ class Form extends React.Component {
               <div>
                 <TextField
                   required
+                  name="userName"
+                  label="Username"
+                  margin="normal"
+                  fullWidth
+                  value={this.state.params.userName}
+                  onChange={e => this.onChange(e)}
+                />
+              </div>
+              <div>
+                <TextField
+                  required
                   name="givenName"
                   label="Given Name"
                   margin="normal"

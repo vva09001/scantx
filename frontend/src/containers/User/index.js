@@ -140,6 +140,9 @@ class User extends Component {
             <Checkbox onChange={e => this.handleCheck(e, item.id)} />
           </TableCell>
           <TableCell>
+            {item.userName}
+          </TableCell>
+          <TableCell>
             {item.givenName} {item.familyName}
           </TableCell>
           <TableCell>{item.email}</TableCell>
