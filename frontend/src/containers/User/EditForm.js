@@ -60,7 +60,15 @@ class Form extends React.Component {
           password: ""
         }
       },
-      () => this.selectRole()
+      () => {
+        this.selectRole();
+        this.setState({
+          params: {
+            ...this.state.params,
+            roleID: this.state.initRoleID
+          }
+        });
+      }
     );
   }
   onSuccess = () => {
