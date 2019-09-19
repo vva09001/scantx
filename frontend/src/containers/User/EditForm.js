@@ -26,6 +26,7 @@ class Form extends React.Component {
       userRole: false,
       adminRole: false,
       superadminRole: false,
+      initRoleID: "",
       params: {}
     };
   }
@@ -37,6 +38,7 @@ class Form extends React.Component {
       userName,
       familyName,
       givenName,
+      cid,
       typeOfAccount,
       roleID,
       email,
@@ -45,11 +47,13 @@ class Form extends React.Component {
     } = nextProps.params;
     this.setState(
       {
+        initRoleID: roleID,
         params: {
           id,
           userName,
           familyName,
           givenName,
+          cid,
           typeOfAccount,
           roleID,
           email,
@@ -58,7 +62,15 @@ class Form extends React.Component {
           password: ""
         }
       },
-      () => this.selectRole()
+      () => {
+        this.selectRole();
+        this.setState({
+          params: {
+            ...this.state.params,
+            roleID: this.state.initRoleID
+          }
+        });
+      }
     );
   }
   onSuccess = () => {
@@ -201,10 +213,21 @@ class Form extends React.Component {
                     <option disabled={!this.state.userRole} value={3}>
                       User
                     </option>
-                    <option disabled={!this.state.adminRole} value={2}>
+                    <option
+                      disabled={
+                        this.state.initRoleID > 2 && !this.state.adminRole
+                      }
+                      value={2}
+                    >
                       Admin
                     </option>
-                    <option disabled={!this.state.superadminRole} value={1}>
+                    <option
+                      disabled={
+                        this.state.initRoleID !== 1 &&
+                        !this.state.superadminRole
+                      }
+                      value={1}
+                    >
                       Superadmin
                     </option>
                   </NativeSelect>
