@@ -21,7 +21,7 @@ namespace Spec_Project.Services
 {
     public interface IScanDataService
     {
-        List<TblScanData> getScanData();
+        ResponseModel getScanData();
         ResponseModel addScanData(ScanDataModel tblscandata);
         ResponseModel DeleteScanData(string scanid);
         ResponseModel DeleteArrScanData(List<string> deleteIds);
@@ -59,17 +59,16 @@ namespace Spec_Project.Services
 
                 int role = UsersConstant.GetRole(Uid);
 
-                List<TblScanData> datascan = new List<TblScanData>();
-
-                if (role == UsersConstant.superadmin)
+                List<ScanDataModel> datascan = new List<ScanDataModel>();
+                var context = _httpContextAccessor.HttpContext;
+                if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
                 {
                     datascan.Clear();
-                    datascan = db.TblScanData.Select(o => new TblScanData
+                    datascan = db.TblScanData.Select(o => new ScanDataModel
                     {
                         Uid = o.Uid,
-                        CreatedOn = o.CreatedOn,
+                        CreatedOn = new DateTime(o.CreatedOn.Value.Ticks).ToString("o"),
                         DataType = o.DataType,
-                        DeletedOn = o.DeletedOn,
                         FileName = o.FileName,
                         Payload = o.Payload,
                         ScanId = o.ScanId,
@@ -78,22 +77,9 @@ namespace Spec_Project.Services
 
                 }
                 else
-                if (role == UsersConstant.reader)
+                if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.reader)
                 {
 
-                    //datascan.Clear();
-                    //UsersConstant.GetRole(Uid);
-                    //datascan = db.TblScanData.Where(o => o.Uid == Uid).Select(o => new TblScanData
-                    //{
-                    //    Uid = o.Uid,
-                    //    CreatedOn = o.CreatedOn,
-                    //    DataType = o.DataType,
-                    //    DeletedOn = o.DeletedOn,
-                    //    FileName = o.FileName,
-                    //    Payload = o.Payload,
-                    //    ScanId = o.ScanId,
-                    //    Status = o.Status
-                    //}).ToList();
                     return res = new ResponseModel
                     {
                         Data = "",
@@ -103,16 +89,14 @@ namespace Spec_Project.Services
 
                 }
                 else
-                if (role == UsersConstant.admin)
+                if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.user)
                 {
-
                     datascan.Clear();
-                    datascan = db.TblScanData.Include(o => o.U).Where(o => o.Uid == (Uid) && (o.U.RoleId == UsersConstant.user || o.U.RoleId == UsersConstant.admin || o.U.RoleId == UsersConstant.reader)).Select(o => new TblScanData
+                    datascan = db.TblScanData.Where(p => p.Uid == int.Parse(context.User.Identity.Name) && p.DeletedOn == null).Select(o => new ScanDataModel
                     {
                         Uid = o.Uid,
-                        CreatedOn = o.CreatedOn,
+                        CreatedOn = new DateTime(o.CreatedOn.Value.Ticks).ToString("o"),
                         DataType = o.DataType,
-                        DeletedOn = o.DeletedOn,
                         FileName = o.FileName,
                         Payload = o.Payload,
                         ScanId = o.ScanId,
@@ -120,22 +104,7 @@ namespace Spec_Project.Services
                     }).ToList();
 
                 }
-                else
-                if (role == UsersConstant.user)
-                {
-                    datascan.Clear();
-                    datascan = db.TblScanData.Include(o => o.U).Where(o => o.Uid == (Uid) && (o.U.RoleId == UsersConstant.user || o.U.RoleId == UsersConstant.reader)).Select(o => new TblScanData
-                    {
-                        Uid = o.Uid,
-                        CreatedOn = o.CreatedOn,
-                        DataType = o.DataType,
-                        DeletedOn = o.DeletedOn,
-                        FileName = o.FileName,
-                        Payload = o.Payload,
-                        ScanId = o.ScanId,
-                        Status = o.Status
-                    }).ToList();
-                }
+
                 CsvFileDescription outputFileDescription = new CsvFileDescription
                 {
                     SeparatorChar = ',',
@@ -148,7 +117,7 @@ namespace Spec_Project.Services
 
                 string finalPath = Directory.GetCurrentDirectory() + "\\tmp\\scandata_" + now + ".csv";
                 cc.Write(datascan, finalPath, outputFileDescription);
-                res.Data = "scantx.miracles.vn/mycsv/scandata_" + now +".csv";
+                res.Data = "scantx.miracles.vn/mycsv/scandata_" + now + ".csv";
                 res.Message = "";
                 res.Status = "200";
 
@@ -162,16 +131,33 @@ namespace Spec_Project.Services
             return res;
         }
 
-        public List<TblScanData> getScanData()
+        public ResponseModel getScanData()
         {
-            var cont = _httpContextAccessor.HttpContext;
-            
-                using (DataContext context = new DataContext())
+            ResponseModel res = (new ResponseModel
+            {
+                Data = "",
+                Status = "200",
+                Message = ""
+            });
+            var conts = _httpContextAccessor.HttpContext;
+            using (DataContext _context = new DataContext())
+            {
+                if (UsersConstant.GetRole(int.Parse(conts.User.Identity.Name)) == UsersConstant.superadmin)
                 {
                     var rs = context.TblScanData.Where(p => p.DeletedOn == null).OrderByDescending(p => p.CreatedOn).ToList();
-                    return rs;
+                    res.Data = rs;
                 }
-            
+                else
+                {
+                    if (UsersConstant.GetRole(int.Parse(conts.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(conts.User.Identity.Name)) == UsersConstant.user)
+                    {
+                        var uid = int.Parse(conts.User.Identity.Name);
+                        var rs = context.TblScanData.Where(p => p.DeletedOn == null && p.Uid == uid).OrderByDescending(p => p.CreatedOn).ToList();
+                        res.Data = rs;
+                    }
+                }
+            }
+            return res;
         }
 
         public ResponseModel addScanData(ScanDataModel tblscandata)
@@ -182,9 +168,9 @@ namespace Spec_Project.Services
                 Status = "200",
                 Message = "",
             };
-            if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin)
+            if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.user)
             {
-                
+
                 try
                 {
                     using (DataContext context = new DataContext())
@@ -197,7 +183,7 @@ namespace Spec_Project.Services
                             var x = new TblScanData
                             {
                                 ScanId = g.ToString(),
-                                Uid = tblscandata.Uid,
+                                Uid = int.Parse(contex.User.Identity.Name),
                                 CreatedOn = DateTime.UtcNow,
                                 Payload = tblscandata.Payload,
                                 DataType = tblscandata.DataType,
@@ -210,13 +196,12 @@ namespace Spec_Project.Services
                             var item = new ScanDataModel
                             {
                                 ScanId = x.ScanId,
-                                Uid = x.Uid,
+                                Uid = int.Parse(contex.User.Identity.Name),
                                 CreatedOn = new DateTime(x.CreatedOn.Value.Ticks).ToString("o"),
                                 Payload = x.Payload,
                                 DataType = x.DataType,
                                 FileName = x.FileName,
                                 Status = x.Status,
-                                DeletedOn = null,
                             };
                             res.Data = item;
                         }
@@ -277,7 +262,7 @@ namespace Spec_Project.Services
             };
             if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin)
             {
-                
+
                 try
                 {
                     using (DataContext context = new DataContext())
@@ -314,7 +299,7 @@ namespace Spec_Project.Services
             };
             if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin)
             {
-                
+
                 try
                 {
                     using (DataContext context = new DataContext())
@@ -323,6 +308,34 @@ namespace Spec_Project.Services
                         if (oldscandata != null)
                         {
                             oldscandata.Uid = tblscandata.Uid;
+                            oldscandata.Payload = tblscandata.Payload;
+                            oldscandata.DataType = tblscandata.DataType;
+                            oldscandata.FileName = tblscandata.FileName;
+                            oldscandata.Status = tblscandata.Status;
+                            oldscandata.DeletedOn = null;
+                            context.SaveChanges();
+                            res.Data = oldscandata;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    res.Status = "500";
+                    res.Message = ex.Message;
+                }
+                return res;
+            }
+            if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.user)
+            {
+
+                try
+                {
+                    using (DataContext context = new DataContext())
+                    {
+                        var oldscandata = (from u in context.TblScanData where u.ScanId == tblscandata.ScanId && u.Uid == int.Parse(contex.User.Identity.Name) select u).FirstOrDefault();
+                        if (oldscandata != null)
+                        {
+
                             oldscandata.Payload = tblscandata.Payload;
                             oldscandata.DataType = tblscandata.DataType;
                             oldscandata.FileName = tblscandata.FileName;

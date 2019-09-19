@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using Spec_Project.Models;
 
 namespace Spec_Project
 {

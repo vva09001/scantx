@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Lucene.Net.Support;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Spec_Project.Entities;
 using Spec_Project.Models;
 using Spec_Project.Services;
 
 namespace Spec_Project.Controllers
 {
-  
+
     [Route("api/Company")]
     [ApiController]
     public class CompanyController : ControllerBase
@@ -30,29 +23,17 @@ namespace Spec_Project.Controllers
             //_appSettings = appSettings.Value;
         }
 
- 
 
-        [DisableCors]
-        [HttpGet("get-id-company")]
-        public IActionResult getIDCompany(string cid)
-        {
-            return Ok(_ICompanyService.getIDCompany(cid));
-        }
+
         //[Authorize]
         [DisableCors]
         [HttpGet("get-company")]
-        public IActionResult GetAllItems()
+        public IActionResult getCompany()
         {
             return Ok(_ICompanyService.getCompany());
         }
 
-        [Authorize]
-        [DisableCors]
-        [HttpGet("get-company-by-cid")]
-        public IActionResult getCompanyByCid(string cid)
-        {
-            return Ok(_ICompanyService.GetCompanyByCid(cid));
-        }
+
 
         [Authorize]
         [DisableCors]
@@ -63,13 +44,6 @@ namespace Spec_Project.Controllers
             return Ok(x);
         }
 
-        [Authorize]
-        [DisableCors]
-        [HttpPost("delete-company")]
-        public IActionResult DeleteCompany(string cid)
-        {
-            return Ok(_ICompanyService.DeleteCompany(cid));
-        }
 
         [Authorize]
         [DisableCors]
@@ -86,5 +60,6 @@ namespace Spec_Project.Controllers
         {
             return Ok(_ICompanyService.EditCompany(customer));
         }
+
     }
 }

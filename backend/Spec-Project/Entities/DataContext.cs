@@ -1,9 +1,8 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Spec_Project.Models;
 
-namespace Spec_Project.Entities
+namespace Spec_Project.Models
 {
     public partial class DataContext : DbContext
     {
@@ -46,7 +45,9 @@ namespace Spec_Project.Entities
 
                 entity.Property(e => e.Address).HasMaxLength(200);
 
-                entity.Property(e => e.DeletedOn).HasColumnType("date");
+                entity.Property(e => e.CreateOn).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.Name).HasMaxLength(100);
 
@@ -74,9 +75,12 @@ namespace Spec_Project.Entities
 
                 entity.Property(e => e.Payload).HasColumnType("text");
 
-                entity.Property(e => e.Uid)
-                    .HasColumnName("UID")
-                    .HasMaxLength(50);
+                entity.Property(e => e.Uid).HasColumnName("UID");
+
+                entity.HasOne(d => d.U)
+                    .WithMany(p => p.TblScanData)
+                    .HasForeignKey(d => d.Uid)
+                    .HasConstraintName("FK_tblScanData_tblUsers");
             });
 
             modelBuilder.Entity<TblUsers>(entity =>
@@ -90,9 +94,10 @@ namespace Spec_Project.Entities
                     .IsUnicode(false);
 
                 entity.Property(e => e.Cid)
-                    .IsRequired()
                     .HasColumnName("cid")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.DeletedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -109,6 +114,10 @@ namespace Spec_Project.Entities
 
                 entity.Property(e => e.PasswordSalt).HasMaxLength(500);
 
+                entity.Property(e => e.RoleID)
+                    .HasColumnName("RoleID")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.TypeOfAccount)
                     .IsRequired()
                     .HasMaxLength(150)
@@ -121,7 +130,6 @@ namespace Spec_Project.Entities
                 entity.HasOne(d => d.C)
                     .WithMany(p => p.TblUsers)
                     .HasForeignKey(d => d.Cid)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_tblUsers_tblCustomer");
             });
         }

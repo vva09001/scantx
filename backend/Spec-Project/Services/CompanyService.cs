@@ -9,15 +9,13 @@ namespace Spec_Project.Services
 {
     public interface ICompanyService
     {
-        List<TblCustomer> getCompany();
+        ResponseModel getCompany();
         ResponseModel addCompany(CustomerModel tblcustomer);
         ResponseModel EditCompany(CustomerModel customer);
         ResponseModel DeleteArrCompany(List<string> deleteIds);
         ResponseModel DeleteCompany(string cid);
-
-        TblCustomer getIDCompany(string cid);
-
         TblCustomer GetCompanyByCid(string Cid);
+        ResponseModel addUserToCompany(string usersname, string email, string cid);
 
     }
     public class CompanyService : ICompanyService
@@ -29,22 +27,47 @@ namespace Spec_Project.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-
-        public TblCustomer getIDCompany(string cid)
+        public ResponseModel getCompany()
         {
-            var companybycid = db.TblCustomer.Where(p => p.Cid == cid && p.DeletedOn == null).FirstOrDefault();
-            return companybycid;
-        }
-        public List<TblCustomer> getCompany()
-        {
-            var context = _httpContextAccessor.HttpContext;
-            if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
+            ResponseModel res = (new ResponseModel
             {
-                var company = db.TblCustomer.Where(p => p.DeletedOn == null).ToList();
-                return company;
+                Data = "",
+                Status = "200",
+                Message = ""
+            });
+            var context = _httpContextAccessor.HttpContext;
+            using (DataContext _context = new DataContext())
+            {
+                if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
+                {
+                    var userss = _context.TblCustomer.Where(p => p.DeletedOn == null).Select(p => new CustomerModel
+                    {
+                        Name = p.Name,
+                        Address = p.Address,
+                        Status = p.Status,
+                        Cid = p.Cid,
+                    }).ToList();
+                    res.Data = userss;
+                }
+                else
+                {
+                    if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.user)
+                    {
+                        var ciduser = UsersConstant.GetCID(context.User.Identity.Name);
+                        var user = _context.TblCustomer.Where(p => p.DeletedOn == null && p.Cid == ciduser).Select(p => new CustomerModel
+                        {
+                            Name = p.Name,
+                            Address = p.Address,
+                            Status = p.Status,
+                            Cid = p.Cid,
+                        }).ToList();
+                        res.Data = user;
+                    }
+                }
             }
-            return null;
+            return res;
         }
+        
         public TblCustomer GetCompanyByCid(string Cid)
         {
                 var companybycid = db.TblCustomer.Where(p => p.Cid == Cid && p.DeletedOn == null).FirstOrDefault();
@@ -104,6 +127,45 @@ namespace Spec_Project.Services
             }
             return res;
         }
+
+        public ResponseModel addUserToCompany(string userName, string email, string cid)
+        {
+            var context = _httpContextAccessor.HttpContext;
+            var res = new ResponseModel()
+            {
+                Status = "200",
+                Message = "",
+            };
+            if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
+            //{
+            {
+                try
+                {
+                    var checkuser = db.TblUsers.FirstOrDefault(p => p.UserName == userName && p.Email ==email);
+                    if (checkuser != null)
+                    {
+                        checkuser.Cid = cid;
+                        db.SaveChanges();
+                        res.Message = "sucessfull";
+                    }
+                    else
+                    {
+                        res.Message = "Username && Email not found !";
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    res.Status = "500";
+                    res.Message = ex.Message;
+                }
+
+                return res;
+                // }
+            }
+            return res;
+        }
+
         public ResponseModel DeleteCompany(string cid)
         {
             var cont = _httpContextAccessor.HttpContext;

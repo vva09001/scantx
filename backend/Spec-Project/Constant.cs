@@ -1,4 +1,5 @@
 ﻿using Spec_Project.Entities;
+using Spec_Project.Models;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
@@ -21,7 +22,7 @@ namespace Spec_Project
         {
             using (DataContext db = new DataContext())
             {
-                var roleid = db.TblUsers.Where(o => o.Id == pUserID).Select(o => o.RoleId).FirstOrDefault();
+                var roleid = db.TblUsers.Where(o => o.Id == pUserID).Select(o => o.RoleID).FirstOrDefault();
                 return roleid;
             }
         }
@@ -29,10 +30,11 @@ namespace Spec_Project
         {
             using (DataContext db = new DataContext())
             {
-                var roleid = db.TblUsers.Where(o => o.Id == userID).Select(o => o.RoleId).FirstOrDefault();
+                var roleid = db.TblUsers.Where(o => o.Id == userID).Select(o => o.RoleID).FirstOrDefault();
                 return roleid;
             }
         }
+
         public static string GetCID(string userID)
         {
             var strcid = int.Parse(userID);

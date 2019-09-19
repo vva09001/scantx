@@ -14,7 +14,7 @@ namespace Spec_Project.Models
         public string DataType { get; set; }
         public string FileName { get; set; }
         public int? Status { get; set; }
-        public DateTime? DeletedOn { get; set; }
+
 
     }
 
