@@ -165,6 +165,9 @@ class User extends Component {
             />
           </TableCell>
           <TableCell>
+            {item.userName}
+          </TableCell>
+          <TableCell>
             {item.givenName} {item.familyName}
           </TableCell>
           <TableCell>{item.email}</TableCell>

@@ -94,16 +94,6 @@ class Form extends React.Component {
                   onChange={e => this.onChange(e)}
                 />
               </div>
-              <div>
-                <TextField
-                  label="Status"
-                  margin="normal"
-                  fullWidth
-                  name="status"
-                  value={this.props.params.status}
-                  onChange={e => this.onChange(e)}
-                />
-              </div>
             </DialogContent>
             <DialogActions>
               <Button onClick={() => this.onClose()} color="primary">
