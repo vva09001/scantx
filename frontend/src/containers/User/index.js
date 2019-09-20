@@ -13,7 +13,12 @@ import Grid from "components/uielements/grid";
 import Table from "components/uielements/table";
 import Checkbox from "components/uielements/checkbox";
 import Link from "@material-ui/core/Link";
-import { TableBody, TableCell, TableRow } from "components/uielements/table";
+import {
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow
+} from "components/uielements/table";
 import { userActions } from "redux/actions";
 import { permission, role, generatePassword } from "helpers/user";
 import _ from "lodash";
@@ -104,6 +109,23 @@ class User extends Component {
     }
   };
 
+  onSelectedAll = (status = false) => {
+    const { multiId } = this.state;
+    const { users } = this.props;
+
+    if (multiId.length === users.length || status) {
+      this.setState({
+        multiId: []
+      });
+    } else {
+      this.setState({
+        multiId: _.map(users, item => {
+          return item.id;
+        })
+      });
+    }
+  };
+
   edit = (params, success, fail) => {
     this.props.editUser(params, success, fail);
     this.setState({
@@ -137,7 +159,10 @@ class User extends Component {
       return (
         <TableRow key={item.id}>
           <TableCell padding="checkbox">
-            <Checkbox onChange={e => this.handleCheck(e, item.id)} />
+            <Checkbox
+              onChange={e => this.handleCheck(e, item.id)}
+              checked={_.includes(this.state.multiId, item.id)}
+            />
           </TableCell>
           <TableCell>
             {item.givenName} {item.familyName}
@@ -176,6 +201,23 @@ class User extends Component {
             }
           >
             <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      onChange={() => this.onSelectedAll()}
+                      checked={
+                        this.state.multiId.length &&
+                        this.state.multiId.length === this.props.users.length
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Role</TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              </TableHead>
               <TableBody>{this.renderData()}</TableBody>
             </Table>
             <Grid

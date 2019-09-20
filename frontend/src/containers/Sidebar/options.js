@@ -14,8 +14,8 @@ const options = [
     key: 'company',
   },
   {
-    label: 'Divices',
-    key: 'divices',
+    label: 'Devices',
+    key: 'Devices',
   },
   {
     label: 'Scan Data',
