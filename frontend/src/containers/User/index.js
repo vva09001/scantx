@@ -215,6 +215,7 @@ class User extends Component {
                       }
                     />
                   </TableCell>
+                  <TableCell>Username</TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Email</TableCell>
                   <TableCell>Role</TableCell>
