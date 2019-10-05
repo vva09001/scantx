@@ -1,5 +1,6 @@
 ﻿using Models;
 using Scanx.Common;
+using Scanx.Soap.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,8 +8,8 @@ using System.Xml.Linq;
 
 namespace Server
 {
-	public class SampleService : ISampleService
-	{
+	public class ScanxService : IScanxService
+    {
 		public string Ping(string s)
 		{
 			Console.WriteLine("Exec ping method");
@@ -24,7 +25,7 @@ namespace Server
             };
 
             // check role, login info.
-            using (DataContext db = new DataContext())
+            using (var db = new MiraclesContext())
             {
                 var user = db.TblUsers.FirstOrDefault(o => o.UserName == postData.User);
                 #region Validate
@@ -40,7 +41,7 @@ namespace Server
                     res.Status = "500";
                     return res;
                 }
-                if (user.RoleID != Constant.Users.Admin && user.RoleID != Constant.Users.User && user.RoleID != Constant.Users.Superadmin)
+                if (user.RoleId != Constant.Users.Admin && user.RoleId != Constant.Users.User && user.RoleId != Constant.Users.Superadmin)
                 {
                     res.Message = "You dont have permission to do.";
                     res.Status = "500";

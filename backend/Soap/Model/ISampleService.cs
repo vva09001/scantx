@@ -4,8 +4,8 @@ using System.ServiceModel;
 namespace Models
 {
 	[ServiceContract]
-	public interface ISampleService
-	{
+	public interface IScanxService
+    {
 		[OperationContract]
         ResponseModel ImportScanData(ImportDataModel inputModel);
 
