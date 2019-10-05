@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
-using Lucene.Net.Support;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Spec_Project.Entities;
 using Spec_Project.Models;
 using Spec_Project.Services;
-using Spec_Project.Helpers;
 using Microsoft.AspNetCore.Cors;
-
 using System.Linq;
-
-using Microsoft.AspNetCore.Http;
-
 
 namespace Spec_Project.Controllers
 {
@@ -32,8 +24,6 @@ namespace Spec_Project.Controllers
         private IUserService _userService;
         private IMapper _mapper;
         private readonly Helpers.AppSettings _appSettings;
-
-        DataContext _context;
 
         public UsersController(
             IUserService userService,
@@ -74,6 +64,9 @@ namespace Spec_Project.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
             DataContext db = new DataContext();
+            user.Token = tokenString.Substring(0, 25);
+            db.Update(user);
+            db.SaveChanges();
             var x = db.TblCustomer.FirstOrDefault(p=>p.Cid == user.Cid);
             // return basic user info (without password) and token to store client side
             return Ok(new

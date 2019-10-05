@@ -23,6 +23,7 @@ namespace Spec_Project.Services
     {
         ResponseModel getScanData();
         ResponseModel addScanData(ScanDataModel tblscandata);
+        ResponseModel ImportScanData(ImportDataModel tblscandata);
         ResponseModel DeleteScanData(string scanid);
         ResponseModel DeleteArrScanData(List<string> deleteIds);
 
@@ -196,232 +197,118 @@ namespace Spec_Project.Services
                 //        res.Message = "Access deny !";
                 //    }
 
-                }
-                return res;
             }
-
-            public ResponseModel addScanData(ScanDataModel tblscandata)
+            return res;
+        }
+        public ResponseModel ImportScanData(ImportDataModel postData)
+        {
+            var res = new ResponseModel()
             {
-                var contex = _httpContextAccessor.HttpContext;
-                var res = new ResponseModel()
-                {
-                    Status = "200",
-                    Message = "",
-                };
-                if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.user)
-                {
+                Status = "200",
+                Message = "",
+            };
 
-                    try
-                    {
-                        using (DataContext context = new DataContext())
-                        {
-                            Guid g;
-                            g = Guid.NewGuid();
-                            var rs = context.TblScanData.FirstOrDefault(p => p.ScanId != tblscandata.ScanId);
-                            if (rs != null)
-                            {
-                                var x = new TblScanData
-                                {
-                                    ScanId = g.ToString(),
-                                    Uid = int.Parse(contex.User.Identity.Name),
-                                    CreatedOn = DateTime.UtcNow,
-                                    Payload = tblscandata.Payload,
-                                    DataType = tblscandata.DataType,
-                                    FileName = tblscandata.FileName,
-                                    Status = tblscandata.Status,
-                                    DeletedOn = null,
-                                };
-                                context.TblScanData.Add(x);
-                                context.SaveChanges();
-                                var item = new ScanDataModel
-                                {
-                                    ScanId = x.ScanId,
-                                    Uid = int.Parse(contex.User.Identity.Name),
-                                    CreatedOn = new DateTime(x.CreatedOn.Value.Ticks).ToString("o"),
-                                    Payload = x.Payload,
-                                    DataType = x.DataType,
-                                    FileName = x.FileName,
-                                    Status = x.Status,
-                                };
-                                res.Data = item;
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        res.Status = "500";
-                        res.Message = ex.Message;
-                    }
-
+            // check role, login info.
+            using (DataContext db = new DataContext())
+            {
+                var user = db.TblUsers.FirstOrDefault(o => o.UserName == postData.User);
+                #region Validate
+                if (user == null)
+                {
+                    res.Message = "Account with user name " + postData.User + " is not existed";
+                    res.Status = "500";
                     return res;
                 }
-                return res;
-            }
-            public ResponseModel DeleteScanData(string scanid)
-            {
-                var contex = _httpContextAccessor.HttpContext;
-
-                var res = new ResponseModel()
+                if (user.Token != postData.Token)
                 {
-                    Status = "200",
-                    Message = "",
-                };
-                if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin)
-                {
-                    try
-                    {
-                        using (DataContext context = new DataContext())
-                        {
-                            var rs = context.TblScanData.FirstOrDefault(o => o.ScanId == scanid);
-                            if (rs != null)
-                            {
-                                rs.DeletedOn = DateTime.UtcNow;
-                                context.SaveChanges();
-                                res.Data = rs;
-                            }
-                        }
-
-                    }
-                    catch (Exception ex)
-                    {
-                        res.Status = "500";
-                        res.Message = ex.Message;
-                    }
+                    res.Message = "Token is not correct";
+                    res.Status = "500";
                     return res;
                 }
-                return res;
-            }
-
-            public ResponseModel DeleteArrScanData(List<string> deleteIds)
-            {
-                var contex = _httpContextAccessor.HttpContext;
-                var res = new ResponseModel()
+                if (user.RoleID != UsersConstant.admin && user.RoleID != UsersConstant.user && user.RoleID != UsersConstant.superadmin)
                 {
-                    Status = "200",
-                    Message = "",
-                };
-                if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin)
-                {
-
-                    try
-                    {
-                        using (DataContext context = new DataContext())
-                        {
-                            foreach (var deleteId in deleteIds)
-                            {
-                                var scandata = context.TblScanData.FirstOrDefault(o => o.ScanId == deleteId);
-                                if (scandata != null)
-                                {
-                                    scandata.DeletedOn = DateTime.UtcNow;
-                                }
-                                res.Data = deleteIds;
-                            }
-
-                            context.SaveChanges();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        res.Status = "500";
-                        res.Message = ex.Message;
-                    }
+                    res.Message = "You dont have permission to do.";
+                    res.Status = "500";
                     return res;
                 }
-                return res;
-            }
-            public ResponseModel EditScandata(ScanDataModel tblscandata)
-            {
-                var contex = _httpContextAccessor.HttpContext;
-                var res = new ResponseModel()
-                {
-                    Status = "200",
-                    Message = "",
-                };
-                if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin)
-                {
-
-                    try
-                    {
-                        using (DataContext context = new DataContext())
-                        {
-                            var oldscandata = (from u in context.TblScanData where u.ScanId == tblscandata.ScanId select u).FirstOrDefault();
-                            if (oldscandata != null)
-                            {
-                                oldscandata.Uid = tblscandata.Uid;
-                                oldscandata.Payload = tblscandata.Payload;
-                                oldscandata.DataType = tblscandata.DataType;
-                                oldscandata.FileName = tblscandata.FileName;
-                                oldscandata.Status = tblscandata.Status;
-                                oldscandata.DeletedOn = null;
-                                context.SaveChanges();
-                                res.Data = oldscandata;
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        res.Status = "500";
-                        res.Message = ex.Message;
-                    }
-                    return res;
-                }
-                if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.user)
-                {
-
-                    try
-                    {
-                        using (DataContext context = new DataContext())
-                        {
-                            var oldscandata = (from u in context.TblScanData where u.ScanId == tblscandata.ScanId && u.Uid == int.Parse(contex.User.Identity.Name) select u).FirstOrDefault();
-                            if (oldscandata != null)
-                            {
-
-                                oldscandata.Payload = tblscandata.Payload;
-                                oldscandata.DataType = tblscandata.DataType;
-                                oldscandata.FileName = tblscandata.FileName;
-                                oldscandata.Status = tblscandata.Status;
-                                oldscandata.DeletedOn = null;
-                                context.SaveChanges();
-                                res.Data = oldscandata;
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        res.Status = "500";
-                        res.Message = ex.Message;
-                    }
-                    return res;
-                }
-                return res;
-            }
-            public ResponseModel CreateQR()
-            {
-                var context = _httpContextAccessor.HttpContext;
-                CreateQR createqr = new CreateQR();
-                var res = new ResponseModel()
-                {
-                    Status = "200",
-                    Message = "",
-                };
+                #endregion
                 try
                 {
-                    createqr.Command = "CONNECTTOTRX";
-                    createqr.ServerAddress = "h2673771.stratoserver.net";
-                    createqr.Port = 80;
-                    createqr.URLPart = "webservicestx";
-                    var x = UsersConstant.GetUserName(context.User.Identity.Name);
-                    createqr.User = x;
-                    createqr.EncryptionKey = "kJDJzwrVS6RTFgdafgc3d ";
-                    var textboxQR = (createqr.Command + ":" + createqr.ServerAddress + ":" + createqr.Port + "/" + createqr.URLPart + "|" + createqr.EncryptionKey + "|" + createqr.User);
-                    QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(textboxQR.ToString(), QRCodeGenerator.ECCLevel.Q);
-                    QRCode qrCode = new QRCode(qrCodeData);
-                    Bitmap qrCodeImage = qrCode.GetGraphic(20);
-                    var bitmapBytes = BitmapToBytes(qrCodeImage); //Convert bitmap into a byte array
-                    string base64String = Convert.ToBase64String(bitmapBytes);
-                    res.Data = base64String; //tra data kieu responsemodel
-                    return res;
+                    Guid g;
+                    g = Guid.NewGuid();
+                    var x = new TblScanData
+                    {
+                        ScanId = g.ToString(),
+                        Uid = user.Id,
+                        CreatedOn = DateTime.UtcNow,
+                        StationName = postData.StationName,
+                        Payload = postData.ScanData.Payload,
+                        DataType = postData.ScanData.DataType,
+                        FileName = postData.ScanData.FileName,
+                        Status = postData.ScanData.Status,
+                        DeletedOn = null,
+                    };
+                    db.TblScanData.Add(x);
+                    db.SaveChanges();
+                    x.U = null;
+                    res.Data = x;
+                }
+                catch (Exception ex)
+                {
+                    res.Status = "500";
+                    res.Message = ex.Message;
+                }
+            }
+            return res;
+        }
+
+
+        public ResponseModel addScanData(ScanDataModel tblscandata)
+        {
+            var contex = _httpContextAccessor.HttpContext;
+            var res = new ResponseModel()
+            {
+                Status = "200",
+                Message = "",
+            };
+            if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.user)
+            {
+
+                try
+                {
+                    using (DataContext context = new DataContext())
+                    {
+                        Guid g;
+                        g = Guid.NewGuid();
+                        var rs = context.TblScanData.FirstOrDefault(p => p.ScanId != tblscandata.ScanId);
+                        if (rs != null)
+                        {
+                            var x = new TblScanData
+                            {
+                                ScanId = g.ToString(),
+                                Uid = int.Parse(contex.User.Identity.Name),
+                                CreatedOn = DateTime.UtcNow,
+                                Payload = tblscandata.Payload,
+                                DataType = tblscandata.DataType,
+                                FileName = tblscandata.FileName,
+                                Status = tblscandata.Status,
+                                DeletedOn = null,
+                            };
+                            context.TblScanData.Add(x);
+                            context.SaveChanges();
+                            var item = new ScanDataModel
+                            {
+                                ScanId = x.ScanId,
+                                Uid = int.Parse(contex.User.Identity.Name),
+                                CreatedOn = new DateTime(x.CreatedOn.Value.Ticks).ToString("o"),
+                                Payload = x.Payload,
+                                DataType = x.DataType,
+                                FileName = x.FileName,
+                                Status = x.Status,
+                            };
+                            res.Data = item;
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -431,15 +318,198 @@ namespace Spec_Project.Services
 
                 return res;
             }
-            // This method is for converting bitmap into a byte array
-            private static byte[] BitmapToBytes(Bitmap img)
+            return res;
+        }
+        public ResponseModel DeleteScanData(string scanid)
+        {
+            var contex = _httpContextAccessor.HttpContext;
+
+            var res = new ResponseModel()
             {
-                using (MemoryStream stream = new MemoryStream())
+                Status = "200",
+                Message = "",
+            };
+            if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin)
+            {
+                try
                 {
-                    img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                    return stream.ToArray();
+                    using (DataContext context = new DataContext())
+                    {
+                        var rs = context.TblScanData.FirstOrDefault(o => o.ScanId == scanid);
+                        if (rs != null)
+                        {
+                            rs.DeletedOn = DateTime.UtcNow;
+                            context.SaveChanges();
+                            res.Data = rs;
+                        }
+                    }
+
                 }
+                catch (Exception ex)
+                {
+                    res.Status = "500";
+                    res.Message = ex.Message;
+                }
+                return res;
+            }
+            return res;
+        }
+
+        public ResponseModel DeleteArrScanData(List<string> deleteIds)
+        {
+            var contex = _httpContextAccessor.HttpContext;
+            var res = new ResponseModel()
+            {
+                Status = "200",
+                Message = "",
+            };
+            if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin)
+            {
+
+                try
+                {
+                    using (DataContext context = new DataContext())
+                    {
+                        foreach (var deleteId in deleteIds)
+                        {
+                            var scandata = context.TblScanData.FirstOrDefault(o => o.ScanId == deleteId);
+                            if (scandata != null)
+                            {
+                                scandata.DeletedOn = DateTime.UtcNow;
+                            }
+                            res.Data = deleteIds;
+                        }
+
+                        context.SaveChanges();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    res.Status = "500";
+                    res.Message = ex.Message;
+                }
+                return res;
+            }
+            return res;
+        }
+        public ResponseModel EditScandata(ScanDataModel tblscandata)
+        {
+            var contex = _httpContextAccessor.HttpContext;
+            var res = new ResponseModel()
+            {
+                Status = "200",
+                Message = "",
+            };
+            if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.superadmin)
+            {
+
+                try
+                {
+                    using (DataContext context = new DataContext())
+                    {
+                        var oldscandata = (from u in context.TblScanData where u.ScanId == tblscandata.ScanId select u).FirstOrDefault();
+                        if (oldscandata != null)
+                        {
+                            oldscandata.Uid = tblscandata.Uid;
+                            oldscandata.Payload = tblscandata.Payload;
+                            oldscandata.DataType = tblscandata.DataType;
+                            oldscandata.FileName = tblscandata.FileName;
+                            oldscandata.Status = tblscandata.Status;
+                            oldscandata.DeletedOn = null;
+                            context.SaveChanges();
+                            res.Data = oldscandata;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    res.Status = "500";
+                    res.Message = ex.Message;
+                }
+                return res;
+            }
+            if (UsersConstant.GetRole(int.Parse(contex.User.Identity.Name)) == UsersConstant.user)
+            {
+
+                try
+                {
+                    using (DataContext context = new DataContext())
+                    {
+                        var oldscandata = (from u in context.TblScanData where u.ScanId == tblscandata.ScanId && u.Uid == int.Parse(contex.User.Identity.Name) select u).FirstOrDefault();
+                        if (oldscandata != null)
+                        {
+
+                            oldscandata.Payload = tblscandata.Payload;
+                            oldscandata.DataType = tblscandata.DataType;
+                            oldscandata.FileName = tblscandata.FileName;
+                            oldscandata.Status = tblscandata.Status;
+                            oldscandata.DeletedOn = null;
+                            context.SaveChanges();
+                            res.Data = oldscandata;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    res.Status = "500";
+                    res.Message = ex.Message;
+                }
+                return res;
+            }
+            return res;
+        }
+        public ResponseModel CreateQR()
+        {
+            var context = _httpContextAccessor.HttpContext;
+            CreateQR createqr = new CreateQR();
+            var res = new ResponseModel()
+            {
+                Status = "200",
+                Message = "",
+            };
+            try
+            {
+                createqr.Command = "CONNECTTOTRX";
+                createqr.ServerAddress = "h2673771.stratoserver.net";
+                createqr.Port = 80;
+                createqr.URLPart = "webservicestx";
+                var x = UsersConstant.GetUser(context.User.Identity.Name);
+                if (x != null)
+                {
+                    createqr.User = x.UserName;
+                    createqr.EncryptionKey = x.Token;
+                }
+                var textboxQR = (createqr.Command + ":" + createqr.ServerAddress + ":" + createqr.Port + "/" + createqr.URLPart + "|" + createqr.EncryptionKey + "|" + createqr.User);
+                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(textboxQR.ToString(), QRCodeGenerator.ECCLevel.Q);
+                QRCode qrCode = new QRCode(qrCodeData);
+                Bitmap qrCodeImage = qrCode.GetGraphic(20);
+                var bitmapBytes = BitmapToBytes(qrCodeImage); //Convert bitmap into a byte array
+                string base64String = Convert.ToBase64String(bitmapBytes);
+                res.Data = base64String; //tra data kieu responsemodel
+                return res;
+            }
+            catch (Exception ex)
+            {
+                res.Status = "500";
+                res.Message = ex.Message;
             }
 
+            return res;
+        }
+        // This method is for converting bitmap into a byte array
+        private static byte[] BitmapToBytes(Bitmap img)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                return stream.ToArray();
+            }
+        }
+
+        public ResponseModel ImportScanData(ScanDataModel tblscandata)
+        {
+            throw new NotImplementedException();
         }
     }
+}

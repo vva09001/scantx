@@ -44,6 +44,16 @@ namespace Spec_Project
                 return cid;
             }
         }
+        public static TblUsers GetUser(string userid)
+        {
+            var userID = int.Parse(userid);
+            using (DataContext db = new DataContext())
+            {
+                var user = db.TblUsers.Where(o => o.Id == userID).FirstOrDefault();
+                return user;
+            }
+        }
+
         public static string GetUserName(string userid)
         {
             var userID = int.Parse(userid);

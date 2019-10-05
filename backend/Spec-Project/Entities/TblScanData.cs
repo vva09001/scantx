@@ -11,6 +11,7 @@ namespace Spec_Project.Models
         public string Payload { get; set; }
         public string DataType { get; set; }
         public string FileName { get; set; }
+        public string StationName { get; set; }
         public int? Status { get; set; }
         public DateTime? DeletedOn { get; set; }
         public virtual TblUsers U { get; set; }

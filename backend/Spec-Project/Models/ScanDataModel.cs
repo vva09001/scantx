@@ -14,8 +14,13 @@ namespace Spec_Project.Models
         public string DataType { get; set; }
         public string FileName { get; set; }
         public int? Status { get; set; }
-
-
     }
-
+    public class ImportDataModel
+    {
+        public string User { get; set; }
+        public string Token { get; set; }
+        public string StationName { get; set; }
+        public string Command { get; set; }
+        public ScanDataModel ScanData { get; set; }
+    }
 }

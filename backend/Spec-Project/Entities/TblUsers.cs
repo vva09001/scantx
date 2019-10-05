@@ -24,7 +24,7 @@ namespace Spec_Project.Models
         public string Cid { get; set; }
         public DateTime? DeletedOn { get; set; }
         public int RoleID { get; set; }
-
+        public string Token { get; set; }
         public virtual TblCustomer C { get; set; }
         public virtual ICollection<TblScanData> TblScanData { get; set; }
     }

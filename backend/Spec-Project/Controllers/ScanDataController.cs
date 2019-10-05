@@ -17,28 +17,15 @@ using Spec_Project.Services;
 
 namespace Spec_Project.Controllers
 {
-    [Authorize]
     [Route("api/ScanData")]
     [ApiController]
     public class ScanDataController : ControllerBase
     {
-        IHttpContextAccessor _httpContextAccessor;
         private IScanDataService _IScanDataService;
-        DataContext context = new DataContext();
-        IScanDataService _object;
-        private IScanDataService @object;
-
-        //private IMapper _mapper;
-        //private readonly AppSettings _appSettings;
         public ScanDataController(IScanDataService scandataService)
         {
             _IScanDataService = scandataService;
-            //_mapper = mapper;
-            //_appSettings = appSettings.Value;
         }
-
-       
-
 
         //[Authorize]
         [DisableCors]
@@ -62,6 +49,13 @@ namespace Spec_Project.Controllers
         public IActionResult CheckUserScanData(string scandataID)
         {
             return Ok(_IScanDataService.CheckUserScanData(scandataID));
+        }
+
+        [DisableCors]
+        [HttpPost("import-scandata")]
+        public IActionResult ImportScanData([FromBody]ImportDataModel tblscandata)
+        {
+            return Ok(_IScanDataService.ImportScanData(tblscandata));
         }
 
         [Authorize]
