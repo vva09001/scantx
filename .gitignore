@@ -11,3 +11,5 @@
 /backend/Spec-Project/obj
 /backend/Spec-Project/obj/
 /backend/.vs/
+*obj
+*bin
