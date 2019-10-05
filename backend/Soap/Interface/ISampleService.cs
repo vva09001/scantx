@@ -1,7 +1,8 @@
 ﻿using Scanx.Common;
+using Scanx.Soap.Models;
 using System.ServiceModel;
 
-namespace Models
+namespace Scanx.Soap.Interface
 {
 	[ServiceContract]
 	public interface IScanxService

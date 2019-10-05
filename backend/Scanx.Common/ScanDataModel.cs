@@ -1,4 +1,6 @@
-﻿namespace Scanx.Common
+﻿using System.Runtime.Serialization;
+
+namespace Scanx.Common
 {
     public class ScanDataModel
     {
@@ -10,19 +12,16 @@
         public string FileName { get; set; }
         public int? Status { get; set; }
     }
+    [DataContract]
     public class ScanDataSoapModel
     {
+        [DataMember]
         public string Payload { get; set; }
+        [DataMember]
         public string DataType { get; set; }
+        [DataMember]
         public string FileName { get; set; }
+        [DataMember]
         public int? Status { get; set; }
-    }
-    public class ImportDataModel
-    {
-        public string User { get; set; }
-        public string Token { get; set; }
-        public string StationName { get; set; }
-        public string Command { get; set; }
-        public ScanDataSoapModel ScanData { get; set; }
     }
 }

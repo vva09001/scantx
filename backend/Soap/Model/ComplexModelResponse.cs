@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 
 namespace Models
 {
-	[DataContract]
+    [DataContract]
 	public class ComplexModelResponse
 	{
 		[DataMember]
@@ -19,20 +19,5 @@ namespace Models
 
 		[DataMember]
 		public DateTimeOffset DateTimeOffsetProperty { get; set; }
-
-		[DataMember]
-		public TestEnum TestEnum { get; set; }
-	}
-
-    public class ResponseModel
-    {
-        public object Data { get; set; }
-        public string Status { get; set; }
-        public string Message { get; set; }
-    }
-    public enum TestEnum
-	{
-		One,
-		Two
 	}
 }

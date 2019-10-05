@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using Models;
+using Scanx.Soap.Interface;
+using Scanx.Soap.Service;
 using SoapCore;
 
 namespace Server

@@ -1,26 +1,20 @@
-﻿using Models;
-using Scanx.Common;
+﻿using Scanx.Common;
+using Scanx.Soap.Interface;
 using Scanx.Soap.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Server
+namespace Scanx.Soap.Service
 {
 	public class ScanxService : IScanxService
     {
-		public string Ping(string s)
-		{
-			Console.WriteLine("Exec ping method");
-			return s;
-		}
-
 		public ResponseModel ImportScanData(ImportDataModel postData)
 		{
             var res = new ResponseModel()
             {
-                Status = "200",
+                Status = "201",
                 Message = "",
             };
 
@@ -67,7 +61,8 @@ namespace Server
                     db.TblScanData.Add(x);
                     db.SaveChanges();
                     x.U = null;
-                    res.Data = x;
+                    res.Message = "Scan data is created";
+                    //res.Data = x;
                 }
                 catch (Exception ex)
                 {
@@ -77,25 +72,5 @@ namespace Server
             }
             return res;
         }
-
-		public void VoidMethod(out string s)
-		{
-			s = "Value from server";
-		}
-
-		public Task<int> AsyncMethod()
-		{
-			return Task.Run(() => 42);
-		}
-
-		public int? NullableMethod(bool? arg)
-		{
-			return null;
-		}
-
-		public void XmlMethod(XElement xml)
-		{
-			Console.WriteLine(xml.ToString());
-		}
     }
 }
