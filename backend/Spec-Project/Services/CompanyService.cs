@@ -1,6 +1,5 @@
 ﻿using Spec_Project.Models;
 using System;
-using Spec_Project.Entities;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +14,6 @@ namespace Spec_Project.Services
         ResponseModel EditCompany(CustomerModel customer);
         ResponseModel DeleteArrCompany(List<string> deleteIds);
         ResponseModel DeleteCompany(string cid);
-        //TblCustomer GetCompanyByCid(string Cid);
         ResponseModel AddUserToCompany(string usersname, string email, string cid);
 
     }
@@ -70,13 +68,6 @@ namespace Spec_Project.Services
             }
             return res;
         }
-
-        //public TblCustomer GetCompanyByCid(string Cid)
-        //{
-        //        var companybycid = db.TblCustomer.Where(p => p.Cid == Cid && p.DeletedOn == null).FirstOrDefault();
-        //        return companybycid;
-
-        //}
 
         public ResponseModel AddCompany(CustomerModel tblcustomer)
         {

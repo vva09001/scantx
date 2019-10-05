@@ -1,20 +1,12 @@
 ﻿using Spec_Project.Models;
 using System;
-using Spec_Project.Entities;
 using System.Linq;
 using System.Collections.Generic;
 using QRCoder;
 using System.Drawing;
-using System.Drawing.Text;
 using System.IO;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-
-using CsvHelper;
-
-using System.Data.SqlClient;
 using LINQtoCSV;
-using Microsoft.EntityFrameworkCore;
 using Scanx.Common;
 
 namespace Spec_Project.Services
