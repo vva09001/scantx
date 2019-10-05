@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Spec_Project.Models
+namespace Scanx.Web.Models
 {
     public class UsersModel
     {

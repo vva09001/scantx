@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Spec_Project.Models;
-using Spec_Project.Services;
+using Scanx.Web.Models;
+using Scanx.Web.Services;
 using Microsoft.AspNetCore.Cors;
 using System.Linq;
 
-namespace Spec_Project.Controllers
+namespace Scanx.Web.Controllers
 {
     //[Authorize]
     [AllowAnonymous]

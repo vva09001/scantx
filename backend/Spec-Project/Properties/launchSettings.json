@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Spec_Project": {
+    "Scanx.Web": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "api/start",

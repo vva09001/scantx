@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Scanx.Common;
-using Spec_Project.Models;
+using Scanx.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Spec_Project.Services
+namespace Scanx.Web.Services
 {
     public interface IUserService
     {

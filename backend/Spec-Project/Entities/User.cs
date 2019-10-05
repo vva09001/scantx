@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
 
-namespace Spec_Project.Entities
+namespace Scanx.Web.Entities
 {
     public class User
     {

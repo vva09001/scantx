@@ -8,7 +8,7 @@ using Scanx.Soap.Interface;
 using Scanx.Soap.Service;
 using SoapCore;
 
-namespace Server
+namespace Scanx.Soap
 {
     public class Startup
 	{

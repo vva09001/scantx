@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Spec_Project.Services;
-using Spec_Project.Entities;
+using Scanx.Web.Services;
+using Scanx.Web.Entities;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Lucene.Net.Support;
@@ -14,9 +14,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
-using Spec_Project.Models;
+using Scanx.Web.Models;
 
-namespace Spec_Project
+namespace Scanx.Web
 {
     public class Startup
     {

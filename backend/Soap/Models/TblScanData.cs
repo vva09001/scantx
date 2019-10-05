@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-
 namespace Scanx.Soap.Models
 {
     public partial class TblScanData

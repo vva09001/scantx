@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Spec_Project.Models;
-using Spec_Project.Services;
+using Scanx.Web.Models;
+using Scanx.Web.Services;
 
-namespace Spec_Project.Controllers
+namespace Scanx.Web.Controllers
 {
 
     [Route("api/Company")]

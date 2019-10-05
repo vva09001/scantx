@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    <RootNamespace>Spec_Project</RootNamespace>
+    <RootNamespace>Scanx.Web</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

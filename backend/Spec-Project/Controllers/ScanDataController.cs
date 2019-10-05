@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Scanx.Common;
-using Spec_Project.Services;
+using Scanx.Web.Services;
 
-namespace Spec_Project.Controllers
+namespace Scanx.Web.Controllers
 {
     [Route("api/ScanData")]
     [ApiController]

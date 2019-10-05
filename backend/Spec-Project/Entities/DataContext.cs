@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Spec_Project.Models
+namespace Scanx.Web.Models
 {
     public partial class DataContext : DbContext
     {

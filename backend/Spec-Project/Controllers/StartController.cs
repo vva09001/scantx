@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Lucene.Net.Support;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Spec_Project.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Cors;
+using Scanx.Web.Services;
 
-namespace Spec_Project.Controllers
+namespace Scanx.Web.Controllers
 {
 
     [Route("api/Start")]

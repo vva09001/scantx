@@ -1,11 +1,11 @@
-﻿using Spec_Project.Models;
+﻿using Scanx.Web.Models;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Scanx.Common;
 
-namespace Spec_Project.Services
+namespace Scanx.Web.Services
 {
     public interface ICompanyService
     {

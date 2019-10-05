@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Spec_Project.Models
+namespace Scanx.Web.Models
 {
     public partial class TblUsers
     {

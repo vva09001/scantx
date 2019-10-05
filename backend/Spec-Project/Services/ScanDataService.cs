@@ -1,4 +1,4 @@
-﻿using Spec_Project.Models;
+﻿using Scanx.Web.Models;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 using LINQtoCSV;
 using Scanx.Common;
 
-namespace Spec_Project.Services
+namespace Scanx.Web.Services
 {
     public interface IScanDataService
     {

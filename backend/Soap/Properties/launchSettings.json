@@ -10,6 +10,9 @@
   "profiles": {
     "Server": {
       "commandName": "Project"
+    },
+    "IIS Express": {
+      "commandName": "IISExpress"
     }
   }
 }
