@@ -11,10 +11,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   </PropertyGroup>
   <ItemGroup>
     <File Include="appsettings.Development.json">
-      <publishTime>08/29/2019 09:15:30</publishTime>
+      <publishTime>09/20/2019 10:04:16</publishTime>
     </File>
     <File Include="appsettings.json">
-      <publishTime>08/30/2019 10:44:09</publishTime>
+      <publishTime>10/05/2019 16:10:49</publishTime>
     </File>
     <File Include="AutoMapper.dll">
       <publishTime>08/12/2019 12:42:04</publishTime>
@@ -28,6 +28,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="dotnet-aspnet-codegenerator-design.dll">
       <publishTime>03/02/2019 19:52:30</publishTime>
     </File>
+    <File Include="FluentAssertions.dll">
+      <publishTime>08/28/2019 10:53:12</publishTime>
+    </File>
     <File Include="ICSharpCode.SharpZipLib.dll">
       <publishTime>01/03/2011 14:16:38</publishTime>
     </File>
@@ -37,11 +40,14 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Lucene.Net.dll">
       <publishTime>10/26/2012 00:52:54</publishTime>
     </File>
+    <File Include="Microsoft.AspNetCore.Http.dll">
+      <publishTime>01/24/2019 23:18:54</publishTime>
+    </File>
     <File Include="Microsoft.CodeAnalysis.CSharp.Workspaces.dll">
-      <publishTime>08/28/2019 23:37:50</publishTime>
+      <publishTime>09/12/2019 10:12:07</publishTime>
     </File>
     <File Include="Microsoft.CodeAnalysis.Workspaces.dll">
-      <publishTime>08/28/2019 23:37:32</publishTime>
+      <publishTime>09/12/2019 10:12:10</publishTime>
     </File>
     <File Include="Microsoft.EntityFrameworkCore.Abstractions.dll">
       <publishTime>06/18/2019 21:21:18</publishTime>
@@ -80,22 +86,52 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/15/2018 13:29:34</publishTime>
     </File>
     <File Include="NuGet.Frameworks.dll">
-      <publishTime>08/28/2019 23:37:36</publishTime>
+      <publishTime>09/12/2019 10:12:05</publishTime>
     </File>
     <File Include="QRCoder.dll">
       <publishTime>06/25/2019 19:36:58</publishTime>
     </File>
     <File Include="Remotion.Linq.dll">
-      <publishTime>08/29/2019 10:23:59</publishTime>
+      <publishTime>09/20/2019 10:14:31</publishTime>
     </File>
     <File Include="runtimes/unix/lib/netcoreapp2.0/System.Drawing.Common.dll">
       <publishTime>09/18/2018 19:38:14</publishTime>
+    </File>
+    <File Include="runtimes/unix/lib/netstandard2.0/System.Private.ServiceModel.dll">
+      <publishTime>07/19/2018 18:32:14</publishTime>
     </File>
     <File Include="runtimes/win/lib/netcoreapp2.0/Microsoft.Win32.SystemEvents.dll">
       <publishTime>05/15/2018 13:29:34</publishTime>
     </File>
     <File Include="runtimes/win/lib/netcoreapp2.0/System.Drawing.Common.dll">
       <publishTime>09/18/2018 19:38:14</publishTime>
+    </File>
+    <File Include="runtimes/win/lib/netstandard2.0/System.Private.ServiceModel.dll">
+      <publishTime>07/19/2018 18:32:14</publishTime>
+    </File>
+    <File Include="runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll">
+      <publishTime>07/19/2017 10:01:34</publishTime>
+    </File>
+    <File Include="Scanx.Common.dll">
+      <publishTime>10/06/2019 00:06:24</publishTime>
+    </File>
+    <File Include="Scanx.Common.pdb">
+      <publishTime>10/06/2019 00:06:24</publishTime>
+    </File>
+    <File Include="Scanx.Web.deps.json">
+      <publishTime>10/06/2019 00:26:27</publishTime>
+    </File>
+    <File Include="Scanx.Web.dll">
+      <publishTime>10/06/2019 00:26:11</publishTime>
+    </File>
+    <File Include="Scanx.Web.pdb">
+      <publishTime>10/06/2019 00:26:11</publishTime>
+    </File>
+    <File Include="Scanx.Web.runtimeconfig.json">
+      <publishTime>10/06/2019 00:26:27</publishTime>
+    </File>
+    <File Include="SoapCore.dll">
+      <publishTime>06/21/2019 11:53:00</publishTime>
     </File>
     <File Include="Spec-Project.deps.json">
       <publishTime>09/16/2019 12:00:07</publishTime>
@@ -109,29 +145,50 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Spec-Project.runtimeconfig.json">
       <publishTime>09/16/2019 12:00:07</publishTime>
     </File>
+    <File Include="System.CodeDom.dll">
+      <publishTime>05/15/2018 13:29:52</publishTime>
+    </File>
     <File Include="System.Composition.AttributedModel.dll">
-      <publishTime>08/28/2019 23:37:47</publishTime>
+      <publishTime>09/12/2019 10:12:10</publishTime>
     </File>
     <File Include="System.Composition.Convention.dll">
-      <publishTime>08/28/2019 23:37:47</publishTime>
+      <publishTime>09/12/2019 10:12:10</publishTime>
     </File>
     <File Include="System.Composition.Hosting.dll">
-      <publishTime>08/28/2019 23:37:47</publishTime>
+      <publishTime>09/12/2019 10:12:11</publishTime>
     </File>
     <File Include="System.Composition.Runtime.dll">
-      <publishTime>08/28/2019 23:37:47</publishTime>
+      <publishTime>09/12/2019 10:12:11</publishTime>
     </File>
     <File Include="System.Composition.TypedParts.dll">
-      <publishTime>08/28/2019 23:37:47</publishTime>
+      <publishTime>09/12/2019 10:12:11</publishTime>
+    </File>
+    <File Include="System.Configuration.ConfigurationManager.dll">
+      <publishTime>07/19/2017 10:01:30</publishTime>
     </File>
     <File Include="System.Drawing.Common.dll">
       <publishTime>09/18/2018 19:38:14</publishTime>
     </File>
     <File Include="System.Interactive.Async.dll">
-      <publishTime>08/29/2019 10:24:09</publishTime>
+      <publishTime>09/20/2019 10:14:28</publishTime>
+    </File>
+    <File Include="System.Security.Cryptography.ProtectedData.dll">
+      <publishTime>07/19/2017 10:01:34</publishTime>
+    </File>
+    <File Include="System.ServiceModel.dll">
+      <publishTime>07/19/2018 18:32:12</publishTime>
+    </File>
+    <File Include="System.ServiceModel.Http.dll">
+      <publishTime>07/19/2018 18:32:12</publishTime>
+    </File>
+    <File Include="System.ServiceModel.Primitives.dll">
+      <publishTime>07/19/2018 18:32:12</publishTime>
+    </File>
+    <File Include="tmp/scandata_20190911114518635.csv">
+      <publishTime>09/20/2019 10:04:16</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>09/16/2019 12:00:07</publishTime>
+      <publishTime>10/06/2019 00:26:27</publishTime>
     </File>
   </ItemGroup>
 </Project>

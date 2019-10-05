@@ -216,7 +216,7 @@ namespace Scanx.Web.Services
                     res.Status = "500";
                     return res;
                 }
-                if (user.RoleID != Constant.Users.Admin && user.RoleID != Constant.Users.User && user.RoleID != Constant.Users.Superadmin)
+                if (user.RoleId != Constant.Users.Admin && user.RoleId != Constant.Users.User && user.RoleId != Constant.Users.Superadmin)
                 {
                     res.Message = "You dont have permission to do.";
                     res.Status = "500";
@@ -456,7 +456,7 @@ namespace Scanx.Web.Services
         public ResponseModel CreateQR()
         {
             var context = _httpContextAccessor.HttpContext;
-            CreateQR createqr = new CreateQR();
+            var createqr = new QRModel();
             var res = new ResponseModel()
             {
                 Status = "200",

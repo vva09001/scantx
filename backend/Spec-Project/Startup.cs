@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Scanx.Web.Services;
-using Scanx.Web.Entities;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Lucene.Net.Support;
@@ -15,6 +14,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Scanx.Web.Models;
+using Scanx.Web.Interface;
+using Scanx.Web.Service;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using SoapCore;
+using System.ServiceModel;
 
 namespace Scanx.Web
 {
@@ -30,6 +34,9 @@ namespace Scanx.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.TryAddSingleton<IScanxService, ScanxService>();
+            services.AddMvc(x => x.EnableEndpointRouting = false);
+            services.AddSoapCore();
             services.AddHttpContextAccessor();
             services.AddCors(o => o.AddPolicy("AllowAnyOrigin", builder =>
             {
@@ -92,6 +99,9 @@ namespace Scanx.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseSoapEndpoint<IScanxService>("/Service.svc", new BasicHttpBinding(), SoapSerializer.DataContractSerializer);
+            app.UseSoapEndpoint<IScanxService>("/Service.asmx", new BasicHttpBinding(), SoapSerializer.XmlSerializer);
+
             app.UseCors("AllowAnyOrigin");
             app.UseCors(options => options.AllowAnyOrigin());
             if (env.IsDevelopment())

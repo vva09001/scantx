@@ -1,9 +1,9 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Scanx.Soap.Models
+namespace Scanx.Web.Models
 {
     [DataContract]
-    public class ResponseModel
+    public class ResponseSOAPModel
     {
         [DataMember]
         public object Data { get; set; }

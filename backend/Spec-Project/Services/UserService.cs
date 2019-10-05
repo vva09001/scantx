@@ -89,7 +89,7 @@ namespace Scanx.Web.Services
                         Cid = p.Cid,
                         ContactByEmail = p.ContactByEmail,
                         EncryptionActive = p.EncryptionActive,
-                        RoleID = p.RoleID
+                        RoleID = p.RoleId
                     }).ToList();
                     res.Data = userss;
                 }
@@ -109,7 +109,7 @@ namespace Scanx.Web.Services
                             Cid = p.Cid,
                             ContactByEmail = p.ContactByEmail,
                             EncryptionActive = p.EncryptionActive,
-                            RoleID = p.RoleID
+                            RoleID = p.RoleId
                         }).ToList();
                         res.Data = user;
                     }
@@ -164,7 +164,7 @@ namespace Scanx.Web.Services
                     EncryptionActive = userNew.EncryptionActive,
                     DeletedOn = null,
                     Cid = g.ToString(),
-                    RoleID = userNew.RoleID
+                    RoleId = userNew.RoleID
                 };
                 var cpn = new TblCustomer()
                 {
@@ -223,7 +223,7 @@ namespace Scanx.Web.Services
                     EncryptionActive = userNew.EncryptionActive,
                     DeletedOn = null,
                     Cid = g.ToString(),
-                    RoleID = userNew.RoleID
+                    RoleId = userNew.RoleID
                 };
                 var cpn = new TblCustomer()
                 {
@@ -291,7 +291,7 @@ namespace Scanx.Web.Services
                 EncryptionActive = userNew.EncryptionActive,
                 DeletedOn = null,
                 Cid = GetCID(context.User.Identity.Name),
-                RoleID = userNew.RoleID
+                RoleId = userNew.RoleID
             };
                 try
                 {
@@ -375,7 +375,7 @@ namespace Scanx.Web.Services
                     user.PasswordSalt = userDto.PasswordSalt;
                     user.Email = userDto.Email;
                     user.Cid = userDto.Cid;
-                    user.RoleID = userDto.RoleID;
+                    user.RoleId = userDto.RoleID;
                     user.ContactByEmail = userDto.ContactByEmail;
                     user.EncryptionActive = userDto.EncryptionActive;
 
@@ -447,7 +447,7 @@ namespace Scanx.Web.Services
                         user2.PasswordSalt = userDto.PasswordSalt;
                         user2.Email = userDto.Email;
                         user2.Cid = userDto.Cid;
-                        user2.RoleID = userDto.RoleID;
+                        user2.RoleId = userDto.RoleID;
                         user2.ContactByEmail = userDto.ContactByEmail;
                         user2.EncryptionActive = userDto.EncryptionActive;
 
@@ -527,7 +527,7 @@ namespace Scanx.Web.Services
                     user.TypeOfAccount = userParam.TypeOfAccount;
                     user.Email = userParam.Email;
                     user.Cid = userParam.Cid;
-                    user.RoleID = userParam.RoleID;
+                    user.RoleId = userParam.RoleID;
                     user.ContactByEmail = userParam.ContactByEmail;
                     user.EncryptionActive = userParam.EncryptionActive;
                     _context.TblUsers.Update(user);
@@ -577,7 +577,7 @@ namespace Scanx.Web.Services
                     user.TypeOfAccount = userParam.TypeOfAccount;
                     user.Email = userParam.Email;
                     user.Cid = userParam.Cid;
-                    user.RoleID = userParam.RoleID;
+                    user.RoleId = userParam.RoleID;
                     user.ContactByEmail = userParam.ContactByEmail;
                     user.EncryptionActive = userParam.EncryptionActive;
                     _context.TblUsers.Update(user);
@@ -704,7 +704,7 @@ namespace Scanx.Web.Services
         {
             using (DataContext db = new DataContext())
             {
-                var roleid = db.TblUsers.Where(o => o.Id == pUserID).Select(o => o.RoleID).FirstOrDefault();
+                var roleid = db.TblUsers.Where(o => o.Id == pUserID).Select(o => o.RoleId).FirstOrDefault();
                 return roleid;
             }
         }
@@ -712,7 +712,7 @@ namespace Scanx.Web.Services
         {
             using (DataContext db = new DataContext())
             {
-                var roleid = db.TblUsers.Where(o => o.Id == userID).Select(o => o.RoleID).FirstOrDefault();
+                var roleid = db.TblUsers.Where(o => o.Id == userID).Select(o => o.RoleId).FirstOrDefault();
                 return roleid;
             }
         }

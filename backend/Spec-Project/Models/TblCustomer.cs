@@ -13,6 +13,7 @@ namespace Scanx.Web.Models
         public string Cid { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
+        public string TypeOfAcc { get; set; }
         public string Status { get; set; }
         public DateTime? DeletedOn { get; set; }
         public DateTime? CreateOn { get; set; }

@@ -78,7 +78,7 @@ namespace Scanx.Web.Controllers
                 CompanyName = x.Name,
                 Mail = user.Email,
                 TypeOfAccount = user.TypeOfAccount,
-                RoleID= user.RoleID,
+                RoleID= user.RoleId,
                 Authorization = user.Authorization,
                 Token = tokenString
             });

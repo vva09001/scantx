@@ -8,7 +8,7 @@ namespace Scanx.Soap.Interface
 	public interface IScanxService
     {
 		[OperationContract]
-        ResponseModel ImportScanData(ImportDataModel inputModel);
+        ResponseSOAPModel ImportScanData(ImportDataModel inputModel);
 
 	}
 }

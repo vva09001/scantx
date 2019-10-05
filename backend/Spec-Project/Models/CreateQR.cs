@@ -1,6 +1,6 @@
 ﻿namespace Scanx.Web.Models
 {
-    public class CreateQR
+    public class QRModel
     {
         public string Command { get; set; }
         public string ServerAddress { get; set; }

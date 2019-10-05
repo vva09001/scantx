@@ -1,5 +1,4 @@
-﻿using Scanx.Web.Entities;
-using Scanx.Web.Helpers;
+﻿using Scanx.Web.Helpers;
 using Scanx.Web.Models;
 using System;
 using System.Collections.Generic;
