@@ -150,7 +150,7 @@ namespace Spec_Project.Controllers
         [HttpGet("get-user")]
         public IActionResult GetUser()
         {
-            return Ok(_userService.getUser());
+            return Ok(_userService.GetUser());
         }
 
         [DisableCors]

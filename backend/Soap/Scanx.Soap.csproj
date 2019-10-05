@@ -20,4 +20,7 @@
   <ItemGroup>
     <Compile Remove="**\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Scanx.Common\Scanx.Common.csproj" />
+  </ItemGroup>
 </Project>

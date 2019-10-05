@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using CsvHelper;
-using CsvHelper.Configuration;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QRCoder;
-using Spec_Project.Entities;
-using Spec_Project.Models;
+using Scanx.Common;
 using Spec_Project.Services;
 
 namespace Spec_Project.Controllers
@@ -40,7 +30,7 @@ namespace Spec_Project.Controllers
         [HttpGet("get-scandata")]
         public IActionResult getScanData()
         {
-            return Ok(_IScanDataService.getScanData());
+            return Ok(_IScanDataService.GetScanData());
         }
 
         [Authorize]
@@ -63,7 +53,7 @@ namespace Spec_Project.Controllers
         [HttpPost("add-scandata")]
         public IActionResult addScanData(ScanDataModel tblscandata)
         {
-            return Ok(_IScanDataService.addScanData(tblscandata));
+            return Ok(_IScanDataService.AddScanData(tblscandata));
         }
 
         [Authorize]

@@ -27,6 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Scanx.Common\Scanx.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="tmp\scandata_20190911114518635.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

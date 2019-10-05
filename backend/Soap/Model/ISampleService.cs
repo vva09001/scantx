@@ -1,5 +1,5 @@
-﻿using System.ServiceModel;
-using System.Threading.Tasks;
+﻿using Scanx.Common;
+using System.ServiceModel;
 
 namespace Models
 {
@@ -7,21 +7,7 @@ namespace Models
 	public interface ISampleService
 	{
 		[OperationContract]
-		string Ping(string s);
+        ResponseModel ImportScanData(ImportDataModel inputModel);
 
-		[OperationContract]
-		ComplexModelResponse PingComplexModel(ComplexModelInput inputModel);
-
-		[OperationContract]
-		void VoidMethod(out string s);
-
-		[OperationContract]
-		Task<int> AsyncMethod();
-
-		[OperationContract]
-		int? NullableMethod(bool? arg);
-
-		[OperationContract]
-		void XmlMethod(System.Xml.Linq.XElement xml);
 	}
 }

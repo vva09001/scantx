@@ -30,7 +30,7 @@ namespace Spec_Project.Controllers
         [HttpGet("get-company")]
         public IActionResult getCompany()
         {
-            return Ok(_ICompanyService.getCompany());
+            return Ok(_ICompanyService.GetCompany());
         }
 
 
@@ -40,7 +40,7 @@ namespace Spec_Project.Controllers
         [HttpPost("add-company")]
         public IActionResult addCompany(CustomerModel tblcustomer)
         {
-            var x = _ICompanyService.addCompany(tblcustomer);
+            var x = _ICompanyService.AddCompany(tblcustomer);
             return Ok(x);
         }
 

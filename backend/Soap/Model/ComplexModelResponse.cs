@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Scanx.Common;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -23,7 +24,13 @@ namespace Models
 		public TestEnum TestEnum { get; set; }
 	}
 
-	public enum TestEnum
+    public class ResponseModel
+    {
+        public object Data { get; set; }
+        public string Status { get; set; }
+        public string Message { get; set; }
+    }
+    public enum TestEnum
 	{
 		One,
 		Two

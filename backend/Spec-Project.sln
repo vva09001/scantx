@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spec-Project", "Spec-Project\Spec-Project.csproj", "{03537C10-DB6A-4D1F-95CC-ADAB6C0BE2F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scanx.Web", "Spec-Project\Scanx.Web.csproj", "{03537C10-DB6A-4D1F-95CC-ADAB6C0BE2F1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soap", "Soap\Soap.csproj", "{F11B3820-CC71-42D7-ACCE-88648F07B44E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scanx.Soap", "Soap\Scanx.Soap.csproj", "{F11B3820-CC71-42D7-ACCE-88648F07B44E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scanx.Common", "Scanx.Common\Scanx.Common.csproj", "{04C9CDD3-90FD-415A-9C8D-963E9A6CF76A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{F11B3820-CC71-42D7-ACCE-88648F07B44E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F11B3820-CC71-42D7-ACCE-88648F07B44E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F11B3820-CC71-42D7-ACCE-88648F07B44E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04C9CDD3-90FD-415A-9C8D-963E9A6CF76A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04C9CDD3-90FD-415A-9C8D-963E9A6CF76A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04C9CDD3-90FD-415A-9C8D-963E9A6CF76A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04C9CDD3-90FD-415A-9C8D-963E9A6CF76A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
