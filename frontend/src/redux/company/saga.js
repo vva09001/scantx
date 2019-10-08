@@ -2,16 +2,18 @@ import { all, takeLatest, put, select } from "redux-saga/effects";
 import { get, add, edit, remove, assign } from "services/company";
 import { getToken } from "redux/selectors";
 import actions from "./actions";
+import { Error } from "helpers/notify";
 
 export function* getCompanySagas(data) {
   const { success, fail } = data;
   try {
     const token = yield select(getToken);
     const res = yield get(token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield success();
       yield put({ type: actions.GET_COMPANY_SUCCESS, response: res.data.data });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -24,10 +26,11 @@ export function* addCompanySagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield add(params, token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield success();
       yield put({ type: actions.ADD_COMPANY_SUCCESS, response: res.data.data });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -47,13 +50,14 @@ export function* editCompanySagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield edit(body, token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield put({
         type: actions.EDIT_COMPANY_SUCCESS,
         response: res.data.data
       });
       yield success();
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -66,10 +70,11 @@ export function* deleteCompanySagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield remove(params, token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield put({ type: actions.DELETE_COMPANY_SUCCESS, response: params });
       yield success();
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -82,10 +87,11 @@ export function* assignUserToCompanySagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield assign({ cid: id, ...params }, token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield put({ type: actions.ASSIGN_USER_TO_COMPANY_SUCCESS });
       yield success();
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {

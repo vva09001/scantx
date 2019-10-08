@@ -20,7 +20,6 @@ import { authActions, userActions } from "redux/actions";
 import { CircularProgress } from "components/uielements/progress";
 import RegisterSuccess from "./RegisterSuccess";
 import { generatePassword } from "helpers/user";
-import _ from "lodash";
 
 class SignUp extends Component {
   constructor(props) {

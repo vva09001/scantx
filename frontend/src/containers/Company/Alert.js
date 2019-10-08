@@ -51,24 +51,20 @@ class Alert extends React.Component {
     const { status, onClose } = this.props;
     return (
       <Dialog open={status} onClose={() => onClose(false)}>
-        {this.state.loading ? (
-          <CircularProgress />
-        ) : (
-          <React.Fragment>
-            <DialogTitle>{"Remove company"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText>Are you sure to remove ?</DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => onClose(false)} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={() => this.onDelete()} color="primary" autoFocus>
-                Submit
-              </Button>
-            </DialogActions>
-          </React.Fragment>
-        )}
+        <React.Fragment>
+          <DialogTitle>{"Remove company"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>Are you sure to remove ?</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => onClose(false)} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={() => this.onDelete()} color="primary" autoFocus>
+              Submit
+            </Button>
+          </DialogActions>
+        </React.Fragment>
       </Dialog>
     );
   }

@@ -1,4 +1,4 @@
-import Tooltip, { TooltipProps } from "@material-ui/core/Tooltip";
+import Tooltip from "@material-ui/core/Tooltip";
 import copy from "clipboard-copy";
 import * as React from "react";
 
@@ -7,7 +7,7 @@ class CopyToClipboard extends React.Component {
     super(props);
     this.state = {
       showTooltip: false
-    }
+    };
   }
 
   render() {
@@ -17,7 +17,7 @@ class CopyToClipboard extends React.Component {
         title={"Copied to clipboard!"}
         leaveDelay={1500}
         onClose={this.handleOnTooltipClose}
-        {...this.props.TooltipProps || {}}
+        {...(this.props.TooltipProps || {})}
       >
         {this.props.children({ copy: this.onCopy })}
       </Tooltip>

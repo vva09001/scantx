@@ -57,7 +57,18 @@ class Form extends React.Component {
   }
   onSuccess = () => {
     this.setState({
-      loading: false
+      loading: false,
+      params: {
+        userName: "",
+        givenName: "",
+        familyName: "",
+        typeOfAccount: "Commercial",
+        roleID: "",
+        password: "",
+        email: "",
+        contactByEmail: false,
+        encryptionActive: false
+      }
     });
   };
   onFail = error => {

@@ -26,6 +26,11 @@ class ScanData extends React.Component {
 
   componentDidMount() {
     this.props.getScanData(this.onSuccess, this.onSuccess);
+    try {
+      setInterval(async () => {
+        await this.props.getScanData(this.onSuccess, this.onSuccess);
+      }, 5000);
+    } catch (error) {}
   }
 
   onSuccess = () => {

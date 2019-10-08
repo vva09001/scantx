@@ -9,16 +9,18 @@ import {
 } from "services/user";
 import { getToken } from "redux/selectors";
 import actions from "./actions";
+import { Error } from "helpers/notify";
 
 export function* getUserSagas(data) {
   const { success, fail } = data;
   try {
     const token = yield select(getToken);
     const res = yield getUsers(token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield success();
       yield put({ type: actions.GET_USER_SUCCESS, response: res.data.data });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -31,13 +33,14 @@ export function* addUserSagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield addUser(params, token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield success();
       yield put({
         type: actions.ADD_USER_SUCCESS,
         response: res.data.data.data
       });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -49,12 +52,13 @@ export function* registerUserSagas(data) {
   const { params, success, fail } = data;
   try {
     const res = yield registerUser(params);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield success();
       yield put({
         type: actions.REGISTER_USER_SUCCESS
       });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -67,13 +71,14 @@ export function* editUserSagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield editUser(params, token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield success();
       yield put({
         type: actions.EDIT_USER_SUCCESS,
         response: res.data.data
       });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -86,13 +91,14 @@ export function* deleteUserSagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield deleteUserById(id, token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield success();
       yield put({
         type: actions.DELETE_USER_SUCCESS,
         response: res.data.data
       });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -105,13 +111,14 @@ export function* deleteMultiUserSagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield deleteMultiUser(params, token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield success();
       yield put({
         type: actions.DELETE_MULTI_USER_SUCCESS,
         response: res.data.data
       });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {

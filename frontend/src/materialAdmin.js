@@ -14,6 +14,8 @@ import { store, persistor, history } from './redux/store';
 import Boot from './redux/boot';
 import Router from './router';
 import { PersistGate } from 'redux-persist/integration/react';
+import '../node_modules/noty/lib/noty.css';
+import '../node_modules/noty/lib/themes/mint.css';
 
 const currentAppLocale = AppLocale.en;
 

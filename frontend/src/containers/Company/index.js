@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Form from "./Form";
-import AssignForm from "./AssignForm";
+// import AssignForm from "./AssignForm";
 import { CircularProgress } from "components/uielements/progress";
 import DeleteAlert from "./Alert";
 import SelectAlert from "./SelectAlert";

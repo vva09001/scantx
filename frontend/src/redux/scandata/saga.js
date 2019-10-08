@@ -9,6 +9,7 @@ import {
   downloadScanData
 } from "services/scanData";
 import { getToken } from "redux/selectors";
+import { Error } from "helpers/notify";
 import actions from "./actions";
 
 export function* getScanDataSagas(data) {
@@ -16,10 +17,14 @@ export function* getScanDataSagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield getScanData(token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield success();
-      yield put({ type: actions.GET_SCAN_DATA_SUCCESS, response: res.data.data });
+      yield put({
+        type: actions.GET_SCAN_DATA_SUCCESS,
+        response: res.data.data
+      });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -32,13 +37,14 @@ export function* editScanDataSagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield editScanData(params, token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield success();
       yield put({
         type: actions.EDIT_SCAN_DATA_SUCCESS,
         response: res.data.data
       });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -51,13 +57,14 @@ export function* addScanDataSagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield addScanData(params, token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield success();
       yield put({
         type: actions.ADD_SCAN_DATA_SUCCESS,
         response: res.data.data
       });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -70,13 +77,14 @@ export function* deleteScanDataSagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield deleteScanData(id, token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield success();
       yield put({
         type: actions.DELETE_SCAN_DATA_SUCCESS,
         response: res.data.data
       });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -89,13 +97,14 @@ export function* deleteMultiScanDataSagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield deleteMultiScanData(params, token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield success();
       yield put({
         type: actions.DELETE_MULTI_SCAN_DATA_SUCCESS,
         response: res.data.data
       });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -108,10 +117,11 @@ export function* getQrSagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield getQr(token);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield success();
       yield put({ type: actions.GET_QR_SUCCESS, response: res.data.data });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -124,7 +134,8 @@ export function* downloadScanDataSagas(data) {
   try {
     const token = yield select(getToken);
     const res = yield downloadScanData(id, token);
-    if (res.status === 200) {
+
+    if (res.data.status === "200") {
       const win = window.open("http://" + res.data.data, "_blank");
       win.focus();
       yield success();
@@ -132,6 +143,7 @@ export function* downloadScanDataSagas(data) {
         type: actions.DOWNLOAD_SCAN_DATA_SUCCESS
       });
     } else {
+      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
