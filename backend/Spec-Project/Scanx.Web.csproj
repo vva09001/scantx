@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    <RootNamespace>Spec_Project</RootNamespace>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <RootNamespace>Scanx.Web</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +22,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="QRCoder" Version="1.3.6" />
+    <PackageReference Include="SoapCore" Version="0.9.9.6" />
     <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Scanx.Common\Scanx.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,16 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Spec_Project.Models;
+using Scanx.Common;
+using Scanx.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Spec_Project.Services
+namespace Scanx.Web.Services
 {
     public interface IUserService
     {
         TblUsers Authenticate(string username, string password);
         List<TblUsers> GetAll();
-        ResponseModel getUser();
+        ResponseModel GetUser();
+        TblUsers GetUser(string userid);
         ResponseModel GetById(int id);
         ResponseModel Create(UserDto user, string password, string UserIDLogin);
         ResponseModel AddUser(UserDto userNew, string password, string UserIDLogin);
@@ -19,7 +21,8 @@ namespace Spec_Project.Services
         ResponseModel UpdateNoPass(UsersModel userDto);
         ResponseModel Delete(int id);
         ResponseModel DeleteArrUser(List<int> deleteIds);
-
+        int GetRole(int pUserID);
+        string GetCID(string userID);
     }
 
     public class UserService : IUserService
@@ -61,7 +64,7 @@ namespace Spec_Project.Services
         }
 
 
-        public ResponseModel getUser()
+        public ResponseModel GetUser()
         {
             ResponseModel res = (new ResponseModel
             {
@@ -72,7 +75,8 @@ namespace Spec_Project.Services
             var context = _httpContextAccessor.HttpContext;
             using (DataContext _context = new DataContext())
             {
-                if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
+                var role = GetRole(int.Parse(context.User.Identity.Name));
+                if (role == Constant.Users.Superadmin)
                 {
                     var userss = _context.TblUsers.Where(p => p.DeletedOn == null).Select(p=> new UsersModel
                     {
@@ -85,15 +89,15 @@ namespace Spec_Project.Services
                         Cid = p.Cid,
                         ContactByEmail = p.ContactByEmail,
                         EncryptionActive = p.EncryptionActive,
-                        RoleID = p.RoleID
+                        RoleID = p.RoleId
                     }).ToList();
                     res.Data = userss;
                 }
                 else
                 {
-                    if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.user)
+                    if (role == Constant.Users.Admin || role == Constant.Users.User)
                     {
-                        var ciduser = UsersConstant.GetCID(context.User.Identity.Name);
+                        var ciduser = GetCID(context.User.Identity.Name);
                         var user = _context.TblUsers.Where(p => p.DeletedOn == null && p.Cid == ciduser).Select(p => new UsersModel
                         {
                             Id = p.Id,
@@ -105,7 +109,7 @@ namespace Spec_Project.Services
                             Cid = p.Cid,
                             ContactByEmail = p.ContactByEmail,
                             EncryptionActive = p.EncryptionActive,
-                            RoleID = p.RoleID
+                            RoleID = p.RoleId
                         }).ToList();
                         res.Data = user;
                     }
@@ -136,11 +140,6 @@ namespace Spec_Project.Services
 
         public ResponseModel Create(UserDto userNew, string password, string UserIDLogin)
         {
-
-            //if (user.TypeOfAccount == TypeOfAccConstant.Private || user.TypeOfAccount == TypeOfAccConstant.Test)
-            //{
-
-            //}
             ResponseModel res = (new ResponseModel
             {
                 Data = "",
@@ -149,23 +148,8 @@ namespace Spec_Project.Services
             });
 
             var context = _httpContextAccessor.HttpContext;
-            //if (int.Parse(UsersConstant.GetRole(context.User.Identity.Name)) != RoleConstant.reader)
-            //{
-            //var userlogin = _context.TblUsers.Where(o=> o.Id == int.Parse(UserIDLogin)).FirstOrDefault();
-            //userNew.Cid = userlogin.Cid;
-            //userNew.TypeOfAccount = "Commercial";
-
-
-            //if (userNew.TypeOfAccount == "Private" || userNew.TypeOfAccount == "Test")
-            //{
-            //    CompanyService cpns = new CompanyService(_httpContextAccessor);
-            //    cpns.addCompany(new CustomerModel
-            //    {
-            //        Name = userNew.UserName
-            //    });
             if (userNew.TypeOfAccount == "Private" || userNew.TypeOfAccount == "Test")
             {
-                CompanyService cp = new CompanyService(_httpContextAccessor);
                 Guid g = Guid.NewGuid();
                 
                 var tbluser = new TblUsers
@@ -180,7 +164,7 @@ namespace Spec_Project.Services
                     EncryptionActive = userNew.EncryptionActive,
                     DeletedOn = null,
                     Cid = g.ToString(),
-                    RoleID = userNew.RoleID
+                    RoleId = userNew.RoleID
                 };
                 var cpn = new TblCustomer()
                 {
@@ -190,9 +174,6 @@ namespace Spec_Project.Services
                 };
                 try
                 {
-
-
-
                     // validation
                     if (string.IsNullOrWhiteSpace(password))
                     {
@@ -200,9 +181,7 @@ namespace Spec_Project.Services
                         res.Status = "500";
                         res.Message = "Password is required";
                         return res;
-
                     }
-
                     if (_context.TblUsers.Any(x => x.UserName == userNew.UserName && x.DeletedOn == null))
                     {
                         res.Data = "";
@@ -210,8 +189,6 @@ namespace Spec_Project.Services
                         res.Message = "Username \"" + userNew.UserName + "\" is already taken";
                         return res;
                     }
-
-
                     byte[] passwordHash, passwordSalt;
                     CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
@@ -232,7 +209,6 @@ namespace Spec_Project.Services
             }
             if (userNew.TypeOfAccount == "Commercial")
             {
-                CompanyService cp = new CompanyService(_httpContextAccessor);
                 Guid g = Guid.NewGuid();
                 
                 var tbluser = new TblUsers
@@ -247,7 +223,7 @@ namespace Spec_Project.Services
                     EncryptionActive = userNew.EncryptionActive,
                     DeletedOn = null,
                     Cid = g.ToString(),
-                    RoleID = userNew.RoleID
+                    RoleId = userNew.RoleID
                 };
                 var cpn = new TblCustomer()
                 {
@@ -259,9 +235,6 @@ namespace Spec_Project.Services
                 };
                 try
                 {
-
-
-
                     // validation
                     if (string.IsNullOrWhiteSpace(password))
                     {
@@ -269,9 +242,7 @@ namespace Spec_Project.Services
                         res.Status = "500";
                         res.Message = "Password is required";
                         return res;
-
                     }
-
                     if (_context.TblUsers.Any(x => x.UserName == userNew.UserName && x.DeletedOn == null))
                     {
                         res.Data = "";
@@ -279,8 +250,6 @@ namespace Spec_Project.Services
                         res.Message = "Username \"" + userNew.UserName + "\" is already taken";
                         return res;
                     }
-
-
                     byte[] passwordHash, passwordSalt;
                     CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
@@ -299,11 +268,7 @@ namespace Spec_Project.Services
                     res.Message = ex.Message;
                 }
             }
-
-
-
             return res;
-
         }
 
         public ResponseModel AddUser(UserDto userNew, string password, string UserIDLogin)
@@ -317,7 +282,6 @@ namespace Spec_Project.Services
             });
             var tbluser = new TblUsers
             {
-
                 UserName = userNew.UserName,
                 FamilyName = userNew.FamilyName,
                 GivenName = userNew.GivenName,
@@ -326,12 +290,9 @@ namespace Spec_Project.Services
                 ContactByEmail = userNew.ContactByEmail,
                 EncryptionActive = userNew.EncryptionActive,
                 DeletedOn = null,
-                Cid = UsersConstant.GetCID(context.User.Identity.Name),
-                RoleID = userNew.RoleID
+                Cid = GetCID(context.User.Identity.Name),
+                RoleId = userNew.RoleID
             };
-
-            //if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
-            {
                 try
                 {
                     if (string.IsNullOrWhiteSpace(password))
@@ -365,9 +326,6 @@ namespace Spec_Project.Services
                     res.Status = "500";
                     res.Message = ex.Message;
                 }
-            }
-
-
             return res;
 
         }
@@ -381,7 +339,8 @@ namespace Spec_Project.Services
                 Status = "200",
                 Message = ""
             });
-            if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
+            var role = GetRole(int.Parse(context.User.Identity.Name));
+            if (role == Constant.Users.Admin || role == Constant.Users.Superadmin)
             {
                 var user = _context.TblUsers.Where(o => o.Id == userDto.Id && o.DeletedOn == null).FirstOrDefault();
 
@@ -395,7 +354,6 @@ namespace Spec_Project.Services
                         res.Message = "User not found";
                         return res;
                     }
-
                     if (userDto.UserName != user.UserName)
                     {
                         // username has changed so check if the new username is already taken
@@ -409,7 +367,6 @@ namespace Spec_Project.Services
                     }
 
                     // update user properties
-
                     user.FamilyName = userDto.FamilyName;
                     user.GivenName = userDto.GivenName;
                     user.UserName = userDto.UserName;
@@ -418,7 +375,7 @@ namespace Spec_Project.Services
                     user.PasswordSalt = userDto.PasswordSalt;
                     user.Email = userDto.Email;
                     user.Cid = userDto.Cid;
-                    user.RoleID = userDto.RoleID;
+                    user.RoleId = userDto.RoleID;
                     user.ContactByEmail = userDto.ContactByEmail;
                     user.EncryptionActive = userDto.EncryptionActive;
 
@@ -445,10 +402,10 @@ namespace Spec_Project.Services
                 {
                     res.Data = "";
                     res.Status = "500";
-                    res.Message = ("Username " + userDto.UserName + " is already taken");
+                    res.Message = "Username " + userDto.UserName + " is already taken";
 
                 }
-                if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.user)
+                if (role == Constant.Users.User)
                 {
                     var user2 = _context.TblUsers.Where(o => o.Id == int.Parse(context.User.Identity.Name) && o.DeletedOn == null).FirstOrDefault();
 
@@ -490,7 +447,7 @@ namespace Spec_Project.Services
                         user2.PasswordSalt = userDto.PasswordSalt;
                         user2.Email = userDto.Email;
                         user2.Cid = userDto.Cid;
-                        user2.RoleID = userDto.RoleID;
+                        user2.RoleId = userDto.RoleID;
                         user2.ContactByEmail = userDto.ContactByEmail;
                         user2.EncryptionActive = userDto.EncryptionActive;
 
@@ -535,7 +492,8 @@ namespace Spec_Project.Services
                 Status = "200",
                 Message = ""
             });
-            if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
+            var role = GetRole(int.Parse(context.User.Identity.Name));
+            if (role == Constant.Users.Admin || role == Constant.Users.Superadmin)
             {
                 var user = _context.TblUsers.Where(o => o.Id == userParam.Id && o.DeletedOn == null).FirstOrDefault();
 
@@ -569,7 +527,7 @@ namespace Spec_Project.Services
                     user.TypeOfAccount = userParam.TypeOfAccount;
                     user.Email = userParam.Email;
                     user.Cid = userParam.Cid;
-                    user.RoleID = userParam.RoleID;
+                    user.RoleId = userParam.RoleID;
                     user.ContactByEmail = userParam.ContactByEmail;
                     user.EncryptionActive = userParam.EncryptionActive;
                     _context.TblUsers.Update(user);
@@ -585,7 +543,7 @@ namespace Spec_Project.Services
                 }
                 return res;
             }
-            if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.user)
+            if (role == Constant.Users.User)
             {
                 var user = _context.TblUsers.Where(o => o.Id == int.Parse(context.User.Identity.Name) && o.DeletedOn == null).FirstOrDefault();
 
@@ -619,7 +577,7 @@ namespace Spec_Project.Services
                     user.TypeOfAccount = userParam.TypeOfAccount;
                     user.Email = userParam.Email;
                     user.Cid = userParam.Cid;
-                    user.RoleID = userParam.RoleID;
+                    user.RoleId = userParam.RoleID;
                     user.ContactByEmail = userParam.ContactByEmail;
                     user.EncryptionActive = userParam.EncryptionActive;
                     _context.TblUsers.Update(user);
@@ -654,7 +612,8 @@ namespace Spec_Project.Services
                 Status = "200",
                 Message = ""
             });
-            if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
+            var role = GetRole(int.Parse(context.User.Identity.Name));
+            if (role == Constant.Users.Admin || role == Constant.Users.Superadmin)
             {
                 if (user != null)
                 {
@@ -711,7 +670,8 @@ namespace Spec_Project.Services
                 Status = "200",
                 Message = "",
             };
-            if (UsersConstant.GetRole(int.Parse(cont.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(cont.User.Identity.Name)) == UsersConstant.superadmin)
+            var role = GetRole(int.Parse(cont.User.Identity.Name));
+            if (role == Constant.Users.Admin || role == Constant.Users.Superadmin)
             {
 
                 try
@@ -738,6 +698,52 @@ namespace Spec_Project.Services
                 return res;
             }
             return res;
+        }
+
+        public int GetRole(int pUserID)
+        {
+            using (DataContext db = new DataContext())
+            {
+                var roleid = db.TblUsers.Where(o => o.Id == pUserID).Select(o => o.RoleId).FirstOrDefault();
+                return roleid;
+            }
+        }
+        public static int GetID(int userID)
+        {
+            using (DataContext db = new DataContext())
+            {
+                var roleid = db.TblUsers.Where(o => o.Id == userID).Select(o => o.RoleId).FirstOrDefault();
+                return roleid;
+            }
+        }
+
+        public string GetCID(string userID)
+        {
+            var strcid = int.Parse(userID);
+            using (DataContext db = new DataContext())
+            {
+                var cid = db.TblUsers.Where(o => o.Id == strcid).Select(o => o.Cid).FirstOrDefault();
+                return cid;
+            }
+        }
+        public TblUsers GetUser(string userid)
+        {
+            var userID = int.Parse(userid);
+            using (DataContext db = new DataContext())
+            {
+                var user = db.TblUsers.Where(o => o.Id == userID).FirstOrDefault();
+                return user;
+            }
+        }
+
+        public static string GetUserName(string userid)
+        {
+            var userID = int.Parse(userid);
+            using (DataContext db = new DataContext())
+            {
+                var username = db.TblUsers.Where(o => o.Id == userID).Select(o => o.UserName).FirstOrDefault();
+                return username;
+            }
         }
     }
 }

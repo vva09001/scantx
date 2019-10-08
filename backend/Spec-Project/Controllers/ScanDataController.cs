@@ -1,44 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using CsvHelper;
-using CsvHelper.Configuration;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QRCoder;
-using Spec_Project.Entities;
-using Spec_Project.Models;
-using Spec_Project.Services;
+using Scanx.Common;
+using Scanx.Web.Services;
 
-namespace Spec_Project.Controllers
+namespace Scanx.Web.Controllers
 {
-    [Authorize]
     [Route("api/ScanData")]
     [ApiController]
     public class ScanDataController : ControllerBase
     {
-        IHttpContextAccessor _httpContextAccessor;
         private IScanDataService _IScanDataService;
-        DataContext context = new DataContext();
-        IScanDataService _object;
-        private IScanDataService @object;
-
-        //private IMapper _mapper;
-        //private readonly AppSettings _appSettings;
         public ScanDataController(IScanDataService scandataService)
         {
             _IScanDataService = scandataService;
-            //_mapper = mapper;
-            //_appSettings = appSettings.Value;
         }
-
-       
-
 
         //[Authorize]
         [DisableCors]
@@ -53,7 +30,7 @@ namespace Spec_Project.Controllers
         [HttpGet("get-scandata")]
         public IActionResult getScanData()
         {
-            return Ok(_IScanDataService.getScanData());
+            return Ok(_IScanDataService.GetScanData());
         }
 
         [Authorize]
@@ -64,12 +41,19 @@ namespace Spec_Project.Controllers
             return Ok(_IScanDataService.CheckUserScanData(scandataID));
         }
 
+        [DisableCors]
+        [HttpPost("import-scandata")]
+        public IActionResult ImportScanData([FromBody]ImportDataModel tblscandata)
+        {
+            return Ok(_IScanDataService.ImportScanData(tblscandata));
+        }
+
         [Authorize]
         [DisableCors]
         [HttpPost("add-scandata")]
         public IActionResult addScanData(ScanDataModel tblscandata)
         {
-            return Ok(_IScanDataService.addScanData(tblscandata));
+            return Ok(_IScanDataService.AddScanData(tblscandata));
         }
 
         [Authorize]

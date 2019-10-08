@@ -2,15 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Spec_Project.Models
+namespace Scanx.Soap.Models
 {
-    public partial class DataContext : DbContext
+    public partial class MiraclesContext : DbContext
     {
-        public DataContext()
+        public MiraclesContext()
         {
         }
 
-        public DataContext(DbContextOptions<DataContext> options)
+        public MiraclesContext(DbContextOptions<MiraclesContext> options)
             : base(options)
         {
         }
@@ -52,6 +52,8 @@ namespace Spec_Project.Models
                 entity.Property(e => e.Name).HasMaxLength(100);
 
                 entity.Property(e => e.Status).HasMaxLength(20);
+
+                entity.Property(e => e.TypeOfAcc).HasMaxLength(50);
             });
 
             modelBuilder.Entity<TblScanData>(entity =>
@@ -74,6 +76,8 @@ namespace Spec_Project.Models
                 entity.Property(e => e.FileName).HasMaxLength(50);
 
                 entity.Property(e => e.Payload).HasColumnType("text");
+
+                entity.Property(e => e.StationName).HasMaxLength(250);
 
                 entity.Property(e => e.Uid).HasColumnName("UID");
 
@@ -114,9 +118,9 @@ namespace Spec_Project.Models
 
                 entity.Property(e => e.PasswordSalt).HasMaxLength(500);
 
-                entity.Property(e => e.RoleID)
-                    .HasColumnName("RoleID")
-                    .HasMaxLength(50);
+                entity.Property(e => e.RoleId).HasColumnName("RoleID");
+
+                entity.Property(e => e.Token).HasMaxLength(250);
 
                 entity.Property(e => e.TypeOfAccount)
                     .IsRequired()

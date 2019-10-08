@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Spec_Project.Models;
-using Spec_Project.Services;
+using Scanx.Web.Models;
+using Scanx.Web.Services;
 
-namespace Spec_Project.Controllers
+namespace Scanx.Web.Controllers
 {
 
     [Route("api/Company")]
@@ -30,7 +30,7 @@ namespace Spec_Project.Controllers
         [HttpGet("get-company")]
         public IActionResult getCompany()
         {
-            return Ok(_ICompanyService.getCompany());
+            return Ok(_ICompanyService.GetCompany());
         }
 
 
@@ -40,7 +40,7 @@ namespace Spec_Project.Controllers
         [HttpPost("add-company")]
         public IActionResult addCompany(CustomerModel tblcustomer)
         {
-            var x = _ICompanyService.addCompany(tblcustomer);
+            var x = _ICompanyService.AddCompany(tblcustomer);
             return Ok(x);
         }
 

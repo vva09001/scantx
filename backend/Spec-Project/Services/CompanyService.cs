@@ -1,33 +1,33 @@
-﻿using Spec_Project.Models;
+﻿using Scanx.Web.Models;
 using System;
-using Spec_Project.Entities;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using Scanx.Common;
 
-namespace Spec_Project.Services
+namespace Scanx.Web.Services
 {
     public interface ICompanyService
     {
-        ResponseModel getCompany();
-        ResponseModel addCompany(CustomerModel tblcustomer);
+        ResponseModel GetCompany();
+        ResponseModel AddCompany(CustomerModel tblcustomer);
         ResponseModel EditCompany(CustomerModel customer);
         ResponseModel DeleteArrCompany(List<string> deleteIds);
         ResponseModel DeleteCompany(string cid);
-        TblCustomer GetCompanyByCid(string Cid);
-        ResponseModel addUserToCompany(string usersname, string email, string cid);
+        ResponseModel AddUserToCompany(string usersname, string email, string cid);
 
     }
     public class CompanyService : ICompanyService
     {
-        DataContext db = new DataContext();
         IHttpContextAccessor _httpContextAccessor;
-        public CompanyService(IHttpContextAccessor httpContextAccessor)
+        IUserService _userService;
+        public CompanyService(IHttpContextAccessor httpContextAccessor, IUserService userService)
         {
             _httpContextAccessor = httpContextAccessor;
+            _userService = userService;
         }
 
-        public ResponseModel getCompany()
+        public ResponseModel GetCompany()
         {
             ResponseModel res = (new ResponseModel
             {
@@ -38,7 +38,8 @@ namespace Spec_Project.Services
             var context = _httpContextAccessor.HttpContext;
             using (DataContext _context = new DataContext())
             {
-                if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
+                var role = _userService.GetRole(int.Parse(context.User.Identity.Name));
+                if (role == Constant.Users.Superadmin)
                 {
                     var userss = _context.TblCustomer.Where(p => p.DeletedOn == null).Select(p => new CustomerModel
                     {
@@ -51,9 +52,9 @@ namespace Spec_Project.Services
                 }
                 else
                 {
-                    if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.user)
+                    if (role == Constant.Users.Admin || role == Constant.Users.User)
                     {
-                        var ciduser = UsersConstant.GetCID(context.User.Identity.Name);
+                        var ciduser = _userService.GetCID(context.User.Identity.Name);
                         var user = _context.TblCustomer.Where(p => p.DeletedOn == null && p.Cid == ciduser).Select(p => new CustomerModel
                         {
                             Name = p.Name,
@@ -67,15 +68,8 @@ namespace Spec_Project.Services
             }
             return res;
         }
-        
-        public TblCustomer GetCompanyByCid(string Cid)
-        {
-                var companybycid = db.TblCustomer.Where(p => p.Cid == Cid && p.DeletedOn == null).FirstOrDefault();
-                return companybycid;
-            
-        }
 
-        public ResponseModel addCompany(CustomerModel tblcustomer)
+        public ResponseModel AddCompany(CustomerModel tblcustomer)
         {
             var context = _httpContextAccessor.HttpContext;
             Guid g;
@@ -84,11 +78,13 @@ namespace Spec_Project.Services
                 Status = "200",
                 Message = "",
             };
-            if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
-            //{
+            var role = _userService.GetRole(int.Parse(context.User.Identity.Name));
+            if (role == Constant.Users.Admin || role == Constant.Users.Superadmin)
             {
-                    
-                    try
+
+                try
+                {
+                    using (var db = new DataContext())
                     {
                         var listcustomer = db.TblCustomer.FirstOrDefault(p => p.Cid != tblcustomer.Cid);
                         if (listcustomer != null)
@@ -101,7 +97,7 @@ namespace Spec_Project.Services
                                 Address = tblcustomer.Address,
                                 Status = tblcustomer.Status,
                                 CreateOn = DateTime.UtcNow
-                        };
+                            };
                             db.TblCustomer.Add(item);
                             db.SaveChanges();
                             var model = new CustomerModel
@@ -114,45 +110,7 @@ namespace Spec_Project.Services
                             };
                             res.Data = model;
                         }
-
                     }
-                    catch (Exception ex)
-                    {
-                        res.Status = "500";
-                        res.Message = ex.Message;
-                    }
-
-                    return res;
-               // }
-            }
-            return res;
-        }
-
-        public ResponseModel addUserToCompany(string userName, string email, string cid)
-        {
-            var context = _httpContextAccessor.HttpContext;
-            var res = new ResponseModel()
-            {
-                Status = "200",
-                Message = "",
-            };
-            if (UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(context.User.Identity.Name)) == UsersConstant.superadmin)
-            //{
-            {
-                try
-                {
-                    var checkuser = db.TblUsers.FirstOrDefault(p => p.UserName == userName && p.Email ==email);
-                    if (checkuser != null)
-                    {
-                        checkuser.Cid = cid;
-                        db.SaveChanges();
-                        res.Message = "sucessfull";
-                    }
-                    else
-                    {
-                        res.Message = "Username && Email not found !";
-                    }
-
                 }
                 catch (Exception ex)
                 {
@@ -161,7 +119,45 @@ namespace Spec_Project.Services
                 }
 
                 return res;
-                // }
+            }
+            return res;
+        }
+
+        public ResponseModel AddUserToCompany(string userName, string email, string cid)
+        {
+            var context = _httpContextAccessor.HttpContext;
+            var res = new ResponseModel()
+            {
+                Status = "200",
+                Message = "",
+            };
+            var role = _userService.GetRole(int.Parse(context.User.Identity.Name));
+            if (role == Constant.Users.Admin || role == Constant.Users.Superadmin)
+            {
+                try
+                {
+                    using (var db = new DataContext())
+                    {
+                        var checkuser = db.TblUsers.FirstOrDefault(p => p.UserName == userName && p.Email == email);
+                        if (checkuser != null)
+                        {
+                            checkuser.Cid = cid;
+                            db.SaveChanges();
+                            res.Message = "sucessfull";
+                        }
+                        else
+                        {
+                            res.Message = "Username && Email not found !";
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    res.Status = "500";
+                    res.Message = ex.Message;
+                }
+
+                return res;
             }
             return res;
         }
@@ -174,9 +170,10 @@ namespace Spec_Project.Services
                 Status = "200",
                 Message = "",
             };
-            if (UsersConstant.GetRole(int.Parse(cont.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(cont.User.Identity.Name)) == UsersConstant.superadmin)
+            var role = _userService.GetRole(int.Parse(cont.User.Identity.Name));
+            if (role == Constant.Users.Admin || role == Constant.Users.Superadmin)
             {
-                
+
                 try
                 {
                     using (DataContext context = new DataContext())
@@ -208,9 +205,10 @@ namespace Spec_Project.Services
                 Status = "200",
                 Message = "",
             };
-            if (UsersConstant.GetRole(int.Parse(cont.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(cont.User.Identity.Name)) == UsersConstant.superadmin)
+            var role = _userService.GetRole(int.Parse(cont.User.Identity.Name));
+            if (role == Constant.Users.Admin || role == Constant.Users.Superadmin)
             {
-                
+
                 try
                 {
                     using (DataContext context = new DataContext())
@@ -244,19 +242,23 @@ namespace Spec_Project.Services
                 Status = "200",
                 Message = "",
             };
-            if (UsersConstant.GetRole(int.Parse(cont.User.Identity.Name)) == UsersConstant.admin || UsersConstant.GetRole(int.Parse(cont.User.Identity.Name)) == UsersConstant.superadmin)
+            var role = _userService.GetRole(int.Parse(cont.User.Identity.Name));
+            if (role == Constant.Users.Admin || role == Constant.Users.Superadmin)
             {
-               
+
                 try
                 {
-                    var oldCusomer = (from u in db.TblCustomer where u.Cid == customer.Cid select u).FirstOrDefault();
-                    if (oldCusomer != null)
+                    using (var db = new DataContext())
                     {
-                        oldCusomer.Address = customer.Address;
-                        oldCusomer.Name = customer.Name;
-                        oldCusomer.Status = customer.Status;
-                        db.SaveChanges();
-                        res.Data = oldCusomer;
+                        var oldCusomer = (from u in db.TblCustomer where u.Cid == customer.Cid select u).FirstOrDefault();
+                        if (oldCusomer != null)
+                        {
+                            oldCusomer.Address = customer.Address;
+                            oldCusomer.Name = customer.Name;
+                            oldCusomer.Status = customer.Status;
+                            db.SaveChanges();
+                            res.Data = oldCusomer;
+                        }
                     }
                 }
                 catch (Exception ex)

@@ -1,12 +1,11 @@
-﻿using Spec_Project.Entities;
-using Spec_Project.Helpers;
-using Spec_Project.Models;
+﻿using Scanx.Web.Helpers;
+using Scanx.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Spec_Project.Services
+namespace Scanx.Web.Services
 {
     public interface IStartService
     {
