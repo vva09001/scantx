@@ -6,7 +6,7 @@ import Dialog, {
   DialogContentText
 } from "components/uielements/dialogs";
 import Button from "components/uielements/button";
-import { CircularProgress } from "components/uielements/progress";
+// import { CircularProgress } from "components/uielements/progress";
 import { companyActions } from "redux/actions";
 import { connect } from "react-redux";
 

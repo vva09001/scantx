@@ -1,6 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
-import { TextField } from "@material-ui/core";
+import {
+  TextField,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl
+} from "@material-ui/core";
 import Dialog, {
   DialogActions,
   DialogContent,
@@ -92,17 +98,22 @@ class Form extends React.Component {
                   onChange={e => this.onChange(e)}
                 />
               </div>
-              <div>
-                <TextField
-                  required
-                  name="status"
-                  label="Status"
-                  margin="normal"
-                  fullWidth
-                  value={this.state.params.status}
+              <FormControl style={{ width: "100%" }}>
+                <InputLabel htmlFor="status">Status</InputLabel>
+                <Select
+                  // value="asdas"
+                  value={this.state.params.status | 0}
+                  inputProps={{
+                    name: "status",
+                    id: "status"
+                  }}
                   onChange={e => this.onChange(e)}
-                />
-              </div>
+                >
+                  <MenuItem value={0}>Received</MenuItem>
+                  <MenuItem value={1}>Processed</MenuItem>
+                  <MenuItem value={2}>Failed</MenuItem>
+                </Select>
+              </FormControl>
             </DialogContent>
             {this.state.loading ? (
               <CircularProgress />

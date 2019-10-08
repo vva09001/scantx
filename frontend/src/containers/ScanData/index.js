@@ -65,7 +65,9 @@ class ScanData extends Component {
         <TableCell>{Date(item.createdOn)}</TableCell>
         <TableCell>{Time(item.createdOn)}</TableCell>
         <TableCell>{item.payload}</TableCell>
-        <TableCell>{item.status}</TableCell>
+        {item.status === 0 && <TableCell>Received</TableCell>}
+        {item.status === 1 && <TableCell>Processed</TableCell>}
+        {item.status === 2 && <TableCell>Failed</TableCell>}
         <TableCell>
           <Link
             component="button"
