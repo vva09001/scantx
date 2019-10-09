@@ -12,7 +12,8 @@ import Button from "components/uielements/button/index.js";
 import Grid from "components/uielements/grid";
 import Table from "components/uielements/table";
 import Checkbox from "components/uielements/checkbox";
-import Link from "@material-ui/core/Link";
+import EditIcon from "@material-ui/icons/Edit";
+import TablePagination from "@material-ui/core/TablePagination";
 import {
   TableHead,
   TableBody,
@@ -36,7 +37,9 @@ class User extends Component {
       multiId: [],
       selectAlert: false,
       password: "",
-      params: {}
+      params: {},
+      page: 0,
+      rowsPerPage: 20
     };
   }
   componentDidMount() {
@@ -153,39 +156,52 @@ class User extends Component {
     });
   };
 
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    });
+  };
+
+  handleChangeRowsPerPage = event => {
+    this.setState({
+      rowsPerPage: +event.target.value,
+      page: 0
+    });
+  };
+
   renderData = () => {
     const { profile } = this.props;
-    return _.map(this.props.users, item => {
-      return (
-        <TableRow key={item.id}>
-          <TableCell padding="checkbox">
-            <Checkbox
-              onChange={e => this.handleCheck(e, item.id)}
-              checked={_.includes(this.state.multiId, item.id)}
-            />
-          </TableCell>
-          <TableCell>
-            {item.userName}
-          </TableCell>
-          <TableCell>
-            {item.givenName} {item.familyName}
-          </TableCell>
-          <TableCell>{item.email}</TableCell>
-          <TableCell>{role(item.roleID)}</TableCell>
-          <TableCell>
-            {_.indexOf(permission.user.edit, profile.roleID) !== -1 && (
-              <Link
-                component="button"
-                variant="body2"
-                onClick={() => this.onToggleEditForm(true, item)}
-              >
-                Edit
-              </Link>
-            )}
-          </TableCell>
-        </TableRow>
-      );
-    });
+    const { page, rowsPerPage } = this.state;
+    return this.props.users
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      .map(item => {
+        return (
+          <TableRow key={item.id}>
+            <TableCell padding="checkbox">
+              <Checkbox
+                onChange={e => this.handleCheck(e, item.id)}
+                checked={_.includes(this.state.multiId, item.id)}
+              />
+            </TableCell>
+            <TableCell>{item.userName}</TableCell>
+            <TableCell>
+              {item.givenName} {item.familyName}
+            </TableCell>
+            <TableCell>{item.email}</TableCell>
+            <TableCell>{role(item.roleID)}</TableCell>
+            <TableCell>
+              {_.indexOf(permission.user.edit, profile.roleID) !== -1 && (
+                <span
+                  className="actions"
+                  onClick={() => this.onToggleEditForm(true, item)}
+                >
+                  <EditIcon />
+                </span>
+              )}
+            </TableCell>
+          </TableRow>
+        );
+      });
   };
   render() {
     const { profile } = this.props;
@@ -219,11 +235,26 @@ class User extends Component {
                   <TableCell>Name</TableCell>
                   <TableCell>Email</TableCell>
                   <TableCell>Role</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>{this.renderData()}</TableBody>
             </Table>
+            <TablePagination
+              component="div"
+              rowsPerPageOptions={[10, 20, 30]}
+              count={this.props.users.length}
+              rowsPerPage={this.state.rowsPerPage}
+              page={this.state.page}
+              backIconButtonProps={{
+                "aria-label": "previous page"
+              }}
+              nextIconButtonProps={{
+                "aria-label": "next page"
+              }}
+              onChangePage={this.handleChangePage}
+              onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            />
             <Grid
               container
               direction="row"

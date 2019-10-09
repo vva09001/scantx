@@ -14,21 +14,9 @@ const options = [
     key: 'company',
   },
   {
-    label: 'Devices',
-    key: 'Devices',
-  },
-  {
     label: 'Scan Data',
     key: 'scan-data',
-  },
-  {
-    label: 'Setup',
-    key: 'setup',
-  },
-  {
-    label: 'About',
-    key: 'about',
-  },
+  }
 ];
 const getBreadcrumbOption = () => {
   const preKeys = getDefaultPath();

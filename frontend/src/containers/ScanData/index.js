@@ -8,6 +8,8 @@ import DeleteAlert from "./Alert";
 import SelectAlert from "./SelectAlert";
 import LayoutWrapper from "components/utility/layoutWrapper";
 import Papersheet from "components/utility/papersheet";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 import { FullColumn } from "components/utility/rowColumn";
 import Button from "components/uielements/button/index.js";
 import Grid from "components/uielements/grid";
@@ -22,7 +24,7 @@ import {
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
-import Link from "@material-ui/core/Link";
+import TablePagination from "@material-ui/core/TablePagination";
 import { scanDataActions } from "redux/actions";
 import { Date, Time } from "helpers/moment";
 import { permission } from "helpers/user";
@@ -42,7 +44,9 @@ class ScanData extends Component {
       deleteId: null,
       multiId: [],
       selectAlert: false,
-      params: {}
+      params: {},
+      page: 0,
+      rowsPerPage: 20
     };
   }
   componentDidMount() {
@@ -53,39 +57,54 @@ class ScanData extends Component {
       loading: false
     });
   };
+  
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    });
+  };
+
+  handleChangeRowsPerPage = event => {
+    this.setState({
+      rowsPerPage: +event.target.value,
+      page: 0
+    });
+  };
+
   renderData = () => {
-    return _.map(this.props.datas, item => (
-      <TableRow key={item.scanId}>
-        <TableCell padding="checkbox">
-          <Checkbox
-            onChange={e => this.handleCheck(e, item.scanId)}
-            checked={_.includes(this.state.multiId, item.scanId)}
-          />
-        </TableCell>
-        <TableCell>{Date(item.createdOn)}</TableCell>
-        <TableCell>{Time(item.createdOn)}</TableCell>
-        <TableCell>{item.payload}</TableCell>
-        {item.status === 0 && <TableCell>Received</TableCell>}
-        {item.status === 1 && <TableCell>Processed</TableCell>}
-        {item.status === 2 && <TableCell>Failed</TableCell>}
-        <TableCell>
-          <Link
-            component="button"
-            variant="body2"
-            onClick={() => this.onToggleDelete(true, item.scanId)}
-          >
-            Delete|
-          </Link>
-          <Link
-            component="button"
-            variant="body2"
-            onClick={() => this.onToggleEditForm(true, item)}
-          >
-            Edit
-          </Link>
-        </TableCell>
-      </TableRow>
-    ));
+    const { page, rowsPerPage } = this.state;
+    return this.props.datas
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      .map(item => (
+        <TableRow key={item.scanId}>
+          <TableCell padding="checkbox">
+            <Checkbox
+              onChange={e => this.handleCheck(e, item.scanId)}
+              checked={_.includes(this.state.multiId, item.scanId)}
+            />
+          </TableCell>
+          <TableCell>{Date(item.createdOn)}</TableCell>
+          <TableCell>{Time(item.createdOn)}</TableCell>
+          <TableCell>{item.payload}</TableCell>
+          {item.status === 0 && <TableCell>Received</TableCell>}
+          {item.status === 1 && <TableCell>Processed</TableCell>}
+          {item.status === 2 && <TableCell>Failed</TableCell>}
+          <TableCell>
+            <span
+              className="actions"
+              onClick={() => this.onToggleDelete(true, item.scanId)}
+            >
+              <DeleteIcon />
+            </span>
+            <span
+              className="actions"
+              onClick={() => this.onToggleEditForm(true, item)}
+            >
+              <EditIcon />
+            </span>
+          </TableCell>
+        </TableRow>
+      ));
   };
 
   onToggleForm = (status, params = {}) => {
@@ -256,11 +275,26 @@ class ScanData extends Component {
                   <TableCell>Time</TableCell>
                   <TableCell>Data</TableCell>
                   <TableCell>Status</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>{this.renderData()}</TableBody>
             </Table>
+            <TablePagination
+              component="div"
+              rowsPerPageOptions={[10, 20, 30]}
+              count={this.props.datas.length}
+              rowsPerPage={this.state.rowsPerPage}
+              page={this.state.page}
+              backIconButtonProps={{
+                "aria-label": "previous page"
+              }}
+              nextIconButtonProps={{
+                "aria-label": "next page"
+              }}
+              onChangePage={this.handleChangePage}
+              onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            />
             <Grid
               container
               direction="row"

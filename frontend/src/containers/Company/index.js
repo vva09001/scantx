@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Form from "./Form";
-// import AssignForm from "./AssignForm";
 import { CircularProgress } from "components/uielements/progress";
 import DeleteAlert from "./Alert";
 import SelectAlert from "./SelectAlert";
@@ -12,7 +11,8 @@ import Button from "components/uielements/button/index.js";
 import Grid from "components/uielements/grid";
 import Table from "components/uielements/table";
 import Checkbox from "components/uielements/checkbox";
-import Link from "@material-ui/core/Link";
+import EditIcon from "@material-ui/icons/Edit";
+import TablePagination from "@material-ui/core/TablePagination";
 import {
   TableBody,
   TableCell,
@@ -36,7 +36,9 @@ class Company extends Component {
       selected: [],
       selectAlert: false,
       assignCid: null,
-      toggleAssign: false
+      toggleAssign: false,
+      page: 0,
+      rowsPerPage: 20
     };
   }
 
@@ -98,39 +100,47 @@ class Company extends Component {
     }
   };
 
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    });
+  };
+
+  handleChangeRowsPerPage = event => {
+    this.setState({
+      rowsPerPage: +event.target.value,
+      page: 0
+    });
+  };
+
   renderData = () => {
     const { profile } = this.props;
-    return _.map(this.props.companies, item => (
-      <TableRow key={item.cid}>
-        <TableCell padding="checkbox">
-          <Checkbox
-            onChange={() => this.onSelected(item.cid)}
-            checked={_.includes(this.state.selected, item.cid)}
-          />
-        </TableCell>
-        <TableCell>{item.name}</TableCell>
-        <TableCell>{item.address}</TableCell>
-        <TableCell>{item.status}</TableCell>
-        <TableCell>
-          {/* <Link
-            component="button"
-            variant="body2"
-            onClick={() => this.onToggleAssign(true, item.cid)}
-          >
-            Assign|
-          </Link> */}
-          {_.indexOf(permission.user.edit, profile.roleID) !== -1 && (
-            <Link
-              component="button"
-              variant="body2"
-              onClick={() => this.onToggleEditForm(true, item)}
-            >
-              Edit
-            </Link>
-          )}
-        </TableCell>
-      </TableRow>
-    ));
+    const { page, rowsPerPage } = this.state;
+    return this.props.companies
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      .map(item => (
+        <TableRow key={item.cid}>
+          <TableCell padding="checkbox">
+            <Checkbox
+              onChange={() => this.onSelected(item.cid)}
+              checked={_.includes(this.state.selected, item.cid)}
+            />
+          </TableCell>
+          <TableCell>{item.name}</TableCell>
+          <TableCell>{item.address}</TableCell>
+          <TableCell>{item.status}</TableCell>
+          <TableCell>
+            {_.indexOf(permission.user.edit, profile.roleID) !== -1 && (
+              <span>
+                <EditIcon
+                  className="actions"
+                  onClick={() => this.onToggleEditForm(true, item)}
+                />
+              </span>
+            )}
+          </TableCell>
+        </TableRow>
+      ));
   };
 
   onToggleAssign = (status, assignCid) => {
@@ -206,11 +216,26 @@ class Company extends Component {
                   <TableCell>Name</TableCell>
                   <TableCell>Address</TableCell>
                   <TableCell>Remark</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>{this.renderData()}</TableBody>
             </Table>
+            <TablePagination
+              component="div"
+              rowsPerPageOptions={[10, 20, 30]}
+              count={this.props.companies.length}
+              rowsPerPage={this.state.rowsPerPage}
+              page={this.state.page}
+              backIconButtonProps={{
+                "aria-label": "previous page"
+              }}
+              nextIconButtonProps={{
+                "aria-label": "next page"
+              }}
+              onChangePage={this.handleChangePage}
+              onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            />
             <Grid
               container
               direction="row"
