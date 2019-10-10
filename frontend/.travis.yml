@@ -1,0 +1,9 @@
+language: node_js
+node_js :
+  -"4.0"
+script:
+  - echo "Deploying"
+install:
+  - npm install -g filebase-tools
+after-success:
+  - firebase deploy --token $FIREBASE_TOKEN
