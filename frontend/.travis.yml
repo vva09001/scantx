@@ -1,9 +1,13 @@
 language: node_js
-node_js :
-  -"4.0"
+node_js: -"4.0"
 script:
   - echo "Deploying"
 install:
   - npm install -g filebase-tools
+deploy:
+  provider: firebase
+  token:
+    secure: "YOUR ENCRYPTED token"
+  project: "scantx"
 after-success:
   - firebase deploy --token $FIREBASE_TOKEN
