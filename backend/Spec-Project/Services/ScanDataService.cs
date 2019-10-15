@@ -284,6 +284,7 @@ namespace Scanx.Web.Services
                                 DataType = tblscandata.DataType,
                                 FileName = tblscandata.FileName,
                                 Status = tblscandata.Status,
+                                StationName = tblscandata.StationName,
                                 DeletedOn = null,
                             };
                             context.TblScanData.Add(x);
@@ -296,6 +297,7 @@ namespace Scanx.Web.Services
                                 Payload = x.Payload,
                                 DataType = x.DataType,
                                 FileName = x.FileName,
+                                StationName = x.StationName,
                                 Status = x.Status,
                             };
                             res.Data = item;
