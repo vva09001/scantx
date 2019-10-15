@@ -70,6 +70,17 @@ class EditForm extends React.Component {
               <div>
                 <TextField
                   required
+                  name="stationName"
+                  label="StationName"
+                  margin="normal"
+                  fullWidth
+                  value={this.state.params.stationName}
+                  onChange={e => this.onChange(e)}
+                />
+              </div>
+              <div>
+                <TextField
+                  required
                   name="payload"
                   label="Payload"
                   margin="normal"

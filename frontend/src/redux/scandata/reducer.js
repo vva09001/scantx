@@ -47,7 +47,18 @@ export default function scanDataReducer(state = initState, action) {
       return {
         ...state,
         qr: action.response
-      }
+      };
+    case actions.SEARCH_DATA_SUCCESS:
+      return {
+        ...state,
+        list: _.filter(action.response, item => {
+          if (action.key !== "") {
+            return item.stationName === action.key;
+          } else {
+            return item;
+          }
+        })
+      };
     default:
       return state;
   }
