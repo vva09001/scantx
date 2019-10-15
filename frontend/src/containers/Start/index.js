@@ -8,7 +8,6 @@ class Start extends React.Component {
   render() {
     return (
       <LayoutWrapper>
-        <h1>demo auto deploy</h1>
         <Grid container>
           <UserProfile />
           <Qr />

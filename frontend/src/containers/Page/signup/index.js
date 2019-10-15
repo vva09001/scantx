@@ -444,7 +444,7 @@ class SignUp extends Component {
                         onChange={e => this.onChange(e)}
                       />
                     </div>
-                    <div>
+                    {/* <div>
                       <TextField
                         label="Status"
                         margin="normal"
@@ -453,7 +453,7 @@ class SignUp extends Component {
                         value={this.state.params.status}
                         onChange={e => this.onChange(e)}
                       />
-                    </div>
+                    </div> */}
                   </DialogContent>
                   <DialogActions>
                     <Button

@@ -27,6 +27,7 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import TablePagination from "@material-ui/core/TablePagination";
 import { scanDataActions } from "redux/actions";
 import { Date, Time } from "helpers/moment";
+import moment from 'moment'
 import { permission } from "helpers/user";
 import _ from "lodash";
 import "styles/style.css";
@@ -83,7 +84,7 @@ class ScanData extends Component {
               checked={_.includes(this.state.multiId, item.scanId)}
             />
           </TableCell>
-          <TableCell>{Date(item.createdOn)}</TableCell>
+          <TableCell>{moment(item.createdOn).format('MM/DD/YYYY')}</TableCell>
           <TableCell>{Time(item.createdOn)}</TableCell>
           <TableCell>{item.payload}</TableCell>
           {item.status === 0 && <TableCell>Received</TableCell>}

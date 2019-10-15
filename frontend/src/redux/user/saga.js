@@ -52,7 +52,7 @@ export function* registerUserSagas(data) {
   const { params, success, fail } = data;
   try {
     const res = yield registerUser(params);
-    if (res.data.status === "200") {
+    if (res.status === 200) {
       yield success();
       yield put({
         type: actions.REGISTER_USER_SUCCESS
