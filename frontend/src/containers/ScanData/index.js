@@ -33,6 +33,8 @@ import { permission } from "helpers/user";
 import _ from "lodash";
 import "styles/style.css";
 
+let time = null;
+
 class ScanData extends Component {
   constructor(props) {
     super(props);
@@ -54,7 +56,24 @@ class ScanData extends Component {
   }
   componentDidMount() {
     this.props.getScanData(this.onSuccess, this.onSuccess);
+    this.onSync();
   }
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.key !== prevState.key) {
+      this.onSync();
+    }
+  }
+  onSync = () => {
+    if (this.state.key === "") {
+      time = setInterval(async () => {
+        await this.props.getScanData(this.onSuccess, this.onSuccess);
+      }, 5000);
+    }
+    if (this.state.key !== "") {
+      clearInterval(time);
+    }
+  };
+
   onSuccess = () => {
     this.setState({
       loading: false
@@ -401,13 +420,13 @@ class ScanData extends Component {
 }
 const mapSateToProps = state => {
   return {
-    datas: state.ScanData.list,
+    datas: state.ScanData.listData,
     profile: state.Auth.profile
   };
 };
 
 const mapDispatchToProps = {
-  getScanData: scanDataActions.getScanData,
+  getScanData: scanDataActions.getListData,
   deleteScanData: scanDataActions.delete,
   deleteMultiScanData: scanDataActions.deleteMulti,
   editScanData: scanDataActions.edit,

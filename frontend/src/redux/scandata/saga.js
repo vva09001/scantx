@@ -169,6 +169,26 @@ export function* searchSaga(data) {
   }
 }
 
+export function* listScanDataSagas(data) {
+  const { success, fail } = data;
+  try {
+    const token = yield select(getToken);
+    const res = yield getScanData(token);
+    if (res.data.status === "200") {
+      yield success();
+      yield put({
+        type: actions.GET_LIST_DATA_SUCCESS,
+        response: res.data.data
+      });
+    } else {
+      yield Error(res.data.message);
+      yield fail(res.data.message);
+    }
+  } catch (error) {
+    yield fail("Cannot connect to Server");
+  }
+}
+
 export default function* rootSaga() {
   yield all([
     yield takeLatest(actions.GET_SCAN_DATA_REQUEST, getScanDataSagas),
@@ -181,6 +201,7 @@ export default function* rootSaga() {
     ),
     yield takeLatest(actions.GET_QR_REQUEST, getQrSagas),
     yield takeLatest(actions.DOWNLOAD_SCAN_DATA_REQUEST, downloadScanDataSagas),
-    yield takeEvery(actions.SEARCH_DATA_REQUEST, searchSaga)
+    yield takeEvery(actions.SEARCH_DATA_REQUEST, searchSaga),
+    yield takeLatest(actions.GET_LIST_DATA_REQUEST, listScanDataSagas)
   ]);
 }

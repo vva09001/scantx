@@ -64,6 +64,14 @@ const actions = {
   search: key => ({
     type: actions.SEARCH_DATA_REQUEST,
     key
-  })
+  }),
+
+  GET_LIST_DATA_REQUEST: "GET_LIST_DATA_REQUEST",
+  GET_LIST_DATA_SUCCESS: "GET_LIST_DATA_SUCCESS",
+  getListData: (success, fail) => ({
+    type: actions.GET_LIST_DATA_REQUEST,
+    success,
+    fail
+  }),
 };
 export default actions;

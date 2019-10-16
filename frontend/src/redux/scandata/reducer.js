@@ -4,7 +4,8 @@ import _ from "lodash";
 const initState = {
   list: [],
   qr: "",
-  download: ""
+  download: "",
+  listData: []
 };
 
 export default function scanDataReducer(state = initState, action) {
@@ -51,13 +52,18 @@ export default function scanDataReducer(state = initState, action) {
     case actions.SEARCH_DATA_SUCCESS:
       return {
         ...state,
-        list: _.filter(action.response, item => {
+        listData: _.filter(action.response, item => {
           if (action.key !== "") {
             return item.stationName === action.key;
           } else {
             return item;
           }
         })
+      };
+    case actions.GET_LIST_DATA_SUCCESS:
+      return {
+        ...state,
+        listData: action.response
       };
     default:
       return state;
