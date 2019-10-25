@@ -9,6 +9,7 @@ namespace Scanx.Common
         public string CreatedOn { get; set; }
         public string Payload { get; set; }
         public string DataType { get; set; }
+        public string StationName { get; set; }
         public string FileName { get; set; }
         public int? Status { get; set; }
     }
