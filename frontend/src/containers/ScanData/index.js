@@ -21,15 +21,19 @@ import {
   TableHead,
   TableRow
 } from "components/uielements/table";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
+import Paper from "@material-ui/core/Paper";
+import InputBase from "@material-ui/core/InputBase";
+import IconButton from "@material-ui/core/IconButton";
+import SearchIcon from "@material-ui/icons/Search";
 import TablePagination from "@material-ui/core/TablePagination";
 import { scanDataActions } from "redux/actions";
 import { Date, Time } from "helpers/moment";
+import moment from "moment";
 import { permission } from "helpers/user";
 import _ from "lodash";
 import "styles/style.css";
+
+let time = null;
 
 class ScanData extends Component {
   constructor(props) {
@@ -46,18 +50,36 @@ class ScanData extends Component {
       selectAlert: false,
       params: {},
       page: 0,
-      rowsPerPage: 20
+      rowsPerPage: 20,
+      key: ""
     };
   }
   componentDidMount() {
     this.props.getScanData(this.onSuccess, this.onSuccess);
+    this.onSync();
   }
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.key !== prevState.key) {
+      this.onSync();
+    }
+  }
+  onSync = () => {
+    if (this.state.key === "") {
+      time = setInterval(async () => {
+        await this.props.getScanData(this.onSuccess, this.onSuccess);
+      }, 5000);
+    }
+    if (this.state.key !== "") {
+      clearInterval(time);
+    }
+  };
+
   onSuccess = () => {
     this.setState({
       loading: false
     });
   };
-  
+
   handleChangePage = (event, newPage) => {
     this.setState({
       page: newPage
@@ -73,7 +95,8 @@ class ScanData extends Component {
 
   renderData = () => {
     const { page, rowsPerPage } = this.state;
-    return this.props.datas
+    const { datas } = this.props;
+    return datas
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       .map(item => (
         <TableRow key={item.scanId}>
@@ -83,7 +106,8 @@ class ScanData extends Component {
               checked={_.includes(this.state.multiId, item.scanId)}
             />
           </TableCell>
-          <TableCell>{Date(item.createdOn)}</TableCell>
+          <TableCell>{item.stationName}</TableCell>
+          <TableCell>{moment(item.createdOn).format("MM/DD/YYYY")}</TableCell>
           <TableCell>{Time(item.createdOn)}</TableCell>
           <TableCell>{item.payload}</TableCell>
           {item.status === 0 && <TableCell>Received</TableCell>}
@@ -240,6 +264,15 @@ class ScanData extends Component {
     );
   };
 
+  search = e => {
+    if (e.key === "Enter") {
+      this.props.search(this.state.key);
+    }
+  };
+  onSearch = () => {
+    this.props.search(this.state.key);
+  };
+
   render() {
     const { profile } = this.props;
     if (this.state.loading) {
@@ -250,14 +283,18 @@ class ScanData extends Component {
         <FullColumn>
           <Papersheet title="Scan Data">
             <Grid container justify="flex-end">
-              <Grid item xs={3}>
-                <FormControl variant="outlined" margin="dense" fullWidth>
-                  <Select native input={<OutlinedInput />}>
-                    <option value="">None</option>
-                    <option value="PC_M3">PC_M3</option>
-                  </Select>
-                </FormControl>
-              </Grid>
+              <Paper>
+                <IconButton aria-label="menu">{/* <MenuIcon /> */}</IconButton>
+                <InputBase
+                  onChange={e => this.setState({ key: e.target.value })}
+                  onKeyDown={e => this.search(e)}
+                  placeholder="Search"
+                  inputProps={{ "aria-label": "Search" }}
+                />
+                <IconButton aria-label="search" onClick={this.onSearch}>
+                  <SearchIcon />
+                </IconButton>
+              </Paper>
             </Grid>
             <Table>
               <TableHead>
@@ -271,6 +308,7 @@ class ScanData extends Component {
                       }
                     />
                   </TableCell>
+                  <TableCell>Station Name</TableCell>
                   <TableCell>Date</TableCell>
                   <TableCell>Time</TableCell>
                   <TableCell>Data</TableCell>
@@ -382,18 +420,19 @@ class ScanData extends Component {
 }
 const mapSateToProps = state => {
   return {
-    datas: state.ScanData.list,
+    datas: state.ScanData.listData,
     profile: state.Auth.profile
   };
 };
 
 const mapDispatchToProps = {
-  getScanData: scanDataActions.getScanData,
+  getScanData: scanDataActions.getListData,
   deleteScanData: scanDataActions.delete,
   deleteMultiScanData: scanDataActions.deleteMulti,
   editScanData: scanDataActions.edit,
   addScanData: scanDataActions.add,
-  downloadScanData: scanDataActions.download
+  downloadScanData: scanDataActions.download,
+  search: scanDataActions.search
 };
 export default connect(
   mapSateToProps,
