@@ -8,7 +8,7 @@ import TextField from "../../../components/uielements/textfield";
 import Scrollbars from "../../../components/utility/customScrollBar";
 import SignInStyleWrapper from "./signin.style";
 import { CircularProgress } from "components/uielements/progress";
-import Link from "@material-ui/core/Link";
+import { Link } from "react-router-dom";
 
 const { login } = authAction;
 class SignIn extends Component {
@@ -128,11 +128,7 @@ class SignIn extends Component {
                 </div>
               )}
             </div>
-            <Link
-              href="/signup"
-              variant="body2"
-              margin="normal"
-            >
+            <Link to="/signup" variant="body2" margin="normal">
               Register
             </Link>
           </Scrollbars>
