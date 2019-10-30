@@ -14,7 +14,6 @@ import {
   Icon
 } from "./topbarDropdown.style";
 import authAction from "../../redux/auth/actions";
-import Image from "../../images/user.jpg";
 import { role } from "helpers/user";
 
 const { logout } = authAction;
@@ -54,7 +53,10 @@ class TopbarUser extends Component {
       <TopbarDropdown>
         <UserInformation>
           <div className="userImage">
-            <img src={Image} alt="user" />
+            <img
+              src="http://www.myiconfinder.com/uploads/iconsets/256-256-5d8cab7b01ffef290b73909d06d92705.png"
+              alt="user"
+            />
           </div>
 
           <div className="userDetails">
@@ -66,18 +68,6 @@ class TopbarUser extends Component {
         </UserInformation>
 
         <SettingsList>
-          <a href="#!" className="dropdownLink">
-            <Icon>settings</Icon>
-            <IntlMessages id="themeSwitcher.settings" />
-          </a>
-          <a href="#!" className="dropdownLink">
-            <Icon>help</Icon>
-            <IntlMessages id="sidebar.feedback" />
-          </a>
-          <a href="#!" className="dropdownLink">
-            <Icon>feedback</Icon>
-            <IntlMessages id="topbar.help" />
-          </a>
           <Link to="/" onClick={this.props.logout} className="dropdownLink">
             <Icon>input</Icon>
             <IntlMessages id="topbar.logout" />
@@ -94,7 +84,10 @@ class TopbarUser extends Component {
           onClick={this.handleVisibleChange}
         >
           <div className="userImgWrapper">
-            <img src={Image} alt="#" />
+            <img
+              src="http://www.myiconfinder.com/uploads/iconsets/256-256-5d8cab7b01ffef290b73909d06d92705.png"
+              alt="#"
+            />
           </div>
         </IconButtons>
 

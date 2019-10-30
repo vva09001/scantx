@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import signinImg from "../../../images/signin.svg";
+import signinImg from "../../../assets/svg/singup.svg";
 import TextField from "../../../components/uielements/textfield";
 import Scrollbars from "../../../components/utility/customScrollBar";
 import SignUpStyleWrapper from "./signup.style";

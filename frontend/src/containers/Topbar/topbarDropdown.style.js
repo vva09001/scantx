@@ -26,10 +26,6 @@ const IconButtons = styled(IconButton)`
   .userImgWrapper {
     width: 35px;
     height: 35px;
-    display: inline-block;
-    overflow: hidden;
-    border-radius: 50%;
-
     img {
       max-width: 100%;
     }
@@ -49,7 +45,6 @@ const TopbarDropdown = styled.div`
   background-color: #ffffff;
   margin: 0;
   width: 290px;
-  height: 260px;
   min-width: 160px;
   flex-shrink: 0;
   ${borderRadius('2px')};

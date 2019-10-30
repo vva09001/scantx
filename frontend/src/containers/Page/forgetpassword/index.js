@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../../../components/uielements/button';
-import signinImg from '../../../images/signup.svg';
+// import signinImg from '../../../images/signup.svg';
 import TextField from '../../../components/uielements/textfield';
 import IntlMessages from '../../../components/utility/intlMessages';
 import SignInStyleWrapper from './forgotPassword.style';
@@ -12,7 +12,7 @@ class ForgotPassword extends Component {
       <SignInStyleWrapper className="mateSignInPage">
         <div className="mateSignInPageImgPart">
           <div className="mateSignInPageImg">
-            <img src={signinImg} alt="Kiwi standing on oval" />
+            {/* <img src={signinImg} alt="Kiwi standing on oval" /> */}
           </div>
         </div>
 
