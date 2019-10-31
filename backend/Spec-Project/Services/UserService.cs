@@ -1,15 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using Scanx.Common;
 using Scanx.Web.Models;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 
 namespace Scanx.Web.Services
 {
     public interface IUserService
     {
-        TblUsers Authenticate(string username, string password);
+        UserModel Authenticate(string username, string password, Helpers.AppSettings appSettings);
         List<TblUsers> GetAll();
         ResponseModel GetUser();
         TblUsers GetUser(string userid);
@@ -38,7 +42,7 @@ namespace Scanx.Web.Services
             _context = context;
         }
 
-        public TblUsers Authenticate(string username, string password)
+        public UserModel Authenticate(string username, string password, Helpers.AppSettings appSettings)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return null;
@@ -54,7 +58,45 @@ namespace Scanx.Web.Services
                 return null;
 
             // authentication successful
-            return user;
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            if (appSettings.Secret == null)
+            {
+                appSettings.Secret = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJmaXJzdG5hbWUiOiJ0dXllbiIsImxhc3RuYW1lIjoibmd1eWVuIiwidXNlcm5hbWUiOiJnZWFyMjE5IiwicGFzc3dvcmQiOiIxMjMifQ.a9jA6viURjMOzqeT58R39ORgmNovPp0OkbGp9VkaoVg";
+            }
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+            user.Token = tokenString.Substring(0, 25);
+            _context.Update(user);
+            _context.SaveChanges();
+            var companyName = string.Empty;
+            var company = _context.TblCustomer.FirstOrDefault(p => p.Cid == user.Cid);
+            if(company != null)
+            {
+                companyName = company.Name;
+            }
+            return new UserModel {
+                Id = user.Id,
+                Username = user.UserName,
+                FamilyName = user.FamilyName,
+                GivenName = user.GivenName,
+                CompanyName = companyName,
+                Mail = user.Email,
+                TypeOfAccount = user.TypeOfAccount,
+                RoleID = user.RoleId,
+                Authorization = user.Authorization,
+                Token = user.Token
+            };
         }
 
         public List<TblUsers> GetAll()
@@ -78,7 +120,7 @@ namespace Scanx.Web.Services
                 var role = GetRole(int.Parse(context.User.Identity.Name));
                 if (role == Constant.Users.Superadmin)
                 {
-                    var userss = _context.TblUsers.Where(p => p.DeletedOn == null).Select(p=> new UsersModel
+                    var userss = _context.TblUsers.Where(p => p.DeletedOn == null).Select(p => new UsersModel
                     {
                         Id = p.Id,
                         UserName = p.UserName,
@@ -151,7 +193,7 @@ namespace Scanx.Web.Services
             if (userNew.TypeOfAccount == "Private" || userNew.TypeOfAccount == "Test")
             {
                 Guid g = Guid.NewGuid();
-                
+
                 var tbluser = new TblUsers
                 {
 
@@ -210,7 +252,7 @@ namespace Scanx.Web.Services
             if (userNew.TypeOfAccount == "Commercial")
             {
                 Guid g = Guid.NewGuid();
-                
+
                 var tbluser = new TblUsers
                 {
 
@@ -293,39 +335,39 @@ namespace Scanx.Web.Services
                 Cid = GetCID(context.User.Identity.Name),
                 RoleId = userNew.RoleID
             };
-                try
-                {
-                    if (string.IsNullOrWhiteSpace(password))
-                    {
-                        res.Data = "";
-                        res.Status = "500";
-                        res.Message = "Password is required";
-                        return res;
-                    }
-                    if (_context.TblUsers.Any(x => x.UserName == userNew.UserName && x.DeletedOn == null))
-                    {
-                        res.Data = "";
-                        res.Status = "500";
-                        res.Message = "Username \"" + userNew.UserName + "\" is already taken";
-                        return res;
-                    }
-                    byte[] passwordHash, passwordSalt;
-                    CreatePasswordHash(password, out passwordHash, out passwordSalt);
-
-                    tbluser.PasswordHash = passwordHash;
-                    tbluser.PasswordSalt = passwordSalt;
-
-                    _context.TblUsers.Add(tbluser);
-                    _context.SaveChanges();
-                    res.Data = tbluser;
-
-                }
-                catch (Exception ex)
+            try
+            {
+                if (string.IsNullOrWhiteSpace(password))
                 {
                     res.Data = "";
                     res.Status = "500";
-                    res.Message = ex.Message;
+                    res.Message = "Password is required";
+                    return res;
                 }
+                if (_context.TblUsers.Any(x => x.UserName == userNew.UserName && x.DeletedOn == null))
+                {
+                    res.Data = "";
+                    res.Status = "500";
+                    res.Message = "Username \"" + userNew.UserName + "\" is already taken";
+                    return res;
+                }
+                byte[] passwordHash, passwordSalt;
+                CreatePasswordHash(password, out passwordHash, out passwordSalt);
+
+                tbluser.PasswordHash = passwordHash;
+                tbluser.PasswordSalt = passwordSalt;
+
+                _context.TblUsers.Add(tbluser);
+                _context.SaveChanges();
+                res.Data = tbluser;
+
+            }
+            catch (Exception ex)
+            {
+                res.Data = "";
+                res.Status = "500";
+                res.Message = ex.Message;
+            }
             return res;
 
         }

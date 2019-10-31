@@ -114,7 +114,7 @@ namespace Scanx.Web
                 app.UseHsts();
             }
             app.UseAuthentication();
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseMvc();
             app.UseStaticFiles();
 

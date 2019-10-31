@@ -41,47 +41,34 @@ namespace Scanx.Web.Controllers
         [HttpPost("authenticate")]
         public IActionResult Authenticate(string username, string password)
         {
-            var user = _userService.Authenticate(username, password);
-
-            if (user == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            if (_appSettings.Secret == null)
+            try
             {
-                _appSettings.Secret = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJmaXJzdG5hbWUiOiJ0dXllbiIsImxhc3RuYW1lIjoibmd1eWVuIiwidXNlcm5hbWUiOiJnZWFyMjE5IiwicGFzc3dvcmQiOiIxMjMifQ.a9jA6viURjMOzqeT58R39ORgmNovPp0OkbGp9VkaoVg";
-            }
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
+                var user = _userService.Authenticate(username, password, _appSettings);
+
+                if (user == null)
+                    return BadRequest(new { message = "Username or password is incorrect" });
+
+                var companyName = string.Empty;
+
+                // return basic user info (without password) and token to store client side
+                return Ok(new
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-            DataContext db = new DataContext();
-            user.Token = tokenString.Substring(0, 25);
-            db.Update(user);
-            db.SaveChanges();
-            var x = db.TblCustomer.FirstOrDefault(p=>p.Cid == user.Cid);
-            // return basic user info (without password) and token to store client side
-            return Ok(new
+                    Id = user.Id,
+                    Username = user.Username,
+                    FamilyName = user.FamilyName,
+                    GivenName = user.GivenName,
+                    CompanyName = companyName,
+                    Mail = user.Mail,
+                    TypeOfAccount = user.TypeOfAccount,
+                    RoleID = user.RoleID,
+                    Authorization = user.Authorization,
+                    Token = user.Token
+                });
+            }
+            catch (Exception ex)
             {
-                Id = user.Id,
-                Username = user.UserName,
-                FamilyName = user.FamilyName,
-                GivenName = user.GivenName,
-                CompanyName = x.Name,
-                Mail = user.Email,
-                TypeOfAccount = user.TypeOfAccount,
-                RoleID= user.RoleId,
-                Authorization = user.Authorization,
-                Token = tokenString
-            });
+                return BadRequest(new { message = ex.Message + ex.StackTrace });
+            }
         }
 
         [AllowAnonymous]
@@ -129,8 +116,9 @@ namespace Scanx.Web.Controllers
                 // return error message if there was an exception
                 //return BadRequest(new { message = ex.Message });
                 res.Message = "false";
-               
-            } return res;
+
+            }
+            return res;
         }
 
         [Authorize]
@@ -159,7 +147,7 @@ namespace Scanx.Web.Controllers
         public ResponseModel GetById(int id)
         {
             var res = _userService.GetById(id);
-            
+
             return res;
         }
 
@@ -172,14 +160,14 @@ namespace Scanx.Web.Controllers
         {
             // map dto to entity and set id
             //var user = _mapper.Map<TblUsers>(userDto);
-            
+
             ResponseModel res = (new ResponseModel
             {
                 Data = "",
                 Status = "200",
                 Message = ""
             });
-            
+
             var password = userDto.Password;
             if (password != null && password != "")
             {
@@ -234,7 +222,7 @@ namespace Scanx.Web.Controllers
                     UserName = userDto.UserName,
                     RoleID = userDto.RoleID
                 };
-                
+
                 //user.Id = id;
 
                 try
