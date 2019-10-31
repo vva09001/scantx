@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import signinImg from "../../../images/signup.svg";
+import signinImg from "../../../assets/svg/singup.svg";
 import Button from "../../../components/uielements/button";
 import authAction from "../../../redux/auth/actions";
 import TextField from "../../../components/uielements/textfield";
@@ -32,7 +32,8 @@ class SignIn extends Component {
     }
   }
 
-  handleLogin = () => {
+  handleLogin = e => {
+    e.preventDefault();
     const { login } = this.props;
     const { username, password } = this.state;
     this.setState(
@@ -84,7 +85,7 @@ class SignIn extends Component {
             <img src={signinImg} alt="Kiwi standing on oval" />
           </div>
         </div>
-        <div className="mateSignInPageContent">
+        <form className="mateSignInPageContent" onSubmit={this.handleLogin}>
           <Scrollbars style={{ height: "100%" }}>
             <div>
               {this.state.error.status && <h3>{this.state.error.message}</h3>}
@@ -116,23 +117,23 @@ class SignIn extends Component {
               ) : (
                 <div className="mateLoginSubmit">
                   <Button
-                    type="primary"
                     variant="contained"
                     color="primary"
                     margin="normal"
+                    type="submit"
+                    style={{ margin: "5px 0" }}
                     fullWidth
-                    onClick={this.handleLogin}
                   >
                     Login
                   </Button>
                 </div>
               )}
             </div>
-            <Link to="/signup" variant="body2" margin="normal">
+            <Link to="/signup" variant="body2" margin="normal" className="link">
               Register
             </Link>
           </Scrollbars>
-        </div>
+        </form>
       </SignInStyleWrapper>
     );
   }

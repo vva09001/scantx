@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Image from '../../../images/pages/404.png';
+// import Image from '../../../images/pages/404.png';
 import IntlMessages from '../../../components/utility/intlMessages';
 import FiveZeroFiveStyleWrapper from './505.style';
 
@@ -26,7 +26,7 @@ class FiveHundredFive extends React.Component {
         </div>
 
         <div className="mate500Artwork">
-          <img alt="#" src={Image} />
+          {/* <img alt="#" src={Image} /> */}
         </div>
       </FiveZeroFiveStyleWrapper>
     );

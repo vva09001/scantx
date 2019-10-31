@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Image from '../../../images/pages/404.png';
+// import Image from '../../../images/pages/404.png';
 import IntlMessages from '../../../components/utility/intlMessages';
 import FourZeroFourStyleWrapper from './404.style';
 
@@ -27,7 +27,7 @@ class FourZeroFour extends Component {
         </div>
 
         <div className="mate404Artwork">
-          <img alt="#" src={Image} />
+          {/* <img alt="#" src={Image} /> */}
         </div>
       </FourZeroFourStyleWrapper>
     );

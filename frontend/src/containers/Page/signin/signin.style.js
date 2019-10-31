@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import { palette } from 'styled-theme';
-import WithDirection from '../../../settings/withDirection';
+import styled from "styled-components";
+import { palette } from "styled-theme";
+import WithDirection from "../../../settings/withDirection";
 
 const SignInStyleWrapper = styled.div`
   display: flex;
@@ -55,6 +55,9 @@ const SignInStyleWrapper = styled.div`
       }
     }
   }
+  .link {
+    text-decoration: none;
+  }
   .mateSignInPageContent {
     width: 50%;
     overflow-y: scroll;
@@ -106,13 +109,13 @@ const SignInStyleWrapper = styled.div`
         transition: all 0.3s ease;
         outline: 0;
         &:hover {
-          border-bottom: 2px solid ${palette('indigo', 6)};
-          color: ${palette('indigo', 6)};
+          border-bottom: 2px solid ${palette("indigo", 6)};
+          color: ${palette("indigo", 6)};
           cursor: pointer;
         }
         &.active {
-          border-bottom: 2px solid ${palette('indigo', 6)};
-          color: ${palette('indigo', 6)};
+          border-bottom: 2px solid ${palette("indigo", 6)};
+          color: ${palette("indigo", 6)};
           padding: 16px 32px;
         }
       }
@@ -157,18 +160,18 @@ const SignInStyleWrapper = styled.div`
           > div {
             input {
               &::-webkit-input-placeholder {
-                color: ${palette('grayscale', 0)};
+                color: ${palette("grayscale", 0)};
               }
 
               &:-moz-placeholder {
-                color: ${palette('grayscale', 0)};
+                color: ${palette("grayscale", 0)};
               }
 
               &::-moz-placeholder {
-                color: ${palette('grayscale', 0)};
+                color: ${palette("grayscale", 0)};
               }
               &:-ms-input-placeholder {
-                color: ${palette('grayscale', 0)};
+                color: ${palette("grayscale", 0)};
               }
             }
           }
@@ -186,7 +189,7 @@ const SignInStyleWrapper = styled.div`
 
         button {
           min-height: 0;
-          background: ${palette('indigo', 6)};
+          background: ${palette("indigo", 6)};
           color: #fff;
           box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2),
             0px 2px 2px 0px rgba(0, 0, 0, 0.14),
@@ -275,18 +278,18 @@ const SignInStyleWrapper = styled.div`
             }
 
             &:hover {
-              background-color: ${palette('pages', 11)};
+              background-color: ${palette("pages", 11)};
             }
           }
 
           &.btnGooglePlus {
-            background-color: ${palette('pages', 8)};
+            background-color: ${palette("pages", 8)};
             .mateLoginOtherIcon {
               background: #c9481f;
             }
 
             &:hover {
-              background-color: ${palette('pages', 12)};
+              background-color: ${palette("pages", 12)};
             }
           }
 
@@ -301,12 +304,12 @@ const SignInStyleWrapper = styled.div`
             }
 
             &:hover {
-              background-color: ${palette('pages', 13)};
+              background-color: ${palette("pages", 13)};
             }
           }
 
           &.btnFirebase {
-            background-color: ${palette('pages', 10)};
+            background-color: ${palette("pages", 10)};
             margin-top: 20px;
             @media (max-width: 530px) {
               margin-top: 0px;
@@ -316,7 +319,7 @@ const SignInStyleWrapper = styled.div`
             }
 
             &:hover {
-              background-color: ${palette('pages', 14)};
+              background-color: ${palette("pages", 14)};
             }
           }
         }
