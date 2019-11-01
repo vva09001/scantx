@@ -1,19 +1,19 @@
-import { all, takeEvery, put } from 'redux-saga/effects';
-import { push } from 'react-router-redux';
-import { clearToken, getToken } from '../../helpers/utility';
-import { login, register } from 'services/auth';
-import actions from './actions';
+import { all, takeEvery, put } from "redux-saga/effects";
+import { push } from "react-router-redux";
+import { clearToken, getToken } from "../../helpers/utility";
+import { login, register } from "services/auth";
+import actions from "./actions";
 
 export function* loginRequest(data) {
   const { params, success, fail } = data;
   try {
     const res = yield login(params);
-    if (res.status === 200) {
+    if (res.data.status === "200") {
       yield put({
         type: actions.LOGIN_SUCCESS,
-        payload: { 
-          token: res.data.token,
-          profile: res.data
+        payload: {
+          token: res.data.data.token,
+          profile: res.data.data
         }
       });
       yield success();
@@ -21,19 +21,19 @@ export function* loginRequest(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail('Cannot connect to Server');
+    yield fail("Cannot connect to Server");
   }
 }
 
 export function* loginSuccess({ payload }) {
-  yield localStorage.setItem('id_token', payload.token);
+  yield localStorage.setItem("id_token", payload.token);
 }
 
 export function* loginError() {}
 
 export function* logout() {
   clearToken();
-  yield put(push('/'));
+  yield put(push("/"));
 }
 export function* checkAuthorization() {
   const token = getToken();
@@ -41,7 +41,7 @@ export function* checkAuthorization() {
     yield put({
       type: actions.LOGIN_SUCCESS,
       payload: { token },
-      profile: 'Profile',
+      profile: "Profile"
     });
   }
 }
@@ -56,7 +56,7 @@ export function* registerSaga(data) {
       yield fail(res.data.message);
     }
   } catch (error) {
-    yield fail('Cannot connect to Server');
+    yield fail("Cannot connect to Server");
   }
 }
 
@@ -67,6 +67,6 @@ export default function* rootSaga() {
     yield takeEvery(actions.LOGIN_SUCCESS, loginSuccess),
     yield takeEvery(actions.LOGIN_ERROR, loginError),
     yield takeEvery(actions.LOGOUT, logout),
-    yield takeEvery(actions.REGISTER_REQUEST, registerSaga),
+    yield takeEvery(actions.REGISTER_REQUEST, registerSaga)
   ]);
 }
