@@ -44,13 +44,9 @@ namespace Scanx.Web.Services
                 Status = "200",
                 Message = ""
             };
-            string mypath = @"h:\root\tmp\";
-            string mypath1 = @"D:\Git\scantx\spec-project\scantx\backend\Spec-Project\";
             try
             {
-
                 DataContext db = new DataContext();
-
                 int role = _userService.GetRole(Uid);
 
                 List<ScanDataModel> datascan = new List<ScanDataModel>();
@@ -61,7 +57,7 @@ namespace Scanx.Web.Services
                     datascan = db.TblScanData.Select(o => new ScanDataModel
                     {
                         Uid = o.Uid,
-                        CreatedOn = new DateTime(o.CreatedOn.Value.Ticks).ToString("o"),
+                        CreatedOn = o.CreatedOn != null ? new DateTime(o.CreatedOn.Value.Ticks).ToString("o") : string.Empty,
                         DataType = o.DataType,
                         FileName = o.FileName,
                         Payload = o.Payload,
@@ -87,7 +83,7 @@ namespace Scanx.Web.Services
                     datascan = db.TblScanData.Where(p => p.Uid == int.Parse(context.User.Identity.Name) && p.DeletedOn == null).Select(o => new ScanDataModel
                     {
                         Uid = o.Uid,
-                        CreatedOn = new DateTime(o.CreatedOn.Value.Ticks).ToString("o"),
+                        CreatedOn = o.CreatedOn != null ? new DateTime(o.CreatedOn.Value.Ticks).ToString("o") : string.Empty,
                         DataType = o.DataType,
                         FileName = o.FileName,
                         Payload = o.Payload,
@@ -109,7 +105,8 @@ namespace Scanx.Web.Services
 
                 string finalPath = Directory.GetCurrentDirectory() + "\\tmp\\scandata_" + now + ".csv";
                 cc.Write(datascan, finalPath, outputFileDescription);
-                res.Data = "scantx.miracles.vn/mycsv/scandata_" + now + ".csv";
+                res.Data = _httpContextAccessor.HttpContext.Request.Host.Value.ToString()
+                 + "/mycsv/scandata_" + now + ".csv"; 
                 res.Message = "";
                 res.Status = "200";
 
@@ -117,7 +114,7 @@ namespace Scanx.Web.Services
             catch (Exception ex)
             {
                 res.Data = "";
-                res.Message = ex.Message;
+                res.Message = ex.Message;// + ". Trace: " + ex.StackTrace;
                 res.Status = "500";
             }
             return res;

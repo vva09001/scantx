@@ -25,7 +25,7 @@ namespace Scanx.Web.Controllers
 
 
 
-        //[Authorize]
+        [Authorize]
         [DisableCors]
         [HttpGet("get-company")]
         public IActionResult getCompany()
