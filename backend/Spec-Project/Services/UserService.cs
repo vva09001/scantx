@@ -95,7 +95,7 @@ namespace Scanx.Web.Services
                 TypeOfAccount = user.TypeOfAccount,
                 RoleID = user.RoleId,
                 Authorization = user.Authorization,
-                Token = user.Token
+                Token = tokenString
             };
         }
 

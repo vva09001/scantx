@@ -17,7 +17,7 @@ namespace Scanx.Web.Controllers
             _IScanDataService = scandataService;
         }
 
-        //[Authorize]
+        [Authorize]
         [DisableCors]
         [HttpGet("convert-scandata-to-csv")]
         public IActionResult ConvertTblScanDataToCSV(int uid)
