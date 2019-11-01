@@ -30,10 +30,12 @@ namespace Scanx.Web.Services
     {
         IHttpContextAccessor _httpContextAccessor;
         private IUserService _userService;
-        public ScanDataService(IHttpContextAccessor httpContextAccessor, IUserService userService)
+        private DataContext _context;
+        public ScanDataService(IHttpContextAccessor httpContextAccessor, IUserService userService, DataContext context)
         {
             _httpContextAccessor = httpContextAccessor;
             _userService = userService;
+            _context = context;
         }
 
         public ResponseModel ConvertTblScanDataToCSV(int Uid)
@@ -46,7 +48,6 @@ namespace Scanx.Web.Services
             };
             try
             {
-                DataContext db = new DataContext();
                 int role = _userService.GetRole(Uid);
 
                 List<ScanDataModel> datascan = new List<ScanDataModel>();
@@ -54,7 +55,7 @@ namespace Scanx.Web.Services
                 if (role == Constant.Users.Superadmin)
                 {
                     datascan.Clear();
-                    datascan = db.TblScanData.Select(o => new ScanDataModel
+                    datascan = _context.TblScanData.Select(o => new ScanDataModel
                     {
                         Uid = o.Uid,
                         CreatedOn = o.CreatedOn != null ? new DateTime(o.CreatedOn.Value.Ticks).ToString("o") : string.Empty,
@@ -80,7 +81,7 @@ namespace Scanx.Web.Services
                 else if (role == Constant.Users.Admin || role == Constant.Users.User)
                 {
                     datascan.Clear();
-                    datascan = db.TblScanData.Where(p => p.Uid == int.Parse(context.User.Identity.Name) && p.DeletedOn == null).Select(o => new ScanDataModel
+                    datascan = _context.TblScanData.Where(p => p.Uid == int.Parse(context.User.Identity.Name) && p.DeletedOn == null).Select(o => new ScanDataModel
                     {
                         Uid = o.Uid,
                         CreatedOn = o.CreatedOn != null ? new DateTime(o.CreatedOn.Value.Ticks).ToString("o") : string.Empty,
@@ -106,7 +107,7 @@ namespace Scanx.Web.Services
                 string finalPath = Directory.GetCurrentDirectory() + "\\tmp\\scandata_" + now + ".csv";
                 cc.Write(datascan, finalPath, outputFileDescription);
                 res.Data = _httpContextAccessor.HttpContext.Request.Host.Value.ToString()
-                 + "/mycsv/scandata_" + now + ".csv"; 
+                 + "/mycsv/scandata_" + now + ".csv";
                 res.Message = "";
                 res.Status = "200";
 
@@ -130,21 +131,38 @@ namespace Scanx.Web.Services
             });
             var conts = _httpContextAccessor.HttpContext;
             var role = _userService.GetRole(int.Parse(conts.User.Identity.Name));
-            using (DataContext db = new DataContext())
+            if (role == Constant.Users.Superadmin)
             {
-                if (role == Constant.Users.Superadmin)
+                var rs = _context.TblScanData.Where(p => p.DeletedOn == null).OrderByDescending(p => p.CreatedOn)
+                    .Select(o => new ScanDataModel { 
+                        CreatedOn = o.CreatedOn.Value.ToString("yyyy-MM-dd HH:mm tt"),
+                        DataType = o.DataType,
+                        FileName = o.FileName,
+                        Payload = o.Payload,
+                        ScanId = o.ScanId,
+                        StationName = o.StationName,
+                        Status = o.Status,
+                        Uid = o.Uid
+                    }).ToList();
+                res.Data = rs;
+            }
+            else
+            {
+                if (role == Constant.Users.Admin || role == Constant.Users.User)
                 {
-                    var rs = db.TblScanData.Where(p => p.DeletedOn == null).OrderByDescending(p => p.CreatedOn).ToList();
-                    res.Data = rs;
-                }
-                else
-                {
-                    if (role == Constant.Users.Admin || role == Constant.Users.User)
+                    var uid = int.Parse(conts.User.Identity.Name);
+                    var rs = _context.TblScanData.Where(p => p.DeletedOn == null && p.Uid == uid).OrderByDescending(p => p.CreatedOn).Select(o => new ScanDataModel
                     {
-                        var uid = int.Parse(conts.User.Identity.Name);
-                        var rs = db.TblScanData.Where(p => p.DeletedOn == null && p.Uid == uid).OrderByDescending(p => p.CreatedOn).ToList();
-                        res.Data = rs;
-                    }
+                        CreatedOn = o.CreatedOn.ToString(),
+                        DataType = o.DataType,
+                        FileName = o.FileName,
+                        Payload = o.Payload,
+                        ScanId = o.ScanId,
+                        StationName = o.StationName,
+                        Status = o.Status,
+                        Uid = o.Uid
+                    }).ToList();
+                    res.Data = rs;
                 }
             }
             return res;
@@ -159,32 +177,16 @@ namespace Scanx.Web.Services
                 Message = ""
             });
             var conts = _httpContextAccessor.HttpContext;
-            using (DataContext db = new DataContext())
+            //if (UsersConstant.GetRole(int.Parse(conts.User.Identity.Name)) == UsersConstant.superadmin)
+            //{
+            var rs = _context.TblScanData.Where(p => p.ScanId == scandataID).FirstOrDefault();
+            if (rs != null)
             {
-                //if (UsersConstant.GetRole(int.Parse(conts.User.Identity.Name)) == UsersConstant.superadmin)
-                //{
-                var rs = db.TblScanData.Where(p => p.ScanId == scandataID).FirstOrDefault();
-                if (rs != null)
-                {
-                    res.Data = rs.Uid;
-                }
-                else
-                {
-                    res.Message = "scanID not found !";
-                }
-                //}
-
-                //    if (UsersConstant.GetRole(int.Parse(conts.User.Identity.Name)) == UsersConstant.admin)
-                //    {
-                //        var rs = context.TblScanData.Where(p => p.DeletedOn == null).OrderByDescending(p => p.CreatedOn).ToList();
-                //        res.Data = rs;
-                //    }
-                //    if (UsersConstant.GetRole(int.Parse(conts.User.Identity.Name)) == UsersConstant.user)
-                //    {
-
-                //        res.Message = "Access deny !";
-                //    }
-
+                res.Data = rs.Uid;
+            }
+            else
+            {
+                res.Message = "scanID not found !";
             }
             return res;
         }
@@ -197,55 +199,52 @@ namespace Scanx.Web.Services
             };
 
             // check role, login info.
-            using (DataContext db = new DataContext())
+            var user = _context.TblUsers.FirstOrDefault(o => o.UserName == postData.User);
+            #region Validate
+            if (user == null)
             {
-                var user = db.TblUsers.FirstOrDefault(o => o.UserName == postData.User);
-                #region Validate
-                if (user == null)
+                res.Message = "Account with user name " + postData.User + " is not existed";
+                res.Status = "500";
+                return res;
+            }
+            if (user.Token != postData.Token)
+            {
+                res.Message = "Token is not correct";
+                res.Status = "500";
+                return res;
+            }
+            if (user.RoleId != Constant.Users.Admin && user.RoleId != Constant.Users.User && user.RoleId != Constant.Users.Superadmin)
+            {
+                res.Message = "You dont have permission to do.";
+                res.Status = "500";
+                return res;
+            }
+            #endregion
+            try
+            {
+                Guid g;
+                g = Guid.NewGuid();
+                var x = new TblScanData
                 {
-                    res.Message = "Account with user name " + postData.User + " is not existed";
-                    res.Status = "500";
-                    return res;
-                }
-                if (user.Token != postData.Token)
-                {
-                    res.Message = "Token is not correct";
-                    res.Status = "500";
-                    return res;
-                }
-                if (user.RoleId != Constant.Users.Admin && user.RoleId != Constant.Users.User && user.RoleId != Constant.Users.Superadmin)
-                {
-                    res.Message = "You dont have permission to do.";
-                    res.Status = "500";
-                    return res;
-                }
-                #endregion
-                try
-                {
-                    Guid g;
-                    g = Guid.NewGuid();
-                    var x = new TblScanData
-                    {
-                        ScanId = g.ToString(),
-                        Uid = user.Id,
-                        CreatedOn = DateTime.UtcNow,
-                        StationName = postData.StationName,
-                        Payload = postData.ScanData.Payload,
-                        DataType = postData.ScanData.DataType,
-                        FileName = postData.ScanData.FileName,
-                        Status = postData.ScanData.Status,
-                        DeletedOn = null,
-                    };
-                    db.TblScanData.Add(x);
-                    db.SaveChanges();
-                    x.U = null;
-                    res.Data = x;
-                }
-                catch (Exception ex)
-                {
-                    res.Status = "500";
-                    res.Message = ex.Message;
-                }
+                    ScanId = g.ToString(),
+                    Uid = user.Id,
+                    CreatedOn = DateTime.UtcNow,
+                    StationName = postData.StationName,
+                    Payload = postData.ScanData.Payload,
+                    DataType = postData.ScanData.DataType,
+                    FileName = postData.ScanData.FileName,
+                    Status = postData.ScanData.Status,
+                    DeletedOn = null,
+                };
+                _context.TblScanData.Add(x);
+                _context.SaveChanges();
+                x.U = null;
+                res.Data = x;
+            }
+            catch (Exception ex)
+            {
+                res.Status = "500";
+                res.Message = ex.Message;
             }
             return res;
         }
@@ -265,40 +264,42 @@ namespace Scanx.Web.Services
 
                 try
                 {
-                    using (DataContext context = new DataContext())
+                    Guid g;
+                    g = Guid.NewGuid();
+                    var rs = _context.TblScanData.FirstOrDefault(p => p.ScanId == tblscandata.ScanId && tblscandata.ScanId != null);
+                    if (rs == null)
                     {
-                        Guid g;
-                        g = Guid.NewGuid();
-                        var rs = context.TblScanData.FirstOrDefault(p => p.ScanId != tblscandata.ScanId);
-                        if (rs != null)
+                        var x = new TblScanData
                         {
-                            var x = new TblScanData
-                            {
-                                ScanId = g.ToString(),
-                                Uid = int.Parse(contex.User.Identity.Name),
-                                CreatedOn = DateTime.UtcNow,
-                                Payload = tblscandata.Payload,
-                                DataType = tblscandata.DataType,
-                                FileName = tblscandata.FileName,
-                                Status = tblscandata.Status,
-                                StationName = tblscandata.StationName,
-                                DeletedOn = null,
-                            };
-                            context.TblScanData.Add(x);
-                            context.SaveChanges();
-                            var item = new ScanDataModel
-                            {
-                                ScanId = x.ScanId,
-                                Uid = int.Parse(contex.User.Identity.Name),
-                                CreatedOn = new DateTime(x.CreatedOn.Value.Ticks).ToString("o"),
-                                Payload = x.Payload,
-                                DataType = x.DataType,
-                                FileName = x.FileName,
-                                StationName = x.StationName,
-                                Status = x.Status,
-                            };
-                            res.Data = item;
-                        }
+                            ScanId = g.ToString(),
+                            Uid = int.Parse(contex.User.Identity.Name),
+                            CreatedOn = DateTime.UtcNow,
+                            Payload = tblscandata.Payload,
+                            DataType = tblscandata.DataType,
+                            FileName = tblscandata.FileName,
+                            Status = tblscandata.Status,
+                            StationName = tblscandata.StationName,
+                            DeletedOn = null,
+                        };
+                        _context.TblScanData.Add(x);
+                        _context.SaveChanges();
+                        var item = new ScanDataModel
+                        {
+                            ScanId = x.ScanId,
+                            Uid = int.Parse(contex.User.Identity.Name),
+                            CreatedOn = new DateTime(x.CreatedOn.Value.Ticks).ToString("o"),
+                            Payload = x.Payload,
+                            DataType = x.DataType,
+                            FileName = x.FileName,
+                            StationName = x.StationName,
+                            Status = x.Status,
+                        };
+                        res.Data = item;
+                    }
+                    else
+                    {
+                        res.Status = "500";
+                        res.Message = "This scan data with id " + tblscandata.ScanId + " is existed";
                     }
                 }
                 catch (Exception ex)
@@ -325,15 +326,12 @@ namespace Scanx.Web.Services
             {
                 try
                 {
-                    using (DataContext context = new DataContext())
+                    var rs = _context.TblScanData.FirstOrDefault(o => o.ScanId == scanid);
+                    if (rs != null)
                     {
-                        var rs = context.TblScanData.FirstOrDefault(o => o.ScanId == scanid);
-                        if (rs != null)
-                        {
-                            rs.DeletedOn = DateTime.UtcNow;
-                            context.SaveChanges();
-                            res.Data = rs;
-                        }
+                        rs.DeletedOn = DateTime.UtcNow;
+                        _context.SaveChanges();
+                        res.Data = rs;
                     }
 
                 }
@@ -361,20 +359,17 @@ namespace Scanx.Web.Services
 
                 try
                 {
-                    using (DataContext context = new DataContext())
+                    foreach (var deleteId in deleteIds)
                     {
-                        foreach (var deleteId in deleteIds)
+                        var scandata = _context.TblScanData.FirstOrDefault(o => o.ScanId == deleteId);
+                        if (scandata != null)
                         {
-                            var scandata = context.TblScanData.FirstOrDefault(o => o.ScanId == deleteId);
-                            if (scandata != null)
-                            {
-                                scandata.DeletedOn = DateTime.UtcNow;
-                            }
-                            res.Data = deleteIds;
+                            scandata.DeletedOn = DateTime.UtcNow;
                         }
-
-                        context.SaveChanges();
+                        res.Data = deleteIds;
                     }
+
+                    _context.SaveChanges();
                 }
                 catch (Exception ex)
                 {
@@ -399,20 +394,17 @@ namespace Scanx.Web.Services
 
                 try
                 {
-                    using (DataContext context = new DataContext())
+                    var oldscandata = (from u in _context.TblScanData where u.ScanId == tblscandata.ScanId select u).FirstOrDefault();
+                    if (oldscandata != null)
                     {
-                        var oldscandata = (from u in context.TblScanData where u.ScanId == tblscandata.ScanId select u).FirstOrDefault();
-                        if (oldscandata != null)
-                        {
-                            oldscandata.Uid = tblscandata.Uid;
-                            oldscandata.Payload = tblscandata.Payload;
-                            oldscandata.DataType = tblscandata.DataType;
-                            oldscandata.FileName = tblscandata.FileName;
-                            oldscandata.Status = tblscandata.Status;
-                            oldscandata.DeletedOn = null;
-                            context.SaveChanges();
-                            res.Data = oldscandata;
-                        }
+                        oldscandata.Uid = tblscandata.Uid;
+                        oldscandata.Payload = tblscandata.Payload;
+                        oldscandata.DataType = tblscandata.DataType;
+                        oldscandata.FileName = tblscandata.FileName;
+                        oldscandata.Status = tblscandata.Status;
+                        oldscandata.DeletedOn = null;
+                        _context.SaveChanges();
+                        res.Data = oldscandata;
                     }
                 }
                 catch (Exception ex)
@@ -427,20 +419,17 @@ namespace Scanx.Web.Services
 
                 try
                 {
-                    using (DataContext context = new DataContext())
+                    var oldscandata = (from u in _context.TblScanData where u.ScanId == tblscandata.ScanId && u.Uid == int.Parse(contex.User.Identity.Name) select u).FirstOrDefault();
+                    if (oldscandata != null)
                     {
-                        var oldscandata = (from u in context.TblScanData where u.ScanId == tblscandata.ScanId && u.Uid == int.Parse(contex.User.Identity.Name) select u).FirstOrDefault();
-                        if (oldscandata != null)
-                        {
 
-                            oldscandata.Payload = tblscandata.Payload;
-                            oldscandata.DataType = tblscandata.DataType;
-                            oldscandata.FileName = tblscandata.FileName;
-                            oldscandata.Status = tblscandata.Status;
-                            oldscandata.DeletedOn = null;
-                            context.SaveChanges();
-                            res.Data = oldscandata;
-                        }
+                        oldscandata.Payload = tblscandata.Payload;
+                        oldscandata.DataType = tblscandata.DataType;
+                        oldscandata.FileName = tblscandata.FileName;
+                        oldscandata.Status = tblscandata.Status;
+                        oldscandata.DeletedOn = null;
+                        _context.SaveChanges();
+                        res.Data = oldscandata;
                     }
                 }
                 catch (Exception ex)

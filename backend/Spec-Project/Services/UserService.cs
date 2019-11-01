@@ -81,11 +81,12 @@ namespace Scanx.Web.Services
             _context.SaveChanges();
             var companyName = string.Empty;
             var company = _context.TblCustomer.FirstOrDefault(p => p.Cid == user.Cid);
-            if(company != null)
+            if (company != null)
             {
                 companyName = company.Name;
             }
-            return new UserModel {
+            return new UserModel
+            {
                 Id = user.Id,
                 Username = user.UserName,
                 FamilyName = user.FamilyName,
@@ -115,12 +116,30 @@ namespace Scanx.Web.Services
                 Message = ""
             });
             var context = _httpContextAccessor.HttpContext;
-            using (DataContext _context = new DataContext())
+            var role = GetRole(int.Parse(context.User.Identity.Name));
+            if (role == Constant.Users.Superadmin)
             {
-                var role = GetRole(int.Parse(context.User.Identity.Name));
-                if (role == Constant.Users.Superadmin)
+                var userss = _context.TblUsers.Where(p => p.DeletedOn == null).Select(p => new UsersModel
                 {
-                    var userss = _context.TblUsers.Where(p => p.DeletedOn == null).Select(p => new UsersModel
+                    Id = p.Id,
+                    UserName = p.UserName,
+                    GivenName = p.GivenName,
+                    FamilyName = p.FamilyName,
+                    TypeOfAccount = p.TypeOfAccount,
+                    Email = p.Email,
+                    Cid = p.Cid,
+                    ContactByEmail = p.ContactByEmail,
+                    EncryptionActive = p.EncryptionActive,
+                    RoleID = p.RoleId
+                }).ToList();
+                res.Data = userss;
+            }
+            else
+            {
+                if (role == Constant.Users.Admin || role == Constant.Users.User)
+                {
+                    var ciduser = GetCID(context.User.Identity.Name);
+                    var user = _context.TblUsers.Where(p => p.DeletedOn == null && p.Cid == ciduser).Select(p => new UsersModel
                     {
                         Id = p.Id,
                         UserName = p.UserName,
@@ -133,28 +152,7 @@ namespace Scanx.Web.Services
                         EncryptionActive = p.EncryptionActive,
                         RoleID = p.RoleId
                     }).ToList();
-                    res.Data = userss;
-                }
-                else
-                {
-                    if (role == Constant.Users.Admin || role == Constant.Users.User)
-                    {
-                        var ciduser = GetCID(context.User.Identity.Name);
-                        var user = _context.TblUsers.Where(p => p.DeletedOn == null && p.Cid == ciduser).Select(p => new UsersModel
-                        {
-                            Id = p.Id,
-                            UserName = p.UserName,
-                            GivenName = p.GivenName,
-                            FamilyName = p.FamilyName,
-                            TypeOfAccount = p.TypeOfAccount,
-                            Email = p.Email,
-                            Cid = p.Cid,
-                            ContactByEmail = p.ContactByEmail,
-                            EncryptionActive = p.EncryptionActive,
-                            RoleID = p.RoleId
-                        }).ToList();
-                        res.Data = user;
-                    }
+                    res.Data = user;
                 }
             }
             return res;
@@ -718,19 +716,16 @@ namespace Scanx.Web.Services
 
                 try
                 {
-                    using (DataContext context = new DataContext())
+                    foreach (var deleteId in deleteIds)
                     {
-                        foreach (var deleteId in deleteIds)
+                        var user = _context.TblUsers.FirstOrDefault(o => o.Id == deleteId);
+                        if (user != null)
                         {
-                            var user = context.TblUsers.FirstOrDefault(o => o.Id == deleteId);
-                            if (user != null)
-                            {
-                                user.DeletedOn = DateTime.UtcNow;
-                            }
+                            user.DeletedOn = DateTime.UtcNow;
                         }
-                        res.Data = deleteIds;
-                        context.SaveChanges();
                     }
+                    res.Data = deleteIds;
+                    _context.SaveChanges();
                 }
                 catch (Exception ex)
                 {
@@ -744,48 +739,21 @@ namespace Scanx.Web.Services
 
         public int GetRole(int pUserID)
         {
-            using (DataContext db = new DataContext())
-            {
-                var roleid = db.TblUsers.Where(o => o.Id == pUserID).Select(o => o.RoleId).FirstOrDefault();
-                return roleid;
-            }
-        }
-        public static int GetID(int userID)
-        {
-            using (DataContext db = new DataContext())
-            {
-                var roleid = db.TblUsers.Where(o => o.Id == userID).Select(o => o.RoleId).FirstOrDefault();
-                return roleid;
-            }
+            var roleid = _context.TblUsers.Where(o => o.Id == pUserID).Select(o => o.RoleId).FirstOrDefault();
+            return roleid;
         }
 
         public string GetCID(string userID)
         {
             var strcid = int.Parse(userID);
-            using (DataContext db = new DataContext())
-            {
-                var cid = db.TblUsers.Where(o => o.Id == strcid).Select(o => o.Cid).FirstOrDefault();
-                return cid;
-            }
+            var cid = _context.TblUsers.Where(o => o.Id == strcid).Select(o => o.Cid).FirstOrDefault();
+            return cid;
         }
         public TblUsers GetUser(string userid)
         {
             var userID = int.Parse(userid);
-            using (DataContext db = new DataContext())
-            {
-                var user = db.TblUsers.Where(o => o.Id == userID).FirstOrDefault();
-                return user;
-            }
-        }
-
-        public static string GetUserName(string userid)
-        {
-            var userID = int.Parse(userid);
-            using (DataContext db = new DataContext())
-            {
-                var username = db.TblUsers.Where(o => o.Id == userID).Select(o => o.UserName).FirstOrDefault();
-                return username;
-            }
+            var user = _context.TblUsers.Where(o => o.Id == userID).FirstOrDefault();
+            return user;
         }
     }
 }

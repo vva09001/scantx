@@ -34,10 +34,6 @@ namespace Scanx.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.TryAddSingleton<IScanxService, ScanxService>();
-            services.AddMvc(x => x.EnableEndpointRouting = false);
-            services.AddSoapCore();
-            services.AddHttpContextAccessor();
             services.AddCors(o => o.AddPolicy("AllowAnyOrigin", builder =>
             {
                 builder.AllowAnyOrigin()
@@ -47,7 +43,12 @@ namespace Scanx.Web
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration["ConnectionString"]));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddAutoMapper();
+            services.AddMvc(x => x.EnableEndpointRouting = false);
+            services.AddSoapCore();
+            services.AddHttpContextAccessor();
+
             // configure DI for application services
+            services.AddScoped<IScanxService, ScanxService>();
             services.AddScoped<IStartService, StartService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IScanDataService, ScanDataService>();

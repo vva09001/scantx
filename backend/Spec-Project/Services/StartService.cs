@@ -16,51 +16,15 @@ namespace Scanx.Web.Services
     }
     public class StartService : IStartService
     {
-        DataContext db = new DataContext();
-
-        //public ResponseModel Login(string username, string password)
-        //{
-
-
-        //    var res = (new ResponseModel {
-        //        Data = "",
-        //        Status = "200",
-        //        Message = ""
-
-        //    });
-        //    try
-        //    {
-        //        var rs = db.TblUsers.Where(o => o.UserName == username && o.Password == password).FirstOrDefault();
-        //        if (rs != null)
-        //        {
-        //            res.Data = (new UsersModel
-        //            {
-        //                Fullname = rs.GivenName + " " + rs.FamilyName,
-        //                Mail = rs.Email,
-        //                Company = db.TblCustomer.Where(o=>o.Cid == rs.cid)
-        //            }) ;
-        //            res.Status = "200";
-        //            res.Message = "";
-        //        }
-        //        else
-        //        {
-        //            res.Data = "Null";
-        //            res.Status = "200";
-        //            res.Message = "Username or Password incorrect.";
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        res.Data = "";
-
-        //    }
-
-        //    return res;
-        //}
+        private DataContext _context;
+        public StartService(DataContext context)
+        {
+            _context = context;
+        }
 
         public List<TblUsers> getUser()
         {
-            var listuser = db.TblUsers.Where(p => p.Cid != null).ToList();
+            var listuser = _context.TblUsers.Where(p => p.Cid != null).ToList();
             return listuser;
         }
 

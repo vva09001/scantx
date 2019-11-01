@@ -21,10 +21,12 @@ namespace Scanx.Web.Services
     {
         IHttpContextAccessor _httpContextAccessor;
         IUserService _userService;
-        public CompanyService(IHttpContextAccessor httpContextAccessor, IUserService userService)
+        private DataContext _context;
+        public CompanyService(IHttpContextAccessor httpContextAccessor, IUserService userService, DataContext context)
         {
             _httpContextAccessor = httpContextAccessor;
             _userService = userService;
+            _context = context;
         }
 
         public ResponseModel GetCompany()
@@ -36,34 +38,31 @@ namespace Scanx.Web.Services
                 Message = ""
             });
             var context = _httpContextAccessor.HttpContext;
-            using (DataContext _context = new DataContext())
+            var role = _userService.GetRole(int.Parse(context.User.Identity.Name));
+            if (role == Constant.Users.Superadmin)
             {
-                var role = _userService.GetRole(int.Parse(context.User.Identity.Name));
-                if (role == Constant.Users.Superadmin)
+                var userss = _context.TblCustomer.Where(p => p.DeletedOn == null).Select(p => new CustomerModel
                 {
-                    var userss = _context.TblCustomer.Where(p => p.DeletedOn == null).Select(p => new CustomerModel
+                    Name = p.Name,
+                    Address = p.Address,
+                    Status = p.Status,
+                    Cid = p.Cid,
+                }).ToList();
+                res.Data = userss;
+            }
+            else
+            {
+                if (role == Constant.Users.Admin || role == Constant.Users.User)
+                {
+                    var ciduser = _userService.GetCID(context.User.Identity.Name);
+                    var user = _context.TblCustomer.Where(p => p.DeletedOn == null && p.Cid == ciduser).Select(p => new CustomerModel
                     {
                         Name = p.Name,
                         Address = p.Address,
                         Status = p.Status,
                         Cid = p.Cid,
                     }).ToList();
-                    res.Data = userss;
-                }
-                else
-                {
-                    if (role == Constant.Users.Admin || role == Constant.Users.User)
-                    {
-                        var ciduser = _userService.GetCID(context.User.Identity.Name);
-                        var user = _context.TblCustomer.Where(p => p.DeletedOn == null && p.Cid == ciduser).Select(p => new CustomerModel
-                        {
-                            Name = p.Name,
-                            Address = p.Address,
-                            Status = p.Status,
-                            Cid = p.Cid,
-                        }).ToList();
-                        res.Data = user;
-                    }
+                    res.Data = user;
                 }
             }
             return res;
@@ -84,32 +83,29 @@ namespace Scanx.Web.Services
 
                 try
                 {
-                    using (var db = new DataContext())
+                    var listcustomer = _context.TblCustomer.FirstOrDefault(p => p.Cid != tblcustomer.Cid);
+                    if (listcustomer != null)
                     {
-                        var listcustomer = db.TblCustomer.FirstOrDefault(p => p.Cid != tblcustomer.Cid);
-                        if (listcustomer != null)
+                        g = Guid.NewGuid();
+                        var item = new TblCustomer
                         {
-                            g = Guid.NewGuid();
-                            var item = new TblCustomer
-                            {
-                                Cid = g.ToString(),
-                                Name = tblcustomer.Name,
-                                Address = tblcustomer.Address,
-                                Status = tblcustomer.Status,
-                                CreateOn = DateTime.UtcNow
-                            };
-                            db.TblCustomer.Add(item);
-                            db.SaveChanges();
-                            var model = new CustomerModel
-                            {
-                                Cid = item.Cid,
-                                Name = item.Name,
-                                Address = item.Address,
-                                Status = item.Status,
-                                CreateOn = new DateTime(item.CreateOn.Value.Ticks).ToString("o")
-                            };
-                            res.Data = model;
-                        }
+                            Cid = g.ToString(),
+                            Name = tblcustomer.Name,
+                            Address = tblcustomer.Address,
+                            Status = tblcustomer.Status,
+                            CreateOn = DateTime.UtcNow
+                        };
+                        _context.TblCustomer.Add(item);
+                        _context.SaveChanges();
+                        var model = new CustomerModel
+                        {
+                            Cid = item.Cid,
+                            Name = item.Name,
+                            Address = item.Address,
+                            Status = item.Status,
+                            CreateOn = new DateTime(item.CreateOn.Value.Ticks).ToString("o")
+                        };
+                        res.Data = model;
                     }
                 }
                 catch (Exception ex)
@@ -136,19 +132,16 @@ namespace Scanx.Web.Services
             {
                 try
                 {
-                    using (var db = new DataContext())
+                    var checkuser = _context.TblUsers.FirstOrDefault(p => p.UserName == userName && p.Email == email);
+                    if (checkuser != null)
                     {
-                        var checkuser = db.TblUsers.FirstOrDefault(p => p.UserName == userName && p.Email == email);
-                        if (checkuser != null)
-                        {
-                            checkuser.Cid = cid;
-                            db.SaveChanges();
-                            res.Message = "sucessfull";
-                        }
-                        else
-                        {
-                            res.Message = "Username && Email not found !";
-                        }
+                        checkuser.Cid = cid;
+                        _context.SaveChanges();
+                        res.Message = "sucessfull";
+                    }
+                    else
+                    {
+                        res.Message = "Username && Email not found !";
                     }
                 }
                 catch (Exception ex)
@@ -176,16 +169,13 @@ namespace Scanx.Web.Services
 
                 try
                 {
-                    using (DataContext context = new DataContext())
+                    var rs = _context.TblCustomer.Where(o => o.Cid == cid).FirstOrDefault();
+                    if (rs != null)
                     {
-                        var rs = context.TblCustomer.Where(o => o.Cid == cid).FirstOrDefault();
-                        if (rs != null)
-                        {
-                            rs.DeletedOn = DateTime.UtcNow;
-                            context.SaveChanges();
-                        }
-                        res.Data = rs;
+                        rs.DeletedOn = DateTime.UtcNow;
+                        _context.SaveChanges();
                     }
+                    res.Data = rs;
                 }
                 catch (Exception ex)
                 {
@@ -211,19 +201,16 @@ namespace Scanx.Web.Services
 
                 try
                 {
-                    using (DataContext context = new DataContext())
+                    foreach (var deleteId in deleteIds)
                     {
-                        foreach (var deleteId in deleteIds)
+                        var customer = _context.TblCustomer.FirstOrDefault(o => o.Cid == deleteId);
+                        if (customer != null)
                         {
-                            var customer = context.TblCustomer.FirstOrDefault(o => o.Cid == deleteId);
-                            if (customer != null)
-                            {
-                                customer.DeletedOn = DateTime.UtcNow;
-                            }
+                            customer.DeletedOn = DateTime.UtcNow;
                         }
-                        res.Data = deleteIds;
-                        context.SaveChanges();
                     }
+                    res.Data = deleteIds;
+                    _context.SaveChanges();
                 }
                 catch (Exception ex)
                 {
@@ -248,17 +235,14 @@ namespace Scanx.Web.Services
 
                 try
                 {
-                    using (var db = new DataContext())
+                    var oldCusomer = (from u in _context.TblCustomer where u.Cid == customer.Cid select u).FirstOrDefault();
+                    if (oldCusomer != null)
                     {
-                        var oldCusomer = (from u in db.TblCustomer where u.Cid == customer.Cid select u).FirstOrDefault();
-                        if (oldCusomer != null)
-                        {
-                            oldCusomer.Address = customer.Address;
-                            oldCusomer.Name = customer.Name;
-                            oldCusomer.Status = customer.Status;
-                            db.SaveChanges();
-                            res.Data = oldCusomer;
-                        }
+                        oldCusomer.Address = customer.Address;
+                        oldCusomer.Name = customer.Name;
+                        oldCusomer.Status = customer.Status;
+                        _context.SaveChanges();
+                        res.Data = oldCusomer;
                     }
                 }
                 catch (Exception ex)
