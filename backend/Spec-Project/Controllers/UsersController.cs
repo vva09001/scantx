@@ -39,35 +39,49 @@ namespace Scanx.Web.Controllers
         [AllowAnonymous]
         [DisableCors]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate(string username, string password)
+        public ResponseModel Authenticate(string username, string password)
         {
             try
             {
                 var user = _userService.Authenticate(username, password, _appSettings);
 
                 if (user == null)
-                    return BadRequest(new { message = "Username or password is incorrect" });
-
+                    return
+                        /*BadRequest(new { message = "Username or password is incorrect" });*/
+                        new ResponseModel()
+                        {
+                            Status = "400",
+                            Message = "Username or password is incorrect",
+                        };
                 var companyName = string.Empty;
 
                 // return basic user info (without password) and token to store client side
-                return Ok(new
+                return new ResponseModel()
                 {
-                    Id = user.Id,
-                    Username = user.Username,
-                    FamilyName = user.FamilyName,
-                    GivenName = user.GivenName,
-                    CompanyName = companyName,
-                    Mail = user.Mail,
-                    TypeOfAccount = user.TypeOfAccount,
-                    RoleID = user.RoleID,
-                    Authorization = user.Authorization,
-                    Token = user.Token
-                });
+                    Status = "200",
+                    Data = new
+                    {
+                        Id = user.Id,
+                        Username = user.Username,
+                        FamilyName = user.FamilyName,
+                        GivenName = user.GivenName,
+                        CompanyName = user.CompanyName,
+                        Mail = user.Mail,
+                        TypeOfAccount = user.TypeOfAccount,
+                        RoleID = user.RoleID,
+                        Authorization = user.Authorization,
+                        Token = user.Token
+                    },
+                    Message = "Login successfully"
+                };
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message + ex.StackTrace });
+                return new ResponseModel()
+                {
+                    Status = "500",
+                    Message = "Error: " + ex.Message,
+                };
             }
         }
 
