@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MaterialAdmin from './materialAdmin';
+import './index.css';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(<MaterialAdmin />, document.getElementById('root'));
