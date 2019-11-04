@@ -88,20 +88,25 @@ namespace Scanx.Web.Controllers
         [AllowAnonymous]
         [DisableCors]
         [HttpPost("register")]
-        public IActionResult Register([FromBody]UserDto userDto, string UserIDLogin)
+        public ResponseModel Register([FromBody]UserDto userDto, string UserIDLogin)
         {
             // map dto to entity
             //var user = _mapper.Map<TblUsers>(userDto);
-
+            var rs = new ResponseModel
+            {
+                Message = string.Empty,
+                Status = "200"
+            };
             try
             {
-                // save 
-                return Ok(_userService.Create(userDto, userDto.Password, UserIDLogin));
+                rs = _userService.Create(userDto, userDto.Password, UserIDLogin);
+                return rs;
             }
             catch (Exception ex)
             {
-                // return error message if there was an exception
-                return BadRequest(new { message = ex.Message });
+                rs.Status = "500";
+                rs.Message = ex.Message;
+                return rs;
             }
         }
 

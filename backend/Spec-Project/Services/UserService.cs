@@ -238,7 +238,7 @@ namespace Scanx.Web.Services
                     _context.TblCustomer.Add(cpn);
                     _context.TblUsers.Add(tbluser);
                     _context.SaveChanges();
-                    res.Data = tbluser;
+                    //res.Data = tbluser;
                 }
                 catch (Exception ex)
                 {
@@ -299,7 +299,7 @@ namespace Scanx.Web.Services
                     _context.TblCustomer.Add(cpn);
                     _context.TblUsers.Add(tbluser);
                     _context.SaveChanges();
-                    res.Data = tbluser;
+                    //res.Data = tbluser;
                 }
                 catch (Exception ex)
                 {
