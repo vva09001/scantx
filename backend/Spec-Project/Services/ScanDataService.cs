@@ -135,7 +135,7 @@ namespace Scanx.Web.Services
             {
                 var rs = _context.TblScanData.Where(p => p.DeletedOn == null).OrderByDescending(p => p.CreatedOn)
                     .Select(o => new ScanDataModel { 
-                        CreatedOn = o.CreatedOn.Value.ToString("yyyy-MM-dd HH:mm tt"),
+                        CreatedOn = o.CreatedOn.Value.ToString("dd-MM-yyyy HH:mm tt"),
                         DataType = o.DataType,
                         FileName = o.FileName,
                         Payload = o.Payload,
@@ -153,7 +153,7 @@ namespace Scanx.Web.Services
                     var uid = int.Parse(conts.User.Identity.Name);
                     var rs = _context.TblScanData.Where(p => p.DeletedOn == null && p.Uid == uid).OrderByDescending(p => p.CreatedOn).Select(o => new ScanDataModel
                     {
-                        CreatedOn = o.CreatedOn.Value.ToString("yyyy-MM-dd HH:mm tt"),
+                        CreatedOn = o.CreatedOn.Value.ToString("dd-MM-yyyy HH:mm tt"),
                         DataType = o.DataType,
                         FileName = o.FileName,
                         Payload = o.Payload,
