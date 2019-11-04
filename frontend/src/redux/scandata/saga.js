@@ -24,7 +24,6 @@ export function* getScanDataSagas(data) {
         response: res.data.data
       });
     } else {
-      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -44,7 +43,6 @@ export function* editScanDataSagas(data) {
         response: res.data.data
       });
     } else {
-      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -64,7 +62,6 @@ export function* addScanDataSagas(data) {
         response: res.data.data
       });
     } else {
-      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -84,7 +81,6 @@ export function* deleteScanDataSagas(data) {
         response: res.data.data
       });
     } else {
-      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -104,7 +100,6 @@ export function* deleteMultiScanDataSagas(data) {
         response: res.data.data
       });
     } else {
-      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -143,7 +138,6 @@ export function* downloadScanDataSagas(data) {
         type: actions.DOWNLOAD_SCAN_DATA_SUCCESS
       });
     } else {
-      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
@@ -181,7 +175,6 @@ export function* listScanDataSagas(data) {
         response: res.data.data
       });
     } else {
-      yield Error(res.data.message);
       yield fail(res.data.message);
     }
   } catch (error) {
