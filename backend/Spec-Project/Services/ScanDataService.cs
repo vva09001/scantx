@@ -153,7 +153,7 @@ namespace Scanx.Web.Services
                     var uid = int.Parse(conts.User.Identity.Name);
                     var rs = _context.TblScanData.Where(p => p.DeletedOn == null && p.Uid == uid).OrderByDescending(p => p.CreatedOn).Select(o => new ScanDataModel
                     {
-                        CreatedOn = o.CreatedOn.ToString(),
+                        CreatedOn = o.CreatedOn.Value.ToString("yyyy-MM-dd HH:mm tt"),
                         DataType = o.DataType,
                         FileName = o.FileName,
                         Payload = o.Payload,
