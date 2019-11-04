@@ -12,7 +12,7 @@ import Dialog, {
   DialogContent,
   DialogTitle
 } from "components/uielements/dialogs";
-import Button from "components/uielements/button";
+import Button from "@material-ui/core/Button";
 import { CircularProgress } from "components/uielements/progress";
 
 class Form extends React.Component {
@@ -64,8 +64,9 @@ class Form extends React.Component {
         ) : (
           <Dialog open={status} onClose={this.onClose}>
             <DialogTitle>{"Add new scan data"}</DialogTitle>
+
             <DialogContent>
-              <div>
+              <form onSubmit={this.onSubmit}>
                 <TextField
                   required
                   name="stationName"
@@ -75,8 +76,6 @@ class Form extends React.Component {
                   value={this.state.params.StationName}
                   onChange={e => this.onChange(e)}
                 />
-              </div>
-              <div>
                 <TextField
                   required
                   name="payload"
@@ -86,8 +85,7 @@ class Form extends React.Component {
                   value={this.state.params.payload}
                   onChange={e => this.onChange(e)}
                 />
-              </div>
-              <div>
+
                 <TextField
                   required
                   name="dataType"
@@ -97,8 +95,7 @@ class Form extends React.Component {
                   value={this.state.params.dataType}
                   onChange={e => this.onChange(e)}
                 />
-              </div>
-              <div>
+
                 <TextField
                   required
                   name="fileName"
@@ -108,36 +105,35 @@ class Form extends React.Component {
                   value={this.state.params.fileName}
                   onChange={e => this.onChange(e)}
                 />
-              </div>
-              <FormControl style={{ width: "100%" }}>
-                <InputLabel htmlFor="status">Status</InputLabel>
-                <Select
-                  // value="asdas"
-                  value={this.state.params.status | 0}
-                  inputProps={{
-                    name: "status",
-                    id: "status"
-                  }}
-                  onChange={e => this.onChange(e)}
-                >
-                  <MenuItem value={0}>Received</MenuItem>
-                  <MenuItem value={1}>Processed</MenuItem>
-                  <MenuItem value={2}>Failed</MenuItem>
-                </Select>
-              </FormControl>
+                <FormControl style={{ width: "100%" }}>
+                  <InputLabel htmlFor="status">Status</InputLabel>
+                  <Select
+                    value={this.state.params.status}
+                    inputProps={{
+                      name: "status",
+                      id: "status"
+                    }}
+                    onChange={e => this.onChange(e)}
+                  >
+                    <MenuItem value={0}>Received</MenuItem>
+                    <MenuItem value={1}>Processed</MenuItem>
+                    <MenuItem value={2}>Failed</MenuItem>
+                  </Select>
+                </FormControl>
+                {this.state.loading ? (
+                  <CircularProgress />
+                ) : (
+                  <DialogActions>
+                    <Button onClick={this.onClose} color="primary">
+                      Cancel
+                    </Button>
+                    <Button type="submit" color="primary" autoFocus>
+                      Submit
+                    </Button>
+                  </DialogActions>
+                )}
+              </form>
             </DialogContent>
-            {this.state.loading ? (
-              <CircularProgress />
-            ) : (
-              <DialogActions>
-                <Button onClick={this.onClose} color="primary">
-                  Cancel
-                </Button>
-                <Button onClick={this.onSubmit} color="primary" autoFocus>
-                  Submit
-                </Button>
-              </DialogActions>
-            )}
           </Dialog>
         )}
       </div>

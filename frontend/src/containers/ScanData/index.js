@@ -113,6 +113,7 @@ class ScanData extends Component {
           {item.status === 0 && <TableCell>Received</TableCell>}
           {item.status === 1 && <TableCell>Processed</TableCell>}
           {item.status === 2 && <TableCell>Failed</TableCell>}
+          {item.status === null && <TableCell></TableCell>}
           <TableCell>
             <span
               className="actions"

@@ -67,50 +67,46 @@ class EditForm extends React.Component {
           <Dialog open={status} onClose={this.onClose}>
             <DialogTitle>{"Edit scan data"}</DialogTitle>
             <DialogContent>
-              <div>
-                <TextField
-                  required
-                  name="stationName"
-                  label="StationName"
-                  margin="normal"
-                  fullWidth
-                  value={this.state.params.stationName}
-                  onChange={e => this.onChange(e)}
-                />
-              </div>
-              <div>
-                <TextField
-                  required
-                  name="payload"
-                  label="Payload"
-                  margin="normal"
-                  fullWidth
-                  value={this.state.params.payload}
-                  onChange={e => this.onChange(e)}
-                />
-              </div>
-              <div>
-                <TextField
-                  required
-                  name="dataType"
-                  label="Data Type"
-                  margin="normal"
-                  fullWidth
-                  value={this.state.params.dataType}
-                  onChange={e => this.onChange(e)}
-                />
-              </div>
-              <div>
-                <TextField
-                  required
-                  name="fileName"
-                  label="File Name"
-                  margin="normal"
-                  fullWidth
-                  value={this.state.params.fileName}
-                  onChange={e => this.onChange(e)}
-                />
-              </div>
+              <TextField
+                required
+                name="stationName"
+                label="StationName"
+                margin="normal"
+                fullWidth
+                value={this.state.params.stationName}
+                onChange={e => this.onChange(e)}
+              />
+
+              <TextField
+                required
+                name="payload"
+                label="Payload"
+                margin="normal"
+                fullWidth
+                value={this.state.params.payload}
+                onChange={e => this.onChange(e)}
+              />
+
+              <TextField
+                required
+                name="dataType"
+                label="Data Type"
+                margin="normal"
+                fullWidth
+                value={this.state.params.dataType}
+                onChange={e => this.onChange(e)}
+              />
+
+              <TextField
+                required
+                name="fileName"
+                label="File Name"
+                margin="normal"
+                fullWidth
+                value={this.state.params.fileName}
+                onChange={e => this.onChange(e)}
+              />
+
               <FormControl style={{ width: "100%" }}>
                 <InputLabel htmlFor="status">Status</InputLabel>
                 <Select
